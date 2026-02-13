@@ -1,0 +1,1219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Moove In — Facility Map</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#06070a;--surface:#0e1014;--surface-2:#15171c;--surface-3:#1d1f26;
+  --border:#262830;--border-light:#34363f;
+  --text:#eeeef0;--text-sec:#85868f;--text-dim:#4e4f58;
+  --accent:#2dd4a0;--accent-bg:rgba(45,212,160,0.12);--accent-border:rgba(45,212,160,0.28);--accent-mid:rgba(45,212,160,0.18);
+  --occ:#ef4468;--occ-bg:rgba(239,68,104,0.10);--occ-border:rgba(239,68,104,0.22);
+  --sel:#4fc4f0;--sel-bg:rgba(79,196,240,0.14);--sel-border:rgba(79,196,240,0.5);
+  --aisle:rgba(140,120,220,0.08);--aisle-b:rgba(140,120,220,0.12);
+  --r:14px;--rs:10px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',-apple-system,sans-serif;height:100vh;overflow:hidden;-webkit-font-smoothing:antialiased}
+
+/* ═══ TOPBAR ═══ */
+.topbar{position:fixed;top:0;left:0;right:0;height:58px;background:rgba(6,7,10,0.92);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 22px;z-index:100}
+.tb-left{display:flex;align-items:center;gap:12px}
+.brand{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;background:#1a1c22;border:1px solid var(--border-light)}
+.brand svg{width:15px;height:15px}
+.brand-n{font-family:'Playfair Display',serif;font-size:17px;font-weight:600;color:#fff}
+.tb-sep{width:1px;height:20px;background:var(--border)}
+.tb-loc{font-size:13px;color:var(--text-sec);font-weight:500}
+.tb-right{display:flex;align-items:center;gap:8px}
+
+/* ═══ FILTER BAR ═══ */
+.fb{position:fixed;top:70px;left:12px;width:206px;background:var(--surface);border:1px solid var(--border);border-radius:12px;z-index:95;overflow:hidden;transition:transform 0.35s cubic-bezier(0.16,1,0.3,1),opacity 0.3s}
+.fb.hidden{transform:translateX(-224px);opacity:0;pointer-events:none}
+.fb-head{padding:12px 14px 10px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)}
+.fb-title{font-size:11px;font-weight:700;color:var(--text);letter-spacing:0.5px;text-transform:uppercase}
+.fb-btns{display:flex;gap:3px;align-items:center}
+.fb-btn{font-size:11px;font-weight:600;color:var(--text-dim);cursor:pointer;background:none;border:none;font-family:'DM Sans',sans-serif;padding:2px 7px;border-radius:4px;transition:all 0.15s}
+.fb-btn:hover{color:var(--accent);background:var(--accent-bg)}
+.fb-section{padding:10px 14px}
+.fb-label{font-size:10px;font-weight:600;color:var(--text-dim);letter-spacing:0.8px;text-transform:uppercase;margin-bottom:7px}
+.fb-opts{display:flex;flex-direction:column;gap:3px}
+.fb-opt{display:flex;align-items:center;justify-content:space-between;padding:8px 10px;background:var(--surface-2);border:1.5px solid transparent;border-radius:8px;cursor:pointer;transition:all 0.2s;user-select:none}
+.fb-opt:hover{background:var(--surface-3);border-color:var(--border)}
+.fb-opt.on{background:var(--accent-bg);border-color:var(--accent)}
+.fb-ol{display:flex;align-items:center;gap:7px}
+.fb-sw{width:14px;height:14px;border-radius:4px;border:1.5px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:8px;color:transparent;transition:all 0.2s}
+.fb-opt.on .fb-sw{background:var(--accent);border-color:var(--accent);color:var(--bg)}
+.fb-oi{display:flex;flex-direction:column;gap:0}
+.fb-on{font-size:12px;font-weight:600;color:var(--text)}
+.fb-od{font-size:10px;color:var(--text-dim)}
+.fb-or{display:flex;flex-direction:column;align-items:flex-end;gap:0}
+.fb-oc{font-size:11px;font-weight:700;color:var(--text-dim);transition:color 0.2s}
+.fb-opt.on .fb-oc{color:var(--accent)}
+.fb-op{font-size:10px;color:var(--text-dim)}
+
+/* Feature legend */
+.fb-legend{padding:8px 14px 12px;border-top:1px solid var(--border)}
+.fb-leg-items{display:flex;flex-wrap:wrap;gap:4px 10px}
+.fb-leg-item{display:flex;align-items:center;gap:5px;font-size:10px;color:var(--text-sec);font-weight:500}
+.fb-leg-icon{font-size:11px;width:16px;text-align:center}
+
+/* Filter toggle btn (when sidebar hidden) */
+.fb-tgl-btn{position:fixed;top:70px;left:12px;width:42px;height:42px;background:var(--surface);border:1px solid var(--border);border-radius:10px;z-index:94;cursor:pointer;display:none;align-items:center;justify-content:center;transition:all 0.2s;font-size:15px;color:var(--text-sec);font-family:'DM Sans',sans-serif}
+.fb-tgl-btn:hover{background:var(--surface-2);color:var(--text)}
+
+/* ═══ MAP ═══ */
+.map-wrap{position:fixed;top:58px;left:0;right:0;bottom:0;overflow:hidden;cursor:grab;background:radial-gradient(ellipse at 50% 40%,rgba(45,212,160,0.015) 0%,transparent 60%),var(--bg)}
+.map-wrap:active{cursor:grabbing}
+.map-t{position:absolute;transform-origin:center center;transition:transform 0.5s cubic-bezier(0.16,1,0.3,1);will-change:transform}
+.fac-w{position:relative}
+.facility{position:relative;width:1200px;height:1280px}
+.floor{position:absolute;inset:-24px;background:var(--surface);border:1px solid var(--border);border-radius:12px;z-index:0}
+.floor::after{content:'';position:absolute;inset:0;border-radius:12px;opacity:0.4;background-image:linear-gradient(rgba(45,212,160,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(45,212,160,0.03) 1px,transparent 1px);background-size:40px 40px}
+.aisle{position:absolute;background:var(--aisle);border:1px dashed var(--aisle-b);border-radius:4px;z-index:1}
+.aisle-lbl{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:10px;font-weight:600;color:rgba(140,120,220,0.35);letter-spacing:3px;text-transform:uppercase;white-space:nowrap}
+.site-f{position:absolute;background:var(--surface-2);border:1px solid var(--border);border-radius:6px;display:flex;align-items:center;justify-content:center;z-index:1}
+.site-f span{font-size:10px;font-weight:600;color:var(--text-dim);text-align:center;line-height:1.3}
+.fac-lbl{position:absolute;bottom:-20px;left:50%;transform:translateX(-50%);font-family:'Playfair Display',serif;font-size:14px;font-weight:600;color:var(--text-dim);letter-spacing:1px;white-space:nowrap;z-index:1}
+
+/* ═══ UNITS ═══ */
+.unit{position:absolute;border-radius:5px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:2;transition:all 0.4s cubic-bezier(0.16,1,0.3,1);border:1.5px solid}
+.unit-id{font-size:9px;font-weight:700;letter-spacing:0.5px;pointer-events:none;opacity:0.7;transition:opacity 0.2s;position:relative;z-index:4}
+.unit:hover .unit-id{opacity:1}
+.unit.vacant{background:var(--accent-bg);border-color:var(--accent-border)}
+.unit.vacant .unit-id{color:var(--accent)}
+.unit.vacant:hover{background:var(--accent-mid);border-color:rgba(45,212,160,0.5);box-shadow:0 0 20px rgba(45,212,160,0.1),0 4px 16px rgba(0,0,0,0.3);transform:scale(1.03)}
+/* Hover buffer */
+.unit.vacant::before{content:'';position:absolute;inset:-6px;z-index:-1}
+.unit.occupied{background:var(--occ-bg);border-color:var(--occ-border);cursor:default;opacity:0.5}
+.unit.occupied .unit-id{color:var(--occ);opacity:0.5}
+.unit.occupied:hover{box-shadow:none}
+.unit.sel-u{background:var(--sel-bg)!important;border-color:var(--sel-border)!important;box-shadow:0 0 24px rgba(79,196,240,0.15),0 0 0 3px rgba(79,196,240,0.08)}
+.unit.sel-u .unit-id{color:var(--sel)!important;opacity:1}
+
+/* Feature icons on units */
+.unit-feats{position:absolute;bottom:2px;right:3px;display:flex;gap:1px;pointer-events:none;opacity:0;transition:opacity 0.3s;z-index:5}
+.unit.show-feats .unit-feats{opacity:1}
+.unit-feat{font-size:8px;line-height:1}
+.unit.show-feats .unit-id{transform:translateY(-3px)}
+
+/* Dimmed/highlighted */
+.unit.dimmed,.unit.vacant.dimmed,.unit.occupied.dimmed{opacity:0.04!important;pointer-events:none!important;box-shadow:none!important;border-color:transparent!important;background:transparent!important;transform:none!important;z-index:0!important}
+.unit.dimmed .unit-id{opacity:0!important}
+.unit.dimmed .unit-feats{opacity:0!important}
+.unit.hl{box-shadow:0 0 18px rgba(45,212,160,0.2),0 0 0 2px rgba(45,212,160,0.12)!important;z-index:3}
+.unit.hl .unit-id{opacity:1!important}
+
+/* ═══ MAP UI ═══ */
+.legend{position:fixed;top:76px;left:230px;display:flex;gap:14px;z-index:90;transition:left 0.35s}
+.leg-i{display:flex;align-items:center;gap:5px;font-size:11px;font-weight:600;color:var(--text-sec)}
+.leg-d{width:10px;height:10px;border-radius:3px}
+.leg-d.v{background:var(--accent)}.leg-d.o{background:var(--occ);opacity:0.7}.leg-d.s{background:var(--sel)}
+.stats{position:fixed;bottom:22px;left:230px;display:flex;align-items:center;gap:16px;padding:10px 15px;background:var(--surface);border:1px solid var(--border);border-radius:11px;z-index:90;transition:left 0.35s}
+.stat{display:flex;flex-direction:column;gap:1px}
+.stat-n{font-size:17px;font-weight:700}.stat-n.g{color:var(--accent)}.stat-n.r{color:var(--occ)}
+.stat-l{font-size:10px;font-weight:600;color:var(--text-dim);letter-spacing:0.5px;text-transform:uppercase}
+.stat-d{width:1px;height:24px;background:var(--border)}
+.ctrls{position:fixed;bottom:22px;right:22px;display:flex;gap:4px;z-index:90}
+.ctrl{width:40px;height:40px;background:var(--surface);border:1px solid var(--border);border-radius:10px;color:var(--text-sec);font-size:18px;font-family:'DM Sans',sans-serif;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s}
+.ctrl:hover{background:var(--surface-2);color:var(--text)}
+.ctrl.rst{font-size:11px;width:auto;padding:0 13px;font-weight:600}
+
+/* ═══ TOOLTIP ═══ */
+.tip{position:fixed;padding:10px 14px;background:rgba(14,16,20,0.96);backdrop-filter:blur(16px);border:1px solid var(--border-light);border-radius:11px;pointer-events:none;opacity:0;transition:opacity 0.12s;z-index:600;white-space:nowrap;box-shadow:0 8px 32px rgba(0,0,0,0.4)}
+.tip.show{opacity:1}
+.tip-r{display:flex;align-items:center;gap:7px}
+.tip-d{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.tip-d.v{background:var(--accent);box-shadow:0 0 6px var(--accent)}.tip-d.o{background:var(--occ)}
+.tip-id{font-size:12px;font-weight:700;color:#fff}
+.tip-det{font-size:12px;color:var(--text-sec);margin-top:3px}
+.tip-feats{display:flex;gap:6px;margin-top:4px;font-size:11px;color:var(--text-sec)}
+.tip-price{font-size:13px;font-weight:700;color:var(--accent);margin-top:3px}
+.tip-occ{font-size:11px;font-weight:600;color:var(--occ);margin-top:3px}
+
+/* ═══ SIDE PANEL ═══ */
+.pnl-bg{position:fixed;inset:0;background:rgba(0,0,0,0.45);opacity:0;pointer-events:none;transition:opacity 0.3s;z-index:200}
+.pnl-bg.open{opacity:1;pointer-events:all}
+.pnl{position:fixed;top:0;right:0;width:400px;max-width:90vw;height:100vh;background:var(--surface);border-left:1px solid var(--border);z-index:210;transform:translateX(100%);transition:transform 0.45s cubic-bezier(0.16,1,0.3,1);display:flex;flex-direction:column}
+.pnl.open{transform:translateX(0)}
+.pnl-head{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border);flex-shrink:0}
+.pnl-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 11px;background:var(--accent-bg);border-radius:20px;font-size:10px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:1px}
+.pnl-bd{width:6px;height:6px;background:var(--accent);border-radius:50%;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
+.pnl-x{width:34px;height:34px;background:var(--surface-2);border:1px solid var(--border);border-radius:9px;color:var(--text-sec);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s;font-family:'DM Sans',sans-serif}
+.pnl-x:hover{background:var(--surface-3);color:var(--text)}
+.pnl-body{flex:1;overflow-y:auto;padding:0}
+
+/* Panel steps */
+.ps{display:none;padding:22px 20px;animation:fadeIn 0.3s ease}
+.ps.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* Panel step: unit info */
+.ps-uid{font-size:11px;font-weight:700;color:var(--text-dim);letter-spacing:2px;text-transform:uppercase;margin-bottom:4px}
+.ps-uname{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:#fff;margin-bottom:3px}
+.ps-udims{font-size:14px;color:var(--text-sec);margin-bottom:18px}
+.ps-feats{margin-bottom:18px}
+.ps-feat{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(38,40,48,0.7)}
+.ps-feat:last-child{border-bottom:none}
+.ps-fl{display:flex;align-items:center;gap:9px}
+.ps-fi{width:28px;height:28px;background:var(--surface-2);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+.ps-fn{font-size:13px;font-weight:500;color:var(--text)}
+.ps-fv{font-size:12px;font-weight:600;color:var(--text-sec)}
+.ps-fv.y{color:var(--accent)}
+.ps-pricing{background:var(--bg);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:12px}
+.ps-pl{font-size:12px;color:var(--text-sec);margin-bottom:3px}
+.ps-pa{font-size:26px;font-weight:700;color:#fff;letter-spacing:-0.5px}
+.ps-pp{font-size:13px;color:var(--text-sec);font-weight:400}
+.ps-pn{font-size:11px;color:var(--text-dim);margin-top:6px;line-height:1.4}
+
+/* Shared form elements */
+.f-label{font-size:10px;font-weight:600;color:var(--text-dim);letter-spacing:0.8px;text-transform:uppercase;margin-bottom:7px}
+.f-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
+.f-input{background:var(--surface-2);border:1.5px solid var(--border);border-radius:var(--rs);padding:11px 13px;font-size:13px;font-family:'DM Sans',sans-serif;color:var(--text);outline:none;transition:border-color 0.2s;width:100%}
+.f-input::placeholder{color:var(--text-dim)}
+.f-input:focus{border-color:var(--accent)}
+.f-block{margin-bottom:14px}
+
+/* Addon rows */
+.ao{display:flex;align-items:center;justify-content:space-between;background:var(--surface-2);border:1.5px solid var(--border);border-radius:var(--rs);padding:12px 13px;cursor:pointer;transition:all 0.2s;margin-bottom:6px}
+.ao:hover{background:var(--surface-3);border-color:var(--border-light)}
+.ao.on{background:var(--accent-bg);border-color:var(--accent)}
+.ao-l{display:flex;align-items:center;gap:10px}
+.ao-icon{font-size:15px}
+.ao-info{display:flex;flex-direction:column;gap:0}
+.ao-name{font-size:13px;font-weight:600;color:#fff}
+.ao-desc{font-size:11px;color:var(--text-sec)}
+.ao-r{display:flex;align-items:center;gap:9px}
+.ao-price{font-size:12px;font-weight:600;color:var(--text)}
+.ao-tgl{width:36px;height:20px;background:var(--surface-3);border-radius:10px;position:relative;transition:background 0.25s;flex-shrink:0}
+.ao.on .ao-tgl{background:var(--accent)}
+.ao-tgl::after{content:'';position:absolute;top:2px;left:2px;width:16px;height:16px;background:#fff;border-radius:50%;transition:transform 0.25s cubic-bezier(0.16,1,0.3,1)}
+.ao.on .ao-tgl::after{transform:translateX(16px)}
+
+/* ID scan */
+.id-scan{width:100%;padding:18px;background:var(--surface-2);border:1.5px dashed var(--border-light);border-radius:var(--r);cursor:pointer;transition:all 0.2s;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;margin-bottom:10px}
+.id-scan:hover{background:var(--surface-3);border-color:var(--accent-border)}
+.id-scan.done{border-style:solid;border-color:var(--accent);background:var(--accent-bg)}
+.id-scan-icon{font-size:24px}
+.id-scan-t{font-size:13px;font-weight:600;color:#fff}
+.id-scan.done .id-scan-t{color:var(--accent)}
+.id-scan-s{font-size:11px;color:var(--text-sec);line-height:1.3}
+.id-manual{display:block;text-align:center;font-size:11px;color:var(--text-dim);cursor:pointer;margin-bottom:14px;transition:color 0.2s}
+.id-manual:hover{color:var(--text-sec)}
+
+/* Pay buttons */
+.pay-row{display:flex;flex-direction:column;gap:7px;margin-bottom:14px}
+.pay-btn{width:100%;padding:13px;border-radius:var(--rs);border:none;font-size:13px;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;transition:all 0.2s}
+.pay-btn:hover{transform:translateY(-1px)}
+.pay-btn.apple{background:#fff;color:#000}
+.pay-btn.google{background:#1a1a1a;color:#fff;border:1px solid #333}
+.pay-div{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.pay-div-line{flex:1;height:1px;background:var(--border)}
+.pay-div-txt{font-size:10px;color:var(--text-dim);font-weight:600;letter-spacing:0.5px}
+
+/* Checkout summary */
+.sum{background:var(--surface-2);border:1px solid var(--border);border-radius:var(--r);padding:14px;margin-bottom:12px}
+.sum-row{display:flex;justify-content:space-between;padding:5px 0;font-size:12px}
+.sum-row .sl{color:var(--text-sec)}.sum-row .sv{color:var(--text);font-weight:600}
+.sum-row.total{border-top:1px solid var(--border);margin-top:5px;padding-top:10px}
+.sum-row.total .sl{color:var(--text);font-weight:600}.sum-row.total .sv{color:#fff;font-size:16px;font-weight:700}
+
+/* Checkbox */
+.ck{display:flex;align-items:flex-start;gap:9px;margin-bottom:10px;cursor:pointer}
+.ck-box{width:18px;height:18px;background:var(--surface-2);border:1.5px solid var(--border);border-radius:5px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px;color:transparent;transition:all 0.2s;margin-top:1px}
+.ck.on .ck-box{background:var(--accent);border-color:var(--accent);color:var(--bg)}
+.ck-txt{font-size:11px;color:var(--text-sec);line-height:1.4}
+.ck-txt a{color:var(--accent);text-decoration:none}
+
+/* Panel footer */
+.pnl-foot{padding:14px 20px;border-top:1px solid var(--border);flex-shrink:0}
+.btn-main{width:100%;padding:14px;background:var(--accent);color:var(--bg);border:none;border-radius:var(--rs);font-size:14px;font-weight:700;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all 0.2s}
+.btn-main:hover{filter:brightness(1.1);transform:translateY(-1px)}
+
+/* Progress dots */
+.pnl-progress{display:flex;align-items:center;gap:6px}
+.pp-dot{width:8px;height:8px;border-radius:50%;background:var(--surface-3);transition:all 0.3s}
+.pp-dot.done{background:var(--accent)}
+.pp-dot.cur{background:var(--accent);box-shadow:0 0 8px rgba(45,212,160,0.4);width:10px;height:10px}
+.pp-step{font-size:10px;font-weight:600;color:var(--text-dim);margin-left:6px;letter-spacing:0.3px}
+
+/* Confirmation */
+.conf{text-align:center;padding:24px 8px}
+.conf-icon{font-size:44px;margin-bottom:14px}
+.conf-title{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:#fff;margin-bottom:6px}
+.conf-sub{font-size:13px;color:var(--text-sec);line-height:1.5;margin-bottom:20px}
+.conf-dets{background:var(--bg);border:1px solid var(--border);border-radius:var(--r);padding:16px;text-align:left;margin-bottom:16px}
+.conf-row{display:flex;justify-content:space-between;padding:7px 0;font-size:12px;border-bottom:1px solid rgba(38,40,48,0.5)}
+.conf-row:last-child{border-bottom:none}
+.conf-row .cl{color:var(--text-sec)}.conf-row .cv{color:#fff;font-weight:600}
+.conf-actions{display:flex;gap:8px}
+.btn-o{flex:1;padding:11px;background:none;border:1.5px solid var(--border);border-radius:var(--rs);color:var(--text);font-size:12px;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:5px}
+.btn-o:hover{border-color:var(--border-light);background:var(--surface-2)}
+
+@keyframes unitIn{from{opacity:0;transform:scale(0.92)}to{opacity:1;transform:scale(1)}}
+@media(max-width:480px){.tb-loc,.tb-sep{display:none}.fb{width:180px}.legend,.stats{left:200px}}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="tb-left">
+    <div class="brand"><img src="moovein.png" alt="Moove In" style="width:32px;height:32px;object-fit:cover"></div>
+    <span class="brand-n">Moove In</span>
+    <div class="tb-sep"></div>
+    <span class="tb-loc">Moove In · Ground Floor</span>
+  </div>
+  <div class="tb-right"></div>
+</div>
+
+<!-- FILTER BAR -->
+<div class="fb" id="fb">
+  <div class="fb-head">
+    <span class="fb-title">Filter Units</span>
+    <div class="fb-btns"><button class="fb-btn" onclick="clearFilters()">Clear</button><button class="fb-btn" onclick="toggleFB()" style="font-size:13px">✕</button></div>
+  </div>
+  <div class="fb-section">
+    <div class="fb-label">Unit Size</div>
+    <div class="fb-opts" id="fbOpts"></div>
+  </div>
+  <div class="fb-legend">
+    <div class="fb-label">Feature Icons</div>
+    <div class="fb-leg-items">
+      <div class="fb-leg-item"><span class="fb-leg-icon">❄️</span>Climate</div>
+      <div class="fb-leg-item"><span class="fb-leg-icon">🚗</span>Drive-up</div>
+      <div class="fb-leg-item"><span class="fb-leg-icon">🏠</span>Exterior</div>
+      <div class="fb-leg-item"><span class="fb-leg-icon">🔒</span>Smart Lock</div>
+      <div class="fb-leg-item"><span class="fb-leg-icon">⚡</span>Power</div>
+      <div class="fb-leg-item"><span class="fb-leg-icon">🚨</span>Alarm</div>
+    </div>
+  </div>
+</div>
+<button class="fb-tgl-btn" id="fbTgl" onclick="toggleFB()">☰</button>
+
+<!-- LEGEND -->
+<div class="legend" id="legend">
+  <div class="leg-i"><div class="leg-d v"></div>Vacant</div>
+  <div class="leg-i"><div class="leg-d o"></div>Occupied</div>
+  <div class="leg-i"><div class="leg-d s"></div>Selected</div>
+</div>
+
+<!-- STATS -->
+<div class="stats" id="stats">
+  <div class="stat"><span class="stat-n g" id="statV">0</span><span class="stat-l">Vacant</span></div>
+  <div class="stat-d"></div>
+  <div class="stat"><span class="stat-n r" id="statO">0</span><span class="stat-l">Occupied</span></div>
+</div>
+
+<!-- CONTROLS -->
+<div class="ctrls">
+  <button class="ctrl rst" onclick="resetView()">Reset</button>
+  <button class="ctrl" onclick="zoomMap(-1)">−</button>
+  <button class="ctrl" onclick="zoomMap(1)">+</button>
+</div>
+
+<!-- MAP -->
+<div class="map-wrap" id="mapWrap">
+  <div class="map-t" id="mapT">
+    <div class="fac-w">
+      <div class="facility" id="facility"><div class="floor"></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- TOOLTIP -->
+<div class="tip" id="tip"><div class="tip-r"><div class="tip-d" id="tipD"></div><span class="tip-id" id="tipId"></span></div><div class="tip-det" id="tipDet"></div><div class="tip-feats" id="tipFeats"></div><div id="tipPW"></div></div>
+
+<!-- PANEL BG -->
+<div class="pnl-bg" id="pnlBg" onclick="closePanel()"></div>
+
+<!-- SIDE PANEL -->
+<div class="pnl" id="pnl">
+  <div class="pnl-head">
+    <div class="pnl-progress" id="pnlProgress"></div>
+    <button class="pnl-x" onclick="closePanel()">✕</button>
+  </div>
+  <div class="pnl-body">
+
+    <!-- Step 1: Unit Info -->
+    <div class="ps active" id="ps1">
+      <div class="ps-uid" id="pUid"></div>
+      <div class="ps-uname" id="pName"></div>
+      <div class="ps-udims" id="pDims"></div>
+      <div class="ps-feats" id="pFeats"></div>
+      <div class="ps-pricing">
+        <div class="ps-pl">Monthly rate</div>
+        <div class="ps-pa" id="pPrice">$149<span class="ps-pp"> /mo</span></div>
+        <div class="ps-pn">No deposit · Cancel anytime · First month prorated</div>
+      </div>
+    </div>
+
+    <!-- Step 2: Protection & Add-ons -->
+    <div class="ps" id="ps2">
+      <div class="f-label" style="margin-bottom:10px">Protection & Add-ons</div>
+      <div class="ao" onclick="this.classList.toggle('on')" data-price="12" data-label="Tenant Insurance">
+        <div class="ao-l"><span class="ao-icon">🛡️</span><div class="ao-info"><span class="ao-name">Tenant Insurance</span><span class="ao-desc">$5,000 coverage · Water, fire, theft</span></div></div>
+        <div class="ao-r"><span class="ao-price">+$12/mo</span><div class="ao-tgl"></div></div>
+      </div>
+      <div class="ao" onclick="this.classList.toggle('on')" data-price="22" data-label="Premium Insurance">
+        <div class="ao-l"><span class="ao-icon">🛡️</span><div class="ao-info"><span class="ao-name">Premium Insurance</span><span class="ao-desc">$15,000 coverage · All perils</span></div></div>
+        <div class="ao-r"><span class="ao-price">+$22/mo</span><div class="ao-tgl"></div></div>
+      </div>
+      <div class="ao" onclick="this.classList.toggle('on')" data-price="8" data-label="Smart Lock">
+        <div class="ao-l"><span class="ao-icon">🔐</span><div class="ao-info"><span class="ao-name">Smart Lock</span><span class="ao-desc">Keyless entry via app · Activity log</span></div></div>
+        <div class="ao-r"><span class="ao-price">+$8/mo</span><div class="ao-tgl"></div></div>
+      </div>
+      <div class="ao" onclick="this.classList.toggle('on')" data-price="0" data-label="Moving Kit" data-once="45">
+        <div class="ao-l"><span class="ao-icon">📦</span><div class="ao-info"><span class="ao-name">Moving Supplies Kit</span><span class="ao-desc">20 boxes, tape, bubble wrap</span></div></div>
+        <div class="ao-r"><span class="ao-price">$45 once</span><div class="ao-tgl"></div></div>
+      </div>
+      <div class="ao" onclick="this.classList.toggle('on')" data-price="0" data-label="Shelving" data-once="75">
+        <div class="ao-l"><span class="ao-icon">🗄️</span><div class="ao-info"><span class="ao-name">Shelving Package</span><span class="ao-desc">Pre-installed industrial shelving</span></div></div>
+        <div class="ao-r"><span class="ao-price">$75 once</span><div class="ao-tgl"></div></div>
+      </div>
+    </div>
+
+    <!-- Step 3: Lease Agreement -->
+    <div class="ps" id="ps3">
+      <div class="f-label" style="margin-bottom:10px">Review & Sign Lease</div>
+      <div style="background:var(--bg);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:14px;max-height:260px;overflow-y:auto">
+        <div style="font-size:13px;font-weight:700;color:#fff;margin-bottom:10px">Self-Storage Rental Agreement</div>
+        <div style="font-size:11px;color:var(--text-sec);line-height:1.7">
+          <p style="margin-bottom:8px"><strong style="color:var(--text)">1. PARTIES.</strong> This Rental Agreement ("Agreement") is entered into between Moove In Self Storage LLC ("Facility") and the Tenant identified in the reservation details.</p>
+          <p style="margin-bottom:8px"><strong style="color:var(--text)">2. UNIT & TERM.</strong> Facility agrees to rent the storage unit identified in Step 1 on a month-to-month basis, beginning on the selected move-in date. Either party may terminate with 30 days written notice.</p>
+          <p style="margin-bottom:8px"><strong style="color:var(--text)">3. RENT & PAYMENT.</strong> Tenant agrees to pay the monthly rental rate plus any selected add-on fees. Rent is due on the 1st of each month. A late fee of $20 applies after the 5th.</p>
+          <p style="margin-bottom:8px"><strong style="color:var(--text)">4. USE OF UNIT.</strong> The unit shall be used solely for storage of personal property. Tenant shall not store hazardous materials, perishables, live animals, or any illegal substances.</p>
+          <p style="margin-bottom:8px"><strong style="color:var(--text)">5. ACCESS.</strong> Tenant may access the unit during facility operating hours or 24/7 if enrolled in the smart access program. Facility reserves the right to restrict access for non-payment.</p>
+          <p style="margin-bottom:8px"><strong style="color:var(--text)">6. INSURANCE.</strong> Tenant is responsible for insuring stored property. Facility provides no coverage unless Tenant has purchased a Tenant Insurance add-on.</p>
+          <p style="margin-bottom:8px"><strong style="color:var(--text)">7. LIABILITY.</strong> Facility's liability is limited to the extent permitted by law. Facility is not liable for loss or damage caused by theft, fire, water, weather, insects, or acts of God.</p>
+          <p style="margin-bottom:8px"><strong style="color:var(--text)">8. LIEN.</strong> Facility shall have a lien on all personal property stored in the unit for unpaid rent and fees, enforceable under applicable state lien laws.</p>
+          <p><strong style="color:var(--text)">9. GOVERNING LAW.</strong> This Agreement shall be governed by the laws of the state in which the Facility is located.</p>
+        </div>
+      </div>
+      <div style="background:var(--surface-2);border:1px solid var(--border);border-radius:var(--rs);padding:14px;margin-bottom:14px">
+        <div class="f-label" style="margin-bottom:8px">Your Signature</div>
+        <div style="position:relative">
+          <canvas id="sigCanvas" width="340" height="80" style="width:100%;height:80px;background:var(--bg);border:1.5px solid var(--border);border-radius:8px;cursor:crosshair;display:block"></canvas>
+          <button onclick="clearSig()" style="position:absolute;top:6px;right:6px;background:var(--surface-3);border:1px solid var(--border);border-radius:5px;color:var(--text-dim);font-size:10px;font-weight:600;padding:3px 8px;cursor:pointer;font-family:'DM Sans',sans-serif">Clear</button>
+        </div>
+        <div style="font-size:10px;color:var(--text-dim);margin-top:6px">Draw your signature above to sign the lease agreement</div>
+      </div>
+      <div class="ck" onclick="this.classList.toggle('on')"><div class="ck-box">✓</div><div class="ck-txt">I have read and agree to the <a href="#">Rental Agreement</a> terms above</div></div>
+      <div class="ck" onclick="this.classList.toggle('on')"><div class="ck-box">✓</div><div class="ck-txt">I understand this creates a binding month-to-month rental obligation</div></div>
+    </div>
+
+    <!-- Step 4: ID Verification -->
+    <div class="ps" id="ps4">
+      <div class="f-label" style="margin-bottom:10px">Verify Your Identity</div>
+      <div class="id-scan" id="idScan" onclick="scanId()">
+        <span class="id-scan-icon">📷</span>
+        <span class="id-scan-t">Scan Your Driver's License</span>
+        <span class="id-scan-s">Take a photo of the front of your license.<br>We'll auto-fill your details.</span>
+      </div>
+      <span class="id-manual" onclick="showIdForm()">Or enter information manually</span>
+      <div id="idForm" style="display:none">
+        <div class="f-block"><div class="f-label">Personal Info</div><div class="f-row"><input class="f-input" placeholder="First name" id="fname"><input class="f-input" placeholder="Last name" id="lname"></div><input class="f-input" placeholder="Date of birth (MM/DD/YYYY)" style="margin-bottom:8px"><input class="f-input" placeholder="Driver's license #"></div>
+        <div class="f-block"><div class="f-label">Address</div><input class="f-input" placeholder="Street address" style="margin-bottom:8px"><div class="f-row"><input class="f-input" placeholder="City"><input class="f-input" placeholder="State"></div><input class="f-input" placeholder="ZIP code"></div>
+        <div class="f-block"><div class="f-label">Contact</div><input class="f-input" placeholder="Email address" style="margin-bottom:8px"><input class="f-input" placeholder="Phone number"></div>
+      </div>
+    </div>
+
+    <!-- Step 5: Move-in Date -->
+    <div class="ps" id="ps5">
+      <div class="f-label" style="margin-bottom:10px">Select Move-in Date</div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px" id="psDates"></div>
+    </div>
+
+    <!-- Step 6: Payment -->
+    <div class="ps" id="ps6">
+      <div class="f-label" style="margin-bottom:10px">Payment</div>
+      <div class="pay-row">
+        <button class="pay-btn apple" onclick="expressPay()"><span style="font-size:16px;font-family:-apple-system"></span> Pay</button>
+        <button class="pay-btn google" onclick="expressPay()"><svg width="16" height="16" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg> Google Pay</button>
+      </div>
+      <div class="pay-div"><div class="pay-div-line"></div><span class="pay-div-txt">OR PAY WITH CARD</span><div class="pay-div-line"></div></div>
+      <div class="f-block">
+        <input class="f-input" placeholder="Card number" style="margin-bottom:8px;letter-spacing:1.5px">
+        <div class="f-row"><input class="f-input" placeholder="MM / YY"><input class="f-input" placeholder="CVC"></div>
+        <input class="f-input" placeholder="Name on card">
+      </div>
+      <div class="sum" id="pSum"></div>
+      <div class="ck" onclick="this.classList.toggle('on')"><div class="ck-box">✓</div><div class="ck-txt">I agree to the <a href="#">Rental Agreement</a> and <a href="#">Terms of Service</a></div></div>
+      <div class="ck" onclick="this.classList.toggle('on')"><div class="ck-box">✓</div><div class="ck-txt">I authorize recurring monthly charges until cancellation</div></div>
+      <div class="ck" onclick="this.classList.toggle('on')"><div class="ck-box">✓</div><div class="ck-txt">I acknowledge the <a href="#">facility rules</a> and <a href="#">insurance terms</a></div></div>
+    </div>
+
+    <!-- Step 7: Confirmation -->
+    <div class="ps" id="ps7">
+      <div class="conf">
+        <div class="conf-icon">🎉</div>
+        <div class="conf-title">Space Reserved!</div>
+        <div class="conf-sub">Your unit is ready. Here's everything you need for move-in day.</div>
+        <div class="conf-dets">
+          <div class="conf-row"><span class="cl">Unit</span><span class="cv" id="confUnit">—</span></div>
+          <div class="conf-row"><span class="cl">Move-in</span><span class="cv" id="confDate">—</span></div>
+          <div class="conf-row"><span class="cl">Access Code</span><span class="cv">7291</span></div>
+          <div class="conf-row"><span class="cl">Monthly</span><span class="cv" id="confPrice">—</span></div>
+        </div>
+        <div class="conf-actions">
+          <button class="btn-o" onclick="closePanel()">🗺️ Back to Map</button>
+          <button class="btn-o">📱 Download App</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="pnl-foot" id="pnlFoot">
+    <button class="btn-main" id="pnlBtn" onclick="nextStep()">Reserve This Unit</button>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════
+//  DATA
+// ══════════════════════════════
+const TYPES={
+  xs:{name:'Locker',dims:"3'×4'",sqft:'12 sq ft',price:39,ceiling:'6 ft',access:'Walk-in'},
+  sm:{name:'Compact',dims:"5'×5'",sqft:'25 sq ft',price:69,ceiling:'8 ft',access:'Roll-up'},
+  md:{name:'Standard',dims:"5'×10'",sqft:'50 sq ft',price:109,ceiling:'9 ft',access:'Roll-up'},
+  lg:{name:'Large',dims:"10'×10'",sqft:'100 sq ft',price:149,ceiling:'9 ft',access:'Roll-up'},
+  xl:{name:'Extra Large',dims:"10'×20'",sqft:'200 sq ft',price:229,ceiling:'10 ft',access:'Drive-up'}
+};
+
+// Per-unit feature flags
+const U=[
+{id:'039',type:'xs',x:47,y:215,w:33,h:30,occ:1,climate:1},
+{id:'038',type:'md',x:94,y:215,w:44,h:40},
+{id:'037',type:'lg',x:141,y:215,w:44,h:40,occ:1},
+{id:'040',type:'sm',x:47,y:258,w:44,h:34,smartlock:1},
+{id:'035',type:'md',x:94,y:258,w:44,h:40,smartlock:1,power:1},
+{id:'036',type:'sm',x:188,y:215,w:44,h:34,climate:1},
+{id:'007',type:'xl',x:235,y:215,w:44,h:40,occ:1,power:1,driveup:1},
+{id:'041',type:'md',x:47,y:301,w:44,h:40},
+{id:'033',type:'md',x:94,y:301,w:44,h:40,climate:1,alarm:1},
+{id:'034',type:'sm',x:188,y:258,w:44,h:34},
+{id:'009',type:'xs',x:235,y:258,w:33,h:30,climate:1},
+{id:'043',type:'lg',x:0,y:344,w:44,h:40},
+{id:'042',type:'xl',x:47,y:344,w:44,h:40,occ:1,climate:1,power:1,driveup:1},
+{id:'031',type:'md',x:94,y:344,w:44,h:40},
+{id:'032',type:'sm',x:188,y:301,w:44,h:34,occ:1},
+{id:'011',type:'sm',x:235,y:301,w:44,h:34,alarm:1},
+{id:'045',type:'sm',x:0,y:387,w:44,h:34,climate:1,smartlock:1},
+{id:'044',type:'md',x:47,y:387,w:44,h:40,alarm:1},
+{id:'029',type:'sm',x:94,y:387,w:44,h:34},
+{id:'030',type:'lg',x:188,y:344,w:44,h:40,climate:1,smartlock:1},
+{id:'013',type:'md',x:235,y:344,w:44,h:40,occ:1},
+{id:'047',type:'lg',x:0,y:430,w:44,h:40,occ:1},
+{id:'046',type:'lg',x:47,y:430,w:44,h:40},
+{id:'027',type:'xs',x:94,y:430,w:33,h:30,occ:1,climate:1},
+{id:'028',type:'md',x:188,y:387,w:44,h:40,power:1},
+{id:'015',type:'sm',x:235,y:387,w:44,h:34,climate:1,smartlock:1},
+{id:'049',type:'xl',x:0,y:473,w:44,h:40,power:1,driveup:1},
+{id:'048',type:'md',x:47,y:473,w:44,h:40,climate:1},
+{id:'133',type:'md',x:94,y:473,w:44,h:40,power:1},
+{id:'135',type:'md',x:141,y:473,w:44,h:40,climate:1,smartlock:1},
+{id:'025',type:'sm',x:188,y:430,w:44,h:34,smartlock:1},
+{id:'024',type:'xs',x:235,y:430,w:33,h:30,climate:1},
+{id:'022',type:'xs',x:282,y:430,w:33,h:30,occ:1,alarm:1},
+{id:'020',type:'xl',x:329,y:430,w:44,h:40,smartlock:1,driveup:1},
+{id:'051',type:'xl',x:0,y:516,w:44,h:40,climate:1,driveup:1},
+{id:'050',type:'lg',x:47,y:516,w:44,h:40,smartlock:1},
+{id:'131',type:'md',x:94,y:516,w:44,h:40},
+{id:'132',type:'lg',x:141,y:516,w:44,h:40,occ:1,climate:1,alarm:1},
+{id:'023',type:'lg',x:282,y:473,w:44,h:40},
+{id:'021',type:'md',x:329,y:473,w:44,h:40,climate:1,power:1},
+{id:'053',type:'md',x:0,y:559,w:44,h:40},
+{id:'052',type:'sm',x:47,y:559,w:44,h:34,occ:1},
+{id:'129',type:'md',x:94,y:559,w:44,h:40,climate:1},
+{id:'136',type:'md',x:141,y:559,w:44,h:40},
+{id:'054',type:'md',x:47,y:602,w:44,h:40,climate:1},
+{id:'127',type:'xs',x:94,y:602,w:33,h:30,occ:1},
+{id:'130',type:'md',x:141,y:602,w:44,h:40,occ:1,smartlock:1},
+{id:'138',type:'sm',x:188,y:602,w:44,h:34,climate:1},
+{id:'137',type:'md',x:235,y:559,w:44,h:40,occ:1},
+{id:'139',type:'md',x:235,y:602,w:44,h:40},
+{id:'055',type:'sm',x:0,y:645,w:44,h:34,smartlock:1,alarm:1},
+{id:'128',type:'xs',x:141,y:645,w:33,h:30},
+{id:'140',type:'xl',x:188,y:645,w:44,h:40,smartlock:1,power:1,driveup:1},
+{id:'141',type:'md',x:282,y:645,w:44,h:40,climate:1},
+{id:'154',type:'xs',x:329,y:645,w:33,h:30,power:1,alarm:1},
+{id:'057',type:'xl',x:0,y:688,w:44,h:40,occ:1,climate:1,driveup:1},
+{id:'056',type:'md',x:47,y:688,w:44,h:40,power:1},
+{id:'125',type:'lg',x:94,y:688,w:44,h:40,smartlock:1},
+{id:'126',type:'sm',x:141,y:688,w:44,h:34,climate:1,power:1},
+{id:'142',type:'md',x:188,y:688,w:44,h:40,occ:1},
+{id:'143',type:'xl',x:282,y:688,w:44,h:40,occ:1,alarm:1,driveup:1},
+{id:'152',type:'sm',x:329,y:688,w:44,h:34,occ:1},
+{id:'059',type:'lg',x:0,y:731,w:44,h:40},
+{id:'058',type:'md',x:47,y:731,w:44,h:40},
+{id:'123',type:'md',x:94,y:731,w:44,h:40,climate:1},
+{id:'124',type:'lg',x:141,y:731,w:44,h:40},
+{id:'144',type:'sm',x:188,y:731,w:44,h:34,climate:1},
+{id:'156',type:'lg',x:282,y:731,w:44,h:40,occ:1,climate:1},
+{id:'063',type:'lg',x:47,y:774,w:44,h:40,climate:1,power:1},
+{id:'062',type:'xs',x:94,y:774,w:33,h:30,occ:1},
+{id:'121',type:'xs',x:141,y:774,w:33,h:30,alarm:1},
+{id:'122',type:'sm',x:188,y:774,w:44,h:34,occ:1},
+{id:'145',type:'lg',x:235,y:774,w:44,h:40,smartlock:1},
+{id:'061',type:'md',x:0,y:817,w:44,h:40},
+{id:'060',type:'md',x:47,y:817,w:44,h:40,climate:1,smartlock:1},
+{id:'119',type:'lg',x:94,y:817,w:44,h:40,power:1},
+{id:'120',type:'lg',x:141,y:817,w:44,h:40,climate:1,smartlock:1},
+{id:'146',type:'sm',x:188,y:817,w:44,h:34},
+{id:'066',type:'xl',x:47,y:860,w:44,h:40,climate:1,alarm:1,driveup:1},
+{id:'091',type:'md',x:94,y:860,w:44,h:40,occ:1,power:1},
+{id:'092',type:'lg',x:141,y:860,w:44,h:40,occ:1},
+{id:'095',type:'md',x:188,y:860,w:44,h:40,smartlock:1},
+{id:'147',type:'lg',x:235,y:860,w:44,h:40,occ:1,climate:1,power:1},
+{id:'148',type:'xl',x:282,y:860,w:44,h:40,driveup:1},
+{id:'149',type:'md',x:329,y:860,w:44,h:40},
+{id:'064',type:'md',x:0,y:903,w:44,h:40},
+{id:'065',type:'xl',x:47,y:903,w:44,h:40,occ:1,smartlock:1,driveup:1},
+{id:'117',type:'md',x:235,y:903,w:44,h:40,occ:1,climate:1},
+{id:'067',type:'xl',x:0,y:946,w:44,h:40,occ:1,driveup:1},
+{id:'068',type:'md',x:47,y:989,w:44,h:40},
+{id:'089',type:'lg',x:94,y:989,w:44,h:40},
+{id:'090',type:'xl',x:141,y:989,w:44,h:40,climate:1,smartlock:1,driveup:1},
+{id:'093',type:'lg',x:188,y:989,w:44,h:40,climate:1},
+{id:'094',type:'md',x:235,y:989,w:44,h:40},
+{id:'096',type:'xl',x:282,y:989,w:44,h:40,climate:1,driveup:1},
+{id:'118',type:'md',x:329,y:989,w:44,h:40},
+{id:'115',type:'md',x:376,y:989,w:44,h:40,smartlock:1},
+{id:'116',type:'md',x:329,y:946,w:44,h:40},
+{id:'197',type:'md',x:376,y:946,w:44,h:40,occ:1},
+{id:'069',type:'md',x:0,y:1032,w:44,h:40,climate:1},
+{id:'070',type:'lg',x:47,y:1032,w:44,h:40,smartlock:1,power:1},
+{id:'087',type:'lg',x:94,y:1032,w:44,h:40,occ:1,climate:1},
+{id:'088',type:'sm',x:141,y:1032,w:44,h:34,alarm:1},
+{id:'097',type:'md',x:188,y:1032,w:44,h:40,occ:1},
+{id:'098',type:'md',x:282,y:1032,w:44,h:40,power:1},
+{id:'114',type:'xs',x:329,y:1032,w:33,h:30,climate:1},
+{id:'071',type:'lg',x:0,y:1075,w:44,h:40},
+{id:'072',type:'md',x:47,y:1075,w:44,h:40,occ:1,climate:1},
+{id:'085',type:'md',x:94,y:1075,w:44,h:40,smartlock:1},
+{id:'086',type:'xl',x:141,y:1075,w:44,h:40,driveup:1},
+{id:'099',type:'sm',x:188,y:1075,w:44,h:34,climate:1,alarm:1},
+{id:'100',type:'md',x:235,y:1075,w:44,h:40,smartlock:1},
+{id:'113',type:'sm',x:329,y:1075,w:44,h:34},
+{id:'112',type:'md',x:376,y:1032,w:44,h:40,occ:1,power:1},
+{id:'073',type:'md',x:0,y:1118,w:44,h:40},
+{id:'074',type:'md',x:47,y:1118,w:44,h:40},
+{id:'083',type:'lg',x:94,y:1118,w:44,h:40},
+{id:'084',type:'xl',x:141,y:1118,w:44,h:40,climate:1,power:1,driveup:1},
+{id:'101',type:'sm',x:188,y:1118,w:44,h:34},
+{id:'102',type:'md',x:235,y:1118,w:44,h:40,occ:1,climate:1},
+{id:'111',type:'xl',x:282,y:1118,w:44,h:40,climate:1,driveup:1},
+{id:'110',type:'md',x:376,y:1118,w:44,h:40,smartlock:1,alarm:1},
+{id:'077',type:'sm',x:0,y:1161,w:44,h:34,occ:1,power:1,alarm:1},
+{id:'076',type:'md',x:47,y:1161,w:44,h:40},
+{id:'075',type:'sm',x:94,y:1161,w:44,h:34,climate:1,smartlock:1},
+{id:'081',type:'xl',x:141,y:1161,w:44,h:40,climate:1,driveup:1},
+{id:'082',type:'md',x:188,y:1161,w:44,h:40,occ:1},
+{id:'103',type:'xs',x:235,y:1161,w:33,h:30},
+{id:'104',type:'md',x:282,y:1161,w:44,h:40,occ:1},
+{id:'107',type:'md',x:329,y:1161,w:44,h:40,occ:1},
+{id:'108',type:'sm',x:376,y:1161,w:44,h:34,climate:1},
+{id:'078',type:'md',x:0,y:1204,w:44,h:40,occ:1,climate:1},
+{id:'079',type:'md',x:47,y:1204,w:44,h:40},
+{id:'080',type:'lg',x:94,y:1204,w:44,h:40,smartlock:1},
+{id:'105',type:'md',x:188,y:1204,w:44,h:40,climate:1,smartlock:1,power:1},
+{id:'106',type:'sm',x:235,y:1204,w:44,h:34},
+{id:'109',type:'xl',x:329,y:1204,w:44,h:40,driveup:1},
+{id:'001',type:'sm',x:188,y:172,w:44,h:34},
+{id:'002',type:'lg',x:235,y:172,w:44,h:40,occ:1},
+{id:'003',type:'md',x:282,y:172,w:44,h:40,climate:1},
+{id:'004',type:'lg',x:329,y:172,w:44,h:40},
+{id:'300',type:'sm',x:376,y:172,w:44,h:34,climate:1,smartlock:1},
+{id:'005',type:'md',x:329,y:215,w:44,h:40,smartlock:1},
+{id:'299',type:'sm',x:376,y:215,w:44,h:34,occ:1},
+{id:'006',type:'sm',x:329,y:258,w:44,h:34,climate:1},
+{id:'298',type:'sm',x:376,y:301,w:44,h:34},
+{id:'008',type:'xl',x:376,y:258,w:44,h:40,driveup:1},
+{id:'010',type:'lg',x:329,y:301,w:44,h:40,smartlock:1},
+{id:'012',type:'md',x:329,y:344,w:44,h:40,occ:1,climate:1},
+{id:'296',type:'md',x:376,y:344,w:44,h:40},
+{id:'014',type:'md',x:329,y:387,w:44,h:40,power:1},
+{id:'294',type:'md',x:376,y:387,w:44,h:40,climate:1,power:1},
+{id:'016',type:'sm',x:282,y:516,w:44,h:34},
+{id:'292',type:'md',x:423,y:430,w:44,h:40,occ:1},
+{id:'018',type:'md',x:376,y:473,w:44,h:40,climate:1},
+{id:'290',type:'md',x:376,y:430,w:44,h:40,smartlock:1},
+{id:'019',type:'md',x:376,y:516,w:44,h:40},
+{id:'376',type:'lg',x:470,y:430,w:44,h:40,ext:1},
+{id:'287',type:'xs',x:423,y:473,w:33,h:30,occ:1,power:1},
+{id:'286',type:'xs',x:470,y:473,w:33,h:30,occ:1,alarm:1},
+{id:'283',type:'md',x:517,y:473,w:44,h:40},
+{id:'228',type:'xs',x:423,y:516,w:33,h:30,climate:1},
+{id:'285',type:'xs',x:470,y:516,w:33,h:30,climate:1,smartlock:1},
+{id:'284',type:'xs',x:517,y:516,w:33,h:30},
+{id:'282',type:'sm',x:517,y:559,w:44,h:34,occ:1,climate:1},
+{id:'279',type:'xl',x:470,y:559,w:44,h:40,climate:1,driveup:1},
+{id:'272',type:'xl',x:470,y:602,w:44,h:40,occ:1,driveup:1},
+{id:'157',type:'xl',x:376,y:602,w:44,h:40,occ:1,driveup:1},
+{id:'159',type:'lg',x:423,y:602,w:44,h:40,climate:1},
+{id:'155',type:'sm',x:376,y:688,w:44,h:34,smartlock:1},
+{id:'158',type:'md',x:423,y:688,w:44,h:40},
+{id:'161',type:'sm',x:423,y:645,w:44,h:34,power:1},
+{id:'163',type:'xl',x:470,y:645,w:44,h:40,driveup:1},
+{id:'153',type:'lg',x:376,y:731,w:44,h:40,climate:1},
+{id:'165',type:'xl',x:423,y:731,w:44,h:40,climate:1,smartlock:1,alarm:1,driveup:1},
+{id:'164',type:'md',x:470,y:688,w:44,h:40},
+{id:'162',type:'lg',x:470,y:731,w:44,h:40,occ:1,climate:1},
+{id:'151',type:'lg',x:376,y:774,w:44,h:40},
+{id:'167',type:'xl',x:423,y:774,w:44,h:40,occ:1,driveup:1},
+{id:'169',type:'sm',x:423,y:817,w:44,h:34,occ:1},
+{id:'150',type:'lg',x:376,y:817,w:44,h:40,climate:1,smartlock:1},
+{id:'170',type:'xl',x:423,y:860,w:44,h:40,smartlock:1,driveup:1},
+{id:'171',type:'xl',x:517,y:774,w:44,h:40,climate:1,driveup:1},
+{id:'173',type:'sm',x:564,y:774,w:44,h:34},
+{id:'175',type:'md',x:611,y:774,w:44,h:40,smartlock:1,power:1},
+{id:'179',type:'xs',x:658,y:774,w:33,h:30},
+{id:'181',type:'md',x:705,y:774,w:44,h:40},
+{id:'172',type:'sm',x:517,y:817,w:44,h:34,occ:1},
+{id:'174',type:'md',x:564,y:817,w:44,h:40,climate:1},
+{id:'176',type:'sm',x:611,y:817,w:44,h:34,alarm:1},
+{id:'177',type:'lg',x:658,y:817,w:44,h:40,occ:1,climate:1},
+{id:'178',type:'sm',x:705,y:817,w:44,h:34},
+{id:'180',type:'sm',x:752,y:774,w:44,h:34,climate:1,smartlock:1},
+{id:'198',type:'md',x:517,y:860,w:44,h:40,climate:1,alarm:1},
+{id:'199',type:'lg',x:564,y:860,w:44,h:40},
+{id:'200',type:'md',x:611,y:860,w:44,h:40,smartlock:1},
+{id:'201',type:'xl',x:658,y:860,w:44,h:40,climate:1,driveup:1},
+{id:'202',type:'md',x:658,y:903,w:44,h:40,occ:1},
+{id:'190',type:'md',x:705,y:860,w:44,h:40,smartlock:1},
+{id:'195',type:'lg',x:517,y:903,w:44,h:40,occ:1,climate:1,smartlock:1},
+{id:'193',type:'xl',x:564,y:903,w:44,h:40,driveup:1},
+{id:'191',type:'md',x:611,y:903,w:44,h:40},
+{id:'187',type:'md',x:705,y:903,w:44,h:40,occ:1,alarm:1},
+{id:'196',type:'xs',x:517,y:946,w:33,h:30,power:1},
+{id:'194',type:'lg',x:564,y:946,w:44,h:40},
+{id:'192',type:'sm',x:611,y:946,w:44,h:34,occ:1,climate:1},
+{id:'189',type:'md',x:658,y:946,w:44,h:40,climate:1,power:1},
+{id:'188',type:'lg',x:705,y:946,w:44,h:40},
+{id:'186',type:'md',x:752,y:946,w:44,h:40,climate:1},
+{id:'203',type:'md',x:752,y:903,w:44,h:40,power:1},
+{id:'204',type:'sm',x:752,y:989,w:44,h:34,climate:1},
+{id:'205',type:'lg',x:752,y:1032,w:44,h:40,smartlock:1},
+{id:'206',type:'md',x:752,y:1075,w:44,h:40},
+{id:'210',type:'lg',x:517,y:1118,w:44,h:40,climate:1,smartlock:1,power:1},
+{id:'212',type:'md',x:564,y:1118,w:44,h:40,occ:1},
+{id:'213',type:'xs',x:611,y:1118,w:33,h:30,climate:1},
+{id:'215',type:'lg',x:658,y:1118,w:44,h:40,smartlock:1},
+{id:'217',type:'lg',x:705,y:1118,w:44,h:40,occ:1,power:1},
+{id:'207',type:'sm',x:423,y:1204,w:44,h:34,occ:1,climate:1},
+{id:'208',type:'lg',x:470,y:1204,w:44,h:40,occ:1},
+{id:'209',type:'sm',x:517,y:1204,w:44,h:34,alarm:1},
+{id:'211',type:'xs',x:564,y:1204,w:33,h:30},
+{id:'214',type:'md',x:611,y:1204,w:44,h:40},
+{id:'216',type:'lg',x:658,y:1204,w:44,h:40,climate:1},
+{id:'303',type:'xl',x:564,y:172,w:44,h:40,climate:1,driveup:1},
+{id:'305',type:'md',x:611,y:172,w:44,h:40,smartlock:1},
+{id:'307',type:'xs',x:658,y:172,w:33,h:30,occ:1},
+{id:'309',type:'lg',x:705,y:172,w:44,h:40,climate:1},
+{id:'311',type:'md',x:752,y:172,w:44,h:40},
+{id:'313',type:'md',x:799,y:172,w:44,h:40},
+{id:'315',type:'md',x:846,y:172,w:44,h:40,climate:1,smartlock:1,power:1},
+{id:'355',type:'lg',x:893,y:172,w:44,h:40,smartlock:1,ext:1},
+{id:'352',type:'md',x:940,y:172,w:44,h:40,occ:1,alarm:1,ext:1},
+{id:'301',type:'xl',x:564,y:215,w:44,h:40,power:1,driveup:1},
+{id:'302',type:'xl',x:611,y:215,w:44,h:40,occ:1,driveup:1},
+{id:'304',type:'md',x:658,y:215,w:44,h:40},
+{id:'306',type:'xs',x:705,y:215,w:33,h:30,climate:1},
+{id:'308',type:'lg',x:752,y:215,w:44,h:40,power:1,alarm:1},
+{id:'310',type:'sm',x:799,y:215,w:44,h:34,smartlock:1},
+{id:'312',type:'lg',x:846,y:215,w:44,h:40,occ:1,climate:1},
+{id:'314',type:'xs',x:893,y:215,w:33,h:30},
+{id:'354',type:'lg',x:940,y:215,w:44,h:40,climate:1,ext:1},
+{id:'353',type:'lg',x:987,y:215,w:44,h:40,ext:1},
+{id:'351',type:'md',x:1034,y:215,w:44,h:40,occ:1,climate:1,ext:1},
+{id:'297',type:'md',x:564,y:258,w:44,h:40,occ:1,climate:1,alarm:1},
+{id:'316',type:'xl',x:658,y:258,w:44,h:40,driveup:1},
+{id:'317',type:'xl',x:799,y:258,w:44,h:40,occ:1,driveup:1},
+{id:'349',type:'md',x:940,y:258,w:44,h:40},
+{id:'350',type:'md',x:987,y:258,w:44,h:40,smartlock:1,power:1},
+{id:'295',type:'xl',x:564,y:301,w:44,h:40,smartlock:1,driveup:1},
+{id:'318',type:'xs',x:658,y:301,w:33,h:30,climate:1},
+{id:'319',type:'xs',x:799,y:301,w:33,h:30,alarm:1},
+{id:'348',type:'md',x:940,y:301,w:44,h:40,climate:1},
+{id:'347',type:'md',x:987,y:301,w:44,h:40,occ:1},
+{id:'293',type:'md',x:564,y:344,w:44,h:40},
+{id:'320',type:'md',x:658,y:344,w:44,h:40,smartlock:1},
+{id:'321',type:'lg',x:799,y:344,w:44,h:40,climate:1},
+{id:'346',type:'lg',x:940,y:344,w:44,h:40},
+{id:'291',type:'lg',x:564,y:387,w:44,h:40,climate:1},
+{id:'322',type:'sm',x:658,y:387,w:44,h:34,occ:1,power:1},
+{id:'323',type:'lg',x:799,y:387,w:44,h:40},
+{id:'345',type:'lg',x:940,y:387,w:44,h:40,climate:1,smartlock:1},
+{id:'344',type:'xl',x:987,y:387,w:44,h:40,driveup:1},
+{id:'289',type:'md',x:564,y:430,w:44,h:40},
+{id:'324',type:'xs',x:658,y:430,w:33,h:30,climate:1},
+{id:'325',type:'md',x:799,y:430,w:44,h:40,occ:1,smartlock:1},
+{id:'343',type:'xl',x:940,y:430,w:44,h:40,power:1,driveup:1},
+{id:'342',type:'xl',x:987,y:430,w:44,h:40,occ:1,climate:1,driveup:1},
+{id:'281',type:'md',x:564,y:473,w:44,h:40},
+{id:'326',type:'md',x:658,y:473,w:44,h:40},
+{id:'327',type:'xl',x:799,y:473,w:44,h:40,occ:1,climate:1,driveup:1},
+{id:'341',type:'lg',x:940,y:473,w:44,h:40,alarm:1},
+{id:'280',type:'md',x:564,y:516,w:44,h:40,smartlock:1,power:1},
+{id:'328',type:'md',x:658,y:516,w:44,h:40},
+{id:'329',type:'xs',x:799,y:516,w:33,h:30,power:1},
+{id:'340',type:'xl',x:940,y:516,w:44,h:40,smartlock:1,driveup:1},
+{id:'278',type:'lg',x:564,y:559,w:44,h:40},
+{id:'330',type:'xl',x:658,y:559,w:44,h:40,climate:1,smartlock:1,alarm:1,driveup:1},
+{id:'331',type:'lg',x:799,y:559,w:44,h:40},
+{id:'339',type:'xl',x:940,y:559,w:44,h:40,climate:1,driveup:1},
+{id:'338',type:'sm',x:987,y:559,w:44,h:34,occ:1},
+{id:'273',type:'md',x:564,y:602,w:44,h:40,occ:1,climate:1,power:1},
+{id:'274',type:'xs',x:611,y:602,w:33,h:30},
+{id:'275',type:'sm',x:658,y:602,w:44,h:34,smartlock:1,alarm:1},
+{id:'276',type:'sm',x:705,y:602,w:44,h:34,climate:1},
+{id:'277',type:'md',x:752,y:602,w:44,h:40,occ:1},
+{id:'332',type:'lg',x:799,y:602,w:44,h:40,occ:1},
+{id:'333',type:'lg',x:846,y:602,w:44,h:40,climate:1},
+{id:'334',type:'md',x:893,y:602,w:44,h:40},
+{id:'335',type:'md',x:940,y:602,w:44,h:40,smartlock:1},
+{id:'336',type:'lg',x:987,y:602,w:44,h:40,climate:1,power:1},
+{id:'337',type:'lg',x:1034,y:602,w:44,h:40,occ:1},
+{id:'271',type:'md',x:611,y:645,w:44,h:40},
+{id:'270',type:'lg',x:658,y:645,w:44,h:40,climate:1,smartlock:1},
+{id:'265',type:'lg',x:799,y:645,w:44,h:40,smartlock:1},
+{id:'264',type:'md',x:846,y:645,w:44,h:40,climate:1,alarm:1},
+{id:'262',type:'sm',x:940,y:645,w:44,h:34,occ:1},
+{id:'261',type:'lg',x:987,y:645,w:44,h:40,climate:1},
+{id:'166',type:'sm',x:611,y:688,w:44,h:34},
+{id:'269',type:'md',x:658,y:688,w:44,h:40},
+{id:'266',type:'sm',x:799,y:688,w:44,h:34,power:1},
+{id:'263',type:'lg',x:846,y:688,w:44,h:40},
+{id:'258',type:'sm',x:987,y:688,w:44,h:34,climate:1},
+{id:'168',type:'lg',x:611,y:731,w:44,h:40,climate:1,power:1},
+{id:'268',type:'md',x:658,y:731,w:44,h:40},
+{id:'267',type:'sm',x:799,y:731,w:44,h:34,occ:1,climate:1},
+{id:'260',type:'md',x:846,y:731,w:44,h:40,occ:1,smartlock:1},
+{id:'256',type:'md',x:987,y:731,w:44,h:40},
+{id:'182',type:'md',x:752,y:731,w:44,h:40,occ:1,power:1},
+{id:'259',type:'xl',x:799,y:774,w:44,h:40,power:1,driveup:1},
+{id:'255',type:'xs',x:940,y:774,w:33,h:30,climate:1,smartlock:1},
+{id:'254',type:'sm',x:987,y:774,w:44,h:34},
+{id:'183',type:'sm',x:752,y:817,w:44,h:34,climate:1},
+{id:'257',type:'lg',x:893,y:774,w:44,h:40,occ:1},
+{id:'253',type:'xl',x:940,y:817,w:44,h:40,alarm:1,driveup:1},
+{id:'252',type:'md',x:987,y:817,w:44,h:40,occ:1,climate:1,power:1},
+{id:'184',type:'xs',x:752,y:860,w:33,h:30},
+{id:'185',type:'lg',x:799,y:817,w:44,h:40,smartlock:1},
+{id:'247',type:'md',x:799,y:860,w:44,h:40,occ:1},
+{id:'248',type:'sm',x:846,y:860,w:44,h:34},
+{id:'249',type:'sm',x:893,y:860,w:44,h:34,climate:1},
+{id:'250',type:'md',x:940,y:860,w:44,h:40,smartlock:1},
+{id:'251',type:'xs',x:987,y:860,w:33,h:30},
+{id:'242',type:'md',x:987,y:903,w:44,h:40,occ:1,alarm:1},
+{id:'241',type:'lg',x:1034,y:903,w:44,h:40},
+{id:'221',type:'sm',x:799,y:903,w:44,h:34,occ:1},
+{id:'246',type:'xs',x:846,y:903,w:33,h:30,climate:1},
+{id:'245',type:'lg',x:893,y:903,w:44,h:40,smartlock:1,power:1},
+{id:'244',type:'lg',x:940,y:903,w:44,h:40},
+{id:'243',type:'sm',x:940,y:946,w:44,h:34,climate:1},
+{id:'240',type:'xl',x:987,y:946,w:44,h:40,climate:1,smartlock:1,driveup:1},
+{id:'239',type:'md',x:1034,y:946,w:44,h:40},
+{id:'222',type:'md',x:799,y:946,w:44,h:40,occ:1,climate:1},
+{id:'220',type:'lg',x:846,y:946,w:44,h:40,smartlock:1,alarm:1},
+{id:'238',type:'xl',x:987,y:989,w:44,h:40,power:1,driveup:1},
+{id:'237',type:'md',x:1034,y:989,w:44,h:40,occ:1,climate:1},
+{id:'223',type:'lg',x:799,y:989,w:44,h:40},
+{id:'226',type:'md',x:846,y:989,w:44,h:40},
+{id:'230',type:'md',x:893,y:989,w:44,h:40,smartlock:1},
+{id:'231',type:'lg',x:940,y:989,w:44,h:40,climate:1,power:1,alarm:1},
+{id:'236',type:'sm',x:987,y:1032,w:44,h:34},
+{id:'235',type:'md',x:1034,y:1032,w:44,h:40,smartlock:1},
+{id:'219',type:'md',x:799,y:1032,w:44,h:40,climate:1},
+{id:'224',type:'lg',x:846,y:1032,w:44,h:40,power:1},
+{id:'234',type:'md',x:1081,y:989,w:44,h:40,occ:1,climate:1},
+{id:'233',type:'lg',x:1081,y:1075,w:44,h:40},
+{id:'218',type:'md',x:799,y:1075,w:44,h:40},
+{id:'225',type:'md',x:846,y:1075,w:44,h:40,climate:1,smartlock:1},
+{id:'227',type:'md',x:893,y:1075,w:44,h:40,occ:1},
+{id:'229',type:'md',x:940,y:1075,w:44,h:40},
+{id:'232',type:'lg',x:987,y:1075,w:44,h:40,occ:1},
+{id:'603',type:'md',x:611,y:0,w:44,h:40,climate:1},
+{id:'602',type:'md',x:564,y:0,w:44,h:40,occ:1,climate:1,power:1},
+{id:'604',type:'sm',x:658,y:0,w:44,h:34,climate:1},
+{id:'606',type:'sm',x:705,y:0,w:44,h:34,climate:1},
+{id:'608',type:'sm',x:752,y:0,w:44,h:34,climate:1},
+{id:'610',type:'xs',x:799,y:0,w:33,h:30,climate:1,smartlock:1},
+{id:'612',type:'sm',x:846,y:0,w:44,h:34,occ:1,climate:1},
+{id:'601',type:'md',x:564,y:43,w:44,h:40,climate:1},
+{id:'600',type:'md',x:611,y:86,w:44,h:40,climate:1,smartlock:1},
+{id:'605',type:'md',x:658,y:43,w:44,h:40,climate:1,smartlock:1,alarm:1},
+{id:'607',type:'md',x:705,y:43,w:44,h:40,occ:1,climate:1},
+{id:'609',type:'sm',x:752,y:43,w:44,h:34,climate:1,power:1},
+{id:'611',type:'xs',x:799,y:43,w:33,h:30,occ:1,climate:1},
+{id:'613',type:'md',x:846,y:43,w:44,h:40,climate:1},
+{id:'614',type:'sm',x:893,y:0,w:44,h:34,climate:1},
+{id:'375',type:'xl',x:893,y:43,w:44,h:40,climate:1,smartlock:1,ext:1,driveup:1},
+{id:'369',type:'lg',x:940,y:0,w:44,h:40,climate:1,ext:1},
+{id:'368',type:'lg',x:987,y:0,w:44,h:40,ext:1},
+{id:'367',type:'lg',x:1034,y:0,w:44,h:40,occ:1,ext:1},
+{id:'366',type:'xl',x:1081,y:0,w:44,h:40,climate:1,ext:1,driveup:1},
+{id:'371',type:'xl',x:893,y:86,w:44,h:40,power:1,ext:1,driveup:1},
+{id:'370',type:'xl',x:940,y:43,w:44,h:40,smartlock:1,ext:1,driveup:1},
+{id:'365',type:'md',x:987,y:43,w:44,h:40,smartlock:1,ext:1},
+{id:'364',type:'md',x:1081,y:43,w:44,h:40,occ:1,power:1,ext:1},
+{id:'373',type:'lg',x:940,y:86,w:44,h:40,ext:1},
+{id:'372',type:'lg',x:987,y:86,w:44,h:40,occ:1,climate:1,ext:1},
+{id:'363',type:'xl',x:987,y:129,w:44,h:40,climate:1,alarm:1,ext:1,driveup:1},
+{id:'362',type:'lg',x:1034,y:129,w:44,h:40,occ:1,ext:1},
+{id:'374',type:'lg',x:987,y:172,w:44,h:40,alarm:1,ext:1},
+{id:'359',type:'lg',x:1081,y:86,w:44,h:40,ext:1},
+{id:'360',type:'xl',x:1081,y:129,w:44,h:40,climate:1,smartlock:1,ext:1,driveup:1},
+{id:'356',type:'lg',x:1034,y:86,w:44,h:40,ext:1},
+{id:'358',type:'lg',x:1128,y:129,w:44,h:40,ext:1},
+{id:'357',type:'xl',x:940,y:129,w:44,h:40,occ:1,climate:1,power:1,ext:1,driveup:1}
+];
+
+const AISLES=[];
+
+function getFeatureIcons(u){
+  let icons=[];
+  if(u.climate)icons.push('❄️');
+  if(u.driveup)icons.push('🚗');
+  if(u.ext)icons.push('🏠');
+  if(u.smartlock)icons.push('🔒');
+  if(u.power)icons.push('⚡');
+  if(u.alarm)icons.push('🚨');
+  if(icons.length===0)icons.push('🚪');
+  return icons;
+}
+
+function getFeatureText(u){
+  let f=[];
+  if(u.climate)f.push('❄️ Climate');
+  if(u.driveup)f.push('🚗 Drive-up');
+  if(u.ext)f.push('🏠 Exterior');
+  if(u.smartlock)f.push('🔒 Smart Lock');
+  if(u.power)f.push('⚡ Power');
+  if(u.alarm)f.push('🚨 Alarm');
+  if(f.length===0)f.push('🚪 Standard');
+  return f;
+}
+
+// ══════════════════════════════
+//  BUILD MAP
+// ══════════════════════════════
+const facility=document.getElementById('facility');
+let vc=0,oc=0,selUnit=null,selIdx=null;
+
+AISLES.forEach(a=>{const el=document.createElement('div');el.className='aisle';el.style.cssText=`left:${a.x}px;top:${a.y}px;width:${a.w}px;height:${a.h}px;`;if(a.w>a.h)el.innerHTML='<span class="aisle-lbl">Aisle</span>';facility.appendChild(el)});
+
+// Office
+const ofc=document.createElement('div');ofc.className='site-f';ofc.style.cssText='left:10px;top:165px;width:80px;height:44px;';ofc.innerHTML='<span>OFFICE</span>';facility.appendChild(ofc);
+
+U.forEach((u,i)=>{
+  const t=TYPES[u.type],el=document.createElement('div');
+  el.className=`unit ${u.occ?'occupied':'vacant'}`;
+  el.style.cssText=`left:${u.x}px;top:${u.y}px;width:${u.w}px;height:${u.h}px;animation:unitIn 0.35s ${i*18}ms cubic-bezier(0.16,1,0.3,1) both;`;
+  el.dataset.id=u.id;el.dataset.idx=i;
+
+  // Label
+  const lbl=document.createElement('span');lbl.className='unit-id';lbl.textContent=u.id;el.appendChild(lbl);
+
+  // Feature icons overlay
+  const feats=document.createElement('div');feats.className='unit-feats';
+  getFeatureIcons(u).forEach(ic=>{const s=document.createElement('span');s.className='unit-feat';s.textContent=ic;feats.appendChild(s)});
+  el.appendChild(feats);
+
+  if(u.occ){oc++}else{vc++;el.addEventListener('click',e=>{e.stopPropagation();openPanel(i)})}
+  el.addEventListener('mouseenter',e=>showTip(e,i));
+  el.addEventListener('mouseleave',hideTip);
+  el.addEventListener('mousemove',moveTip);
+  facility.appendChild(el);
+});
+
+document.getElementById('statV').textContent=vc;
+document.getElementById('statO').textContent=oc;
+const fl=document.createElement('div');fl.className='fac-lbl';fl.textContent='Ground Floor';facility.appendChild(fl);
+
+// ══════════════════════════════
+//  FILTER SIDEBAR
+// ══════════════════════════════
+let activeF=new Set(),fbVis=true;
+const fDefs=[
+  {key:'xs',label:'Locker',dims:"3'×4'",price:'$39'},
+  {key:'sm',label:'Compact',dims:"5'×5'",price:'$69'},
+  {key:'md',label:'Standard',dims:"5'×10'",price:'$109'},
+  {key:'lg',label:'Large',dims:"10'×10'",price:'$149'},
+  {key:'xl',label:'Extra Large',dims:"10'×20'",price:'$229'}
+];
+
+(function buildFilters(){
+  const c=document.getElementById('fbOpts');
+  fDefs.forEach(f=>{
+    const cnt=U.filter(u=>u.type===f.key&&!u.occ).length;
+    const el=document.createElement('div');el.className='fb-opt';el.dataset.type=f.key;
+    el.innerHTML=`<div class="fb-ol"><div class="fb-sw">✓</div><div class="fb-oi"><span class="fb-on">${f.label}</span><span class="fb-od">${f.dims}</span></div></div><div class="fb-or"><span class="fb-oc">${cnt} avail</span><span class="fb-op">from ${f.price}/mo</span></div>`;
+    el.addEventListener('click',()=>{
+      if(activeF.has(f.key)){activeF.delete(f.key);el.classList.remove('on')}
+      else{activeF.add(f.key);el.classList.add('on')}
+      applyFilters();
+    });
+    c.appendChild(el);
+  });
+})();
+
+function applyFilters(){
+  const all=document.querySelectorAll('#facility .unit');
+  if(activeF.size===0){
+    all.forEach(el=>{el.classList.remove('dimmed','hl','show-feats')});
+    document.getElementById('statV').textContent=vc;
+    document.getElementById('statO').textContent=oc;
+    return;
+  }
+  let fv=0,fo=0;
+  all.forEach(el=>{
+    const u=U[parseInt(el.dataset.idx)];
+    const match=activeF.has(u.type);
+    const vacMatch=match&&!u.occ;
+    el.classList.toggle('dimmed',!match);
+    el.classList.toggle('hl',vacMatch);
+    el.classList.toggle('show-feats',vacMatch);
+    if(match){if(u.occ)fo++;else fv++}
+  });
+  document.getElementById('statV').textContent=fv;
+  document.getElementById('statO').textContent=fo;
+}
+
+function clearFilters(){
+  activeF.clear();
+  document.querySelectorAll('.fb-opt').forEach(e=>e.classList.remove('on'));
+  applyFilters();
+  document.getElementById('statV').textContent=vc;
+  document.getElementById('statO').textContent=oc;
+}
+
+function toggleFB(){
+  fbVis=!fbVis;
+  document.getElementById('fb').classList.toggle('hidden',!fbVis);
+  document.getElementById('fbTgl').style.display=fbVis?'none':'flex';
+  document.getElementById('legend').style.left=fbVis?'230px':'24px';
+  document.getElementById('stats').style.left=fbVis?'230px':'24px';
+}
+
+// ══════════════════════════════
+//  TOOLTIP
+// ══════════════════════════════
+const tip=document.getElementById('tip');
+function moveTip(e){let x=e.clientX+18,y=e.clientY-12;if(x+200>window.innerWidth)x=e.clientX-200;tip.style.left=x+'px';tip.style.top=y+'px'}
+let hideTimer=null;
+function hideTip(){hideTimer=setTimeout(()=>{tip.classList.remove('show')},60)}
+function showTip(e,i){
+  if(hideTimer){clearTimeout(hideTimer);hideTimer=null}
+  const u=U[i],t=TYPES[u.type];
+  document.getElementById('tipId').textContent=u.id;
+  document.getElementById('tipDet').textContent=t.name+' · '+t.dims;
+  const feats=document.getElementById('tipFeats');
+  feats.innerHTML=getFeatureText(u).join(' &nbsp;');
+  const d=document.getElementById('tipD'),pw=document.getElementById('tipPW');
+  if(u.occ){d.className='tip-d o';pw.innerHTML='<div class="tip-occ">Occupied</div>'}
+  else{d.className='tip-d v';pw.innerHTML=`<div class="tip-price">$${t.price}/mo</div>`}
+  tip.classList.add('show');moveTip(e);
+}
+
+// ══════════════════════════════
+//  PANEL — MULTI-STEP CHECKOUT
+// ══════════════════════════════
+let pStep=1;const STEPS=7;
+const stepLabels=['Unit Details','Add-ons','Lease Agreement','Identity','Move-in','Payment','Confirmed'];
+const btnLabels=['Reserve This Unit','Continue','Sign & Continue','Continue','Continue','Complete Reservation',''];
+
+function renderProgress(){
+  const c=document.getElementById('pnlProgress');c.innerHTML='';
+  for(let i=1;i<=STEPS;i++){
+    const d=document.createElement('div');
+    d.className='pp-dot'+(i<pStep?' done':'')+(i===pStep?' cur':'');
+    c.appendChild(d);
+  }
+  const lbl=document.createElement('span');lbl.className='pp-step';lbl.textContent=stepLabels[pStep-1];c.appendChild(lbl);
+}
+
+function showStep(n){
+  pStep=n;
+  for(let i=1;i<=STEPS;i++)document.getElementById('ps'+i).classList.toggle('active',i===n);
+  renderProgress();
+  const btn=document.getElementById('pnlBtn');
+  const foot=document.getElementById('pnlFoot');
+  if(n===STEPS){foot.style.display='none'}
+  else{foot.style.display='';btn.textContent=btnLabels[n-1]}
+  if(n===3)initSigCanvas();
+  if(n===5)genDates();
+  if(n===6)buildSum();
+  // Scroll panel body to top
+  document.querySelector('.pnl-body').scrollTop=0;
+}
+
+function openPanel(i){
+  const u=U[i],t=TYPES[u.type];
+  if(selUnit){const p=document.querySelector('.unit.sel-u');if(p)p.classList.remove('sel-u')}
+  selUnit=u.id;selIdx=i;
+  const el=document.querySelector(`[data-id="${u.id}"]`);if(el)el.classList.add('sel-u');
+
+  document.getElementById('pUid').textContent='UNIT '+u.id;
+  document.getElementById('pName').textContent=t.name;
+  document.getElementById('pDims').textContent=t.dims+' · '+t.sqft;
+  document.getElementById('pPrice').innerHTML='$'+t.price+'<span class="ps-pp"> /mo</span>';
+
+  // Build dynamic feature list
+  const pf=document.getElementById('pFeats');pf.innerHTML='';
+  const feats=[
+    {icon:'❄️',name:'Climate Control',val:u.climate?'Yes':'No',on:u.climate},
+    {icon:u.driveup?'🚗':u.ext?'🏠':'🚪',name:'Access Type',val:u.driveup?'Drive-up':u.ext?'Exterior':'Interior',on:true},
+    {icon:'📐',name:'Floor',val:'Ground',on:true},
+    {icon:'📏',name:'Ceiling',val:t.ceiling,on:true},
+    {icon:'🔒',name:'Smart Lock',val:u.smartlock?'Ready':'Not included',on:u.smartlock},
+    {icon:'⚡',name:'Power Outlet',val:u.power?'Yes':'No',on:u.power},
+    {icon:'🚨',name:'Unit Alarm',val:u.alarm?'Installed':'No',on:u.alarm},
+  ];
+  feats.forEach(f=>{
+    const row=document.createElement('div');row.className='ps-feat';
+    row.innerHTML=`<div class="ps-fl"><div class="ps-fi">${f.icon}</div><span class="ps-fn">${f.name}</span></div><span class="ps-fv${f.on?' y':''}">${f.val}</span>`;
+    pf.appendChild(row);
+  });
+
+  // Reset addons
+  document.querySelectorAll('#ps2 .ao').forEach(a=>a.classList.remove('on'));
+  // Reset ID
+  const ids=document.getElementById('idScan');ids.classList.remove('done');
+  ids.querySelector('.id-scan-icon').textContent='📷';
+  ids.querySelector('.id-scan-t').textContent='Scan Your Driver\'s License';
+  ids.querySelector('.id-scan-s').innerHTML='Take a photo of the front of your license.<br>We\'ll auto-fill your details.';
+  document.getElementById('idForm').style.display='none';
+  // Reset checkboxes
+  document.querySelectorAll('#ps3 .ck, #ps6 .ck').forEach(c=>c.classList.remove('on'));
+
+  showStep(1);
+  document.getElementById('pnl').classList.add('open');
+  document.getElementById('pnlBg').classList.add('open');
+}
+
+function closePanel(){
+  document.getElementById('pnl').classList.remove('open');
+  document.getElementById('pnlBg').classList.remove('open');
+  if(selUnit){const el=document.querySelector(`[data-id="${selUnit}"]`);if(el)el.classList.remove('sel-u');selUnit=null;selIdx=null}
+}
+
+function nextStep(){
+  if(pStep<STEPS){
+    if(pStep===6){
+      // Complete purchase → confirmation
+      const u=U[selIdx],t=TYPES[u.type];
+      document.getElementById('confUnit').textContent=u.id+' · '+t.name;
+      document.getElementById('confDate').textContent=selectedDate||'—';
+      document.getElementById('confPrice').textContent='$'+t.price+'/mo';
+    }
+    showStep(pStep+1);
+  }
+}
+
+// Step helpers
+function scanId(){
+  const s=document.getElementById('idScan');s.classList.add('done');
+  s.querySelector('.id-scan-icon').textContent='✓';
+  s.querySelector('.id-scan-t').textContent='License Scanned Successfully';
+  s.querySelector('.id-scan-s').textContent='John D. · DL #D1234567 · Verified';
+  document.getElementById('idForm').style.display='block';
+  document.getElementById('fname').value='John';document.getElementById('lname').value='Doe';
+}
+function showIdForm(){document.getElementById('idForm').style.display='block'}
+
+let selectedDate='';
+function genDates(){
+  const c=document.getElementById('psDates');c.innerHTML='';
+  const t=new Date(),d=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],mo=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  for(let i=1;i<=10;i++){
+    const dt=new Date(t);dt.setDate(t.getDate()+i);
+    const ch=document.createElement('div');ch.style.cssText='padding:9px 14px;background:var(--surface-2);border:1.5px solid var(--border);border-radius:10px;font-size:12px;font-weight:500;color:var(--text);cursor:pointer;transition:all 0.2s';
+    ch.textContent=`${d[dt.getDay()]}, ${mo[dt.getMonth()]} ${dt.getDate()}`;
+    ch.onmouseenter=function(){if(!this.dataset.sel)this.style.borderColor='var(--border-light)'};
+    ch.onmouseleave=function(){if(!this.dataset.sel)this.style.borderColor='var(--border)'};
+    ch.onclick=function(){
+      c.querySelectorAll('div').forEach(x=>{x.style.background='var(--surface-2)';x.style.borderColor='var(--border)';x.style.color='var(--text)';delete x.dataset.sel});
+      this.style.background='var(--accent-bg)';this.style.borderColor='var(--accent)';this.style.color='var(--accent)';this.dataset.sel='1';
+      selectedDate=this.textContent;
+    };
+    c.appendChild(ch);
+  }
+}
+
+function buildSum(){
+  const u=U[selIdx],t=TYPES[u.type];
+  let monthly=t.price,once=0;
+  const c=document.getElementById('pSum');
+  let html=`<div class="sum-row"><span class="sl">${t.name} · ${t.dims}</span><span class="sv">$${t.price}/mo</span></div>`;
+  document.querySelectorAll('#ps2 .ao.on').forEach(a=>{
+    const p=parseInt(a.dataset.price)||0;const o=parseInt(a.dataset.once)||0;const l=a.dataset.label;
+    monthly+=p;once+=o;
+    html+=`<div class="sum-row"><span class="sl">${l}</span><span class="sv">${p?'+$'+p+'/mo':'$'+o+' once'}</span></div>`;
+  });
+  let tot='$'+monthly+'/mo';if(once)tot+=' + $'+once;
+  html+=`<div class="sum-row total"><span class="sl">Due today</span><span class="sv">${tot}</span></div>`;
+  c.innerHTML=html;
+}
+
+function expressPay(){
+  const btn=document.getElementById('pnlBtn');
+  btn.textContent='Processing...';btn.style.opacity='0.6';
+  setTimeout(()=>{btn.style.opacity='1';nextStep()},1200);
+}
+
+// ══════════════════════════════
+//  SIGNATURE CANVAS
+// ══════════════════════════════
+let sigCtx=null,sigDrawing=false;
+function initSigCanvas(){
+  const c=document.getElementById('sigCanvas');
+  if(!c)return;
+  sigCtx=c.getContext('2d');
+  // Set canvas resolution to match display
+  const rect=c.getBoundingClientRect();
+  c.width=rect.width*2;c.height=rect.height*2;
+  sigCtx.scale(2,2);
+  sigCtx.strokeStyle='#2dd4a0';sigCtx.lineWidth=2;sigCtx.lineCap='round';sigCtx.lineJoin='round';
+
+  c.onmousedown=e=>{sigDrawing=true;const r=c.getBoundingClientRect();sigCtx.beginPath();sigCtx.moveTo(e.clientX-r.left,e.clientY-r.top)};
+  c.onmousemove=e=>{if(!sigDrawing)return;const r=c.getBoundingClientRect();sigCtx.lineTo(e.clientX-r.left,e.clientY-r.top);sigCtx.stroke()};
+  c.onmouseup=()=>{sigDrawing=false};
+  c.onmouseleave=()=>{sigDrawing=false};
+  // Touch support
+  c.ontouchstart=e=>{e.preventDefault();const t=e.touches[0],r=c.getBoundingClientRect();sigDrawing=true;sigCtx.beginPath();sigCtx.moveTo(t.clientX-r.left,t.clientY-r.top)};
+  c.ontouchmove=e=>{e.preventDefault();if(!sigDrawing)return;const t=e.touches[0],r=c.getBoundingClientRect();sigCtx.lineTo(t.clientX-r.left,t.clientY-r.top);sigCtx.stroke()};
+  c.ontouchend=()=>{sigDrawing=false};
+}
+function clearSig(){
+  if(!sigCtx)return;
+  const c=document.getElementById('sigCanvas');
+  sigCtx.clearRect(0,0,c.width,c.height);
+}
+
+// ══════════════════════════════
+//  ZOOM & PAN
+// ══════════════════════════════
+let scale=1,panX=0,panY=0;
+const mapWrap=document.getElementById('mapWrap'),mapT=document.getElementById('mapT');
+function applyT(s){mapT.style.transition=s?'transform 0.35s cubic-bezier(0.16,1,0.3,1)':'none';mapT.style.transform=`translate(${panX}px,${panY}px) scale(${scale})`}
+function zoomMap(d){scale=Math.max(0.4,Math.min(2.5,scale+d*0.2));applyT(true)}
+function resetView(){scale=1;panX=0;panY=0;centerMap();applyT(true)}
+function centerMap(){const ww=window.innerWidth,wh=window.innerHeight-58;panX=(ww-820)/2;panY=(wh-620)/2+10;applyT(false)}
+centerMap();
+window.addEventListener('resize',centerMap);
+
+// Drag
+let dr=false,sx,sy,spx,spy;
+mapWrap.addEventListener('mousedown',e=>{if(e.target.closest('.unit,.pnl,.pnl-bg'))return;dr=true;sx=e.clientX;sy=e.clientY;spx=panX;spy=panY;mapWrap.style.cursor='grabbing'});
+window.addEventListener('mousemove',e=>{if(!dr)return;panX=spx+(e.clientX-sx);panY=spy+(e.clientY-sy);applyT(false)});
+window.addEventListener('mouseup',()=>{dr=false;mapWrap.style.cursor='grab'});
+mapWrap.addEventListener('wheel',e=>{e.preventDefault();scale=Math.max(0.4,Math.min(2.5,scale+(e.deltaY>0?-1:1)*0.08));applyT(false)},{passive:false});
+
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closePanel()});
+</script>
+</body>
+</html>
