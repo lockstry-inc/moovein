@@ -139,9 +139,17 @@ export const useFacilityStore = create<FacilityState>((set, get) => ({
   setViewport: (scale, panX, panY) => set({ scale, panX, panY, smoothTransition: false }),
 
   zoomBy: (delta: number) => {
-    const { scale } = get()
-    const next = Math.max(0.05, Math.min(2.5, scale + delta))
-    set({ scale: next, smoothTransition: true })
+    const { scale, panX, panY } = get()
+    // Multiplicative zoom centered on viewport middle
+    const factor = delta > 0 ? 1.25 : 0.8
+    const next = Math.max(0.05, Math.min(2.5, scale * factor))
+    const ww = typeof window !== 'undefined' ? window.innerWidth : 1200
+    const wh = typeof window !== 'undefined' ? window.innerHeight - 58 : 800
+    const cx = ww / 2
+    const cy = wh / 2
+    const newPanX = cx - (cx - panX) * (next / scale)
+    const newPanY = cy - (cy - panY) * (next / scale)
+    set({ scale: next, panX: newPanX, panY: newPanY, smoothTransition: true })
   },
 
   resetView: () => {

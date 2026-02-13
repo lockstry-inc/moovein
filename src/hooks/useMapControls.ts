@@ -28,9 +28,21 @@ export function useMapControls(containerRef: React.RefObject<HTMLDivElement | nu
 
   const onWheel = useCallback((e: React.WheelEvent) => {
     e.stopPropagation()
-    const { scale } = useFacilityStore.getState()
-    const next = Math.max(0.05, Math.min(2.5, scale + (e.deltaY > 0 ? -1 : 1) * 0.08))
-    useFacilityStore.setState({ scale: next, smoothTransition: false })
+    const { scale, panX, panY } = useFacilityStore.getState()
+    const rect = containerRef.current?.getBoundingClientRect()
+    if (!rect) return
+
+    // Multiplicative zoom — feels consistent at any scale
+    const factor = e.deltaY > 0 ? 0.9 : 1.1
+    const next = Math.max(0.05, Math.min(2.5, scale * factor))
+
+    // Zoom toward cursor: keep the world point under the cursor fixed
+    const cursorX = e.clientX - rect.left
+    const cursorY = e.clientY - rect.top
+    const newPanX = cursorX - (cursorX - panX) * (next / scale)
+    const newPanY = cursorY - (cursorY - panY) * (next / scale)
+
+    useFacilityStore.setState({ scale: next, panX: newPanX, panY: newPanY, smoothTransition: false })
   }, [])
 
   const centerMap = useCallback(() => {
