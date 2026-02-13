@@ -37,12 +37,12 @@ export default function StepPayment({ unit }: Props) {
 
       {/* Card form */}
       <div className="mb-[14px]">
-        <input className="bg-surface-2 border-[1.5px] border-border rounded-[10px] py-[11px] px-[13px] text-[13px] font-['DM_Sans',sans-serif] text-text outline-none w-full placeholder:text-text-dim focus:border-accent mb-2 tracking-[1.5px]" placeholder="Card number" />
+        <input className="bg-surface-2 border-[1.5px] border-border rounded-[10px] py-[11px] px-[13px] text-[13px] font-['DM_Sans',sans-serif] text-text outline-none w-full placeholder:text-text-dim focus:border-accent transition-[border-color] duration-200 mb-2 tracking-[1.5px]" placeholder="Card number" />
         <div className="grid grid-cols-2 gap-2 mb-2">
-          <input className="bg-surface-2 border-[1.5px] border-border rounded-[10px] py-[11px] px-[13px] text-[13px] font-['DM_Sans',sans-serif] text-text outline-none w-full placeholder:text-text-dim focus:border-accent" placeholder="MM / YY" />
-          <input className="bg-surface-2 border-[1.5px] border-border rounded-[10px] py-[11px] px-[13px] text-[13px] font-['DM_Sans',sans-serif] text-text outline-none w-full placeholder:text-text-dim focus:border-accent" placeholder="CVC" />
+          <input className="bg-surface-2 border-[1.5px] border-border rounded-[10px] py-[11px] px-[13px] text-[13px] font-['DM_Sans',sans-serif] text-text outline-none w-full placeholder:text-text-dim focus:border-accent transition-[border-color] duration-200" placeholder="MM / YY" />
+          <input className="bg-surface-2 border-[1.5px] border-border rounded-[10px] py-[11px] px-[13px] text-[13px] font-['DM_Sans',sans-serif] text-text outline-none w-full placeholder:text-text-dim focus:border-accent transition-[border-color] duration-200" placeholder="CVC" />
         </div>
-        <input className="bg-surface-2 border-[1.5px] border-border rounded-[10px] py-[11px] px-[13px] text-[13px] font-['DM_Sans',sans-serif] text-text outline-none w-full placeholder:text-text-dim focus:border-accent" placeholder="Name on card" />
+        <input className="bg-surface-2 border-[1.5px] border-border rounded-[10px] py-[11px] px-[13px] text-[13px] font-['DM_Sans',sans-serif] text-text outline-none w-full placeholder:text-text-dim focus:border-accent transition-[border-color] duration-200" placeholder="Name on card" />
       </div>
 
       {/* Order summary */}
