@@ -31,6 +31,7 @@ export default function LocationMap() {
   const mapContainer = useRef<HTMLDivElement>(null)
   const mapRef = useRef<mapboxgl.Map | null>(null)
   const popupRef = useRef<mapboxgl.Popup | null>(null)
+  const hoveredIdRef = useRef<number | null>(null)
   const facilities = useFacilityStore(s => s.facilities)
   const selectFacility = useFacilityStore(s => s.selectFacility)
 
@@ -66,15 +67,23 @@ export default function LocationMap() {
       center: [-76.5, 40.0],
       zoom: 5.5,
       attributionControl: false,
+      logoPosition: 'top-left',
       cooperativeGestures: true,
+    })
+
+    // Remove Mapbox logo
+    map.on('load', () => {
+      const logo = mapContainer.current?.querySelector('.mapboxgl-ctrl-logo')
+      if (logo) (logo as HTMLElement).style.display = 'none'
     })
 
     map.addControl(new mapboxgl.NavigationControl({ showCompass: false }), 'bottom-right')
 
     map.on('load', () => {
-      // Add facility data as a GeoJSON source
+      // Add facility data as a GeoJSON source with generateId for feature-state
       map.addSource('facilities', {
         type: 'geojson',
+        generateId: true,
         data: {
           type: 'FeatureCollection',
           features: facilitiesRef.current.map(f => ({
@@ -88,42 +97,62 @@ export default function LocationMap() {
         },
       })
 
-      // Outer glow circle
+      // Outer glow circle — radius driven by feature-state hover
       map.addLayer({
         id: 'facility-glow',
         type: 'circle',
         source: 'facilities',
         paint: {
-          'circle-radius': 12,
+          'circle-radius': [
+            'case',
+            ['boolean', ['feature-state', 'hover'], false],
+            18,
+            12,
+          ],
           'circle-color': 'rgba(45, 212, 160, 0.15)',
           'circle-blur': 0.8,
         },
       })
 
-      // Main dot
+      // Main dot — radius driven by feature-state hover
       map.addLayer({
         id: 'facility-dots',
         type: 'circle',
         source: 'facilities',
         paint: {
-          'circle-radius': 6,
+          'circle-radius': [
+            'case',
+            ['boolean', ['feature-state', 'hover'], false],
+            8,
+            6,
+          ],
           'circle-color': '#2dd4a0',
           'circle-stroke-width': 2,
           'circle-stroke-color': 'rgba(45, 212, 160, 0.5)',
         },
       })
 
-      // Hover: enlarge dot
-      map.on('mouseenter', 'facility-dots', () => {
+      // Hover: set feature-state on individual feature only
+      map.on('mousemove', 'facility-dots', (e) => {
+        if (!e.features || e.features.length === 0) return
+        const fid = e.features[0].id as number
+
+        // Clear previous hover
+        if (hoveredIdRef.current !== null && hoveredIdRef.current !== fid) {
+          map.setFeatureState({ source: 'facilities', id: hoveredIdRef.current }, { hover: false })
+        }
+
+        hoveredIdRef.current = fid
+        map.setFeatureState({ source: 'facilities', id: fid }, { hover: true })
         map.getCanvas().style.cursor = 'pointer'
-        map.setPaintProperty('facility-dots', 'circle-radius', 8)
-        map.setPaintProperty('facility-glow', 'circle-radius', 18)
       })
 
       map.on('mouseleave', 'facility-dots', () => {
+        if (hoveredIdRef.current !== null) {
+          map.setFeatureState({ source: 'facilities', id: hoveredIdRef.current }, { hover: false })
+          hoveredIdRef.current = null
+        }
         map.getCanvas().style.cursor = ''
-        map.setPaintProperty('facility-dots', 'circle-radius', 6)
-        map.setPaintProperty('facility-glow', 'circle-radius', 12)
       })
 
       // Click: show popup
