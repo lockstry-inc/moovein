@@ -8,7 +8,7 @@ import { MeshSurfaceSampler } from 'three/examples/jsm/math/MeshSurfaceSampler.j
 
 const ThemeContext = createContext<'dark' | 'light'>('dark')
 
-const IDLE_MS = 60_000 // 1 minute
+const IDLE_MS = 5_000 // 5 seconds (dev — change to 60_000 for prod)
 const COW_POINTS = 3000
 const GRASS_POINTS = 800
 
@@ -426,8 +426,8 @@ export default function Cornelius({ theme = 'dark' }: CorneliusProps) {
     <div
       className="inline-flex items-center"
       style={{
-        width: 80,
-        height: 56,
+        width: 120,
+        height: 72,
         verticalAlign: 'middle',
         opacity: visible ? 1 : 0,
         transform: visible ? 'translateY(0)' : 'translateY(6px)',
