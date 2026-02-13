@@ -34,10 +34,7 @@ export default function App() {
           <FilterSidebar />
           <MapLegend />
           <MapStats />
-          <div className="fixed bottom-[22px] right-[22px] flex flex-col items-end gap-[10px] z-90">
-            <FloorSwitcher />
-            <MapControls />
-          </div>
+          <MapControls />
           <UnitTooltip />
         </>
       )}
