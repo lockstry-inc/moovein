@@ -1,8 +1,10 @@
-import { useRef, useEffect, useCallback, useState } from 'react'
+import { useRef, useEffect, useCallback, useState, lazy, Suspense } from 'react'
 import mapboxgl from 'mapbox-gl'
 import 'mapbox-gl/dist/mapbox-gl.css'
 import { useFacilityStore } from '../../stores/facilityStore'
 import type { FacilityManifestEntry } from '../../types/facility'
+
+const Cornelius = lazy(() => import('./Cornelius'))
 
 const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN || 'pk.eyJ1IjoiYmFrZXItc29hciIsImEiOiJjbWxrY3YxenEwMHByM2dvam41aHU1YTc1In0.m_d-qvD5Cm9P8PfFN5wsKw'
 
@@ -305,8 +307,11 @@ export default function LocationMap({ theme = 'dark' }: Props) {
   return (
     <section id="locations" className="py-16 px-6" style={{ background: 'var(--color-bg)' }}>
       <div className="max-w-[1100px] mx-auto">
-        <h2 className="font-['Playfair_Display',serif] text-[28px] font-bold text-text text-center mb-2">
+        <h2 className="font-['Playfair_Display',serif] text-[28px] font-bold text-text text-center mb-2 flex items-center justify-center gap-2">
           Find a Location Near You
+          <Suspense fallback={null}>
+            <Cornelius theme={theme} />
+          </Suspense>
         </h2>
         <p className="text-[14px] text-text-sec text-center mb-8">
           31 facilities across 10 states. Click a pin to explore.
