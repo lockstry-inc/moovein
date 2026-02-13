@@ -430,8 +430,8 @@ export default function Cornelius({ theme = 'dark' }: CorneliusProps) {
     <div
       className="inline-flex items-center"
       style={{
-        width: 120,
-        height: 72,
+        width: 150,
+        height: 88,
         verticalAlign: 'middle',
         opacity: visible ? 1 : 0,
         transform: visible ? 'translateY(0)' : 'translateY(6px)',
