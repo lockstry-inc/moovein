@@ -21,16 +21,16 @@ export default function MapStats() {
 
   return (
     <div
-      className="fixed bottom-[22px] flex items-center gap-4 px-[15px] py-[10px] bg-surface border border-border rounded-[11px] z-90 transition-[left] duration-350"
-      style={{ left: filterSidebarOpen ? 230 : 24 }}
+      className="fixed bottom-[22px] flex items-center bg-surface border border-border rounded-[14px] z-90 transition-[left] duration-350"
+      style={{ left: filterSidebarOpen ? 264 : 24, padding: '12px 20px', gap: 20 }}
     >
-      <div className="flex flex-col gap-[1px]">
-        <span className="text-[17px] font-bold text-accent">{vacant}</span>
+      <div className="flex flex-col gap-[2px]">
+        <span className="text-[18px] font-bold text-accent">{vacant}</span>
         <span className="text-[10px] font-semibold text-text-dim tracking-[0.5px] uppercase">Vacant</span>
       </div>
-      <div className="w-px h-6 bg-border" />
-      <div className="flex flex-col gap-[1px]">
-        <span className="text-[17px] font-bold text-occ">{occupied}</span>
+      <div className="w-px h-7 bg-border" />
+      <div className="flex flex-col gap-[2px]">
+        <span className="text-[18px] font-bold text-occ">{occupied}</span>
         <span className="text-[10px] font-semibold text-text-dim tracking-[0.5px] uppercase">Occupied</span>
       </div>
     </div>
