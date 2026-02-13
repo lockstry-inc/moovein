@@ -15,7 +15,7 @@ export default function StorageTypes() {
   return (
     <section className="py-20 px-6 border-t border-border" style={{ background: 'var(--color-surface)' }}>
       <div className="max-w-[1100px] mx-auto">
-        <h2 className="font-['Playfair_Display',serif] text-[28px] font-bold text-white text-center mb-2">
+        <h2 className="font-['Playfair_Display',serif] text-[28px] font-bold text-text text-center mb-2">
           Storage for Every Need
         </h2>
         <p className="text-[14px] text-text-sec text-center mb-10">
@@ -32,7 +32,7 @@ export default function StorageTypes() {
                 className="bg-bg border border-border rounded-[14px] flex flex-col snap-center shrink-0 min-w-[180px] md:shrink md:min-w-0 transition-all duration-200 hover:border-border-light"
                 style={{ padding: '22px 18px' }}
               >
-                <div className="font-['Playfair_Display',serif] text-[18px] font-semibold text-white mb-1">
+                <div className="font-['Playfair_Display',serif] text-[18px] font-semibold text-text mb-1">
                   {t.name}
                 </div>
                 <div className="text-[13px] text-brand font-semibold mb-1">{t.dims}</div>

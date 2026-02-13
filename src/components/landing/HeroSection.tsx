@@ -1,6 +1,11 @@
 import PointCloudCow from './PointCloudCow'
 
-export default function HeroSection({ onCta }: { onCta: () => void }) {
+interface Props {
+  onCta: () => void
+  theme: 'dark' | 'light'
+}
+
+export default function HeroSection({ onCta, theme }: Props) {
   return (
     <section
       className="min-h-screen flex flex-col items-center justify-center relative"
@@ -9,10 +14,10 @@ export default function HeroSection({ onCta }: { onCta: () => void }) {
       }}
     >
       {/* 3D Point Cloud Cow */}
-      <PointCloudCow />
+      <PointCloudCow theme={theme} />
 
       {/* Heading */}
-      <h1 className="font-['Playfair_Display',serif] text-[48px] md:text-[64px] font-bold text-white mb-3 text-center">
+      <h1 className="font-['Playfair_Display',serif] text-[48px] md:text-[64px] font-bold text-text mb-3 text-center">
         Moove In
       </h1>
 

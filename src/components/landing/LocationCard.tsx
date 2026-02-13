@@ -16,7 +16,7 @@ export default function LocationCard({ facility }: { facility: FacilityManifestE
     >
       <div className="flex items-start justify-between gap-3">
         <div className="flex flex-col gap-[6px] min-w-0">
-          <div className={`text-[15px] font-semibold text-white transition-colors ${
+          <div className={`text-[15px] font-semibold text-text transition-colors ${
             facility.hasMap ? 'group-hover:text-brand' : ''
           }`}>
             {facility.name.replace('Moove In ', '')}

@@ -1,8 +1,10 @@
-import { useRef, useMemo, Suspense, lazy } from 'react'
+import { useRef, useMemo, Suspense, createContext, useContext } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js'
 import { MeshSurfaceSampler } from 'three/examples/jsm/math/MeshSurfaceSampler.js'
+
+const ThemeContext = createContext<'dark' | 'light'>('dark')
 
 const COW_POINTS = 4500
 const GRASS_POINTS = 1500
@@ -333,6 +335,7 @@ function makePointGeo(surfaceGeo: THREE.BufferGeometry, count: number) {
 }
 
 function ScenePoints() {
+  const theme = useContext(ThemeContext)
   const cowRef = useRef<THREE.Group>(null)
   const cowMatRef = useRef<THREE.ShaderMaterial>(null)
   const grassMatRef = useRef<THREE.ShaderMaterial>(null)
@@ -351,6 +354,23 @@ function ScenePoints() {
     uColor: { value: new THREE.Color('#2dd4a0') },
     uPixelRatio: { value: Math.min(window.devicePixelRatio, 2) },
   }), [])
+
+  // Update colors and blending when theme changes
+  const cowColor = theme === 'dark' ? '#ffffff' : '#1a1a1e'
+  const grassColor = theme === 'dark' ? '#2dd4a0' : '#16a34a'
+  const blending = theme === 'dark' ? THREE.AdditiveBlending : THREE.NormalBlending
+  useMemo(() => {
+    cowUniforms.uColor.value.set(cowColor)
+    grassUniforms.uColor.value.set(grassColor)
+    if (cowMatRef.current) {
+      cowMatRef.current.blending = blending
+      cowMatRef.current.needsUpdate = true
+    }
+    if (grassMatRef.current) {
+      grassMatRef.current.blending = blending
+      grassMatRef.current.needsUpdate = true
+    }
+  }, [cowColor, grassColor, blending, cowUniforms, grassUniforms])
 
   useFrame(({ clock }) => {
     const t = clock.elapsedTime
@@ -373,7 +393,7 @@ function ScenePoints() {
             fragmentShader={fragmentShader}
             uniforms={cowUniforms}
             transparent
-            blending={THREE.AdditiveBlending}
+            blending={blending}
             depthWrite={false}
           />
         </points>
@@ -387,7 +407,7 @@ function ScenePoints() {
           fragmentShader={fragmentShader}
           uniforms={grassUniforms}
           transparent
-          blending={THREE.AdditiveBlending}
+          blending={blending}
           depthWrite={false}
         />
       </points>
@@ -398,26 +418,26 @@ function ScenePoints() {
 // ---------------------------------------------------------------------------
 // Wrapper with Canvas
 // ---------------------------------------------------------------------------
-function PointCloudCanvas() {
+function PointCloudCanvas({ theme }: { theme: 'dark' | 'light' }) {
   return (
-    <Canvas
-      camera={{ position: [0, 0, 5.5], fov: 30 }}
-      gl={{ alpha: true, antialias: true, powerPreference: 'high-performance' }}
-      dpr={[1, 2]}
-      style={{ background: 'transparent' }}
-    >
-      <ScenePoints />
-    </Canvas>
+    <ThemeContext.Provider value={theme}>
+      <Canvas
+        camera={{ position: [0, 0, 5.5], fov: 30 }}
+        gl={{ alpha: true, antialias: true, powerPreference: 'high-performance' }}
+        dpr={[1, 2]}
+        style={{ background: 'transparent' }}
+      >
+        <ScenePoints />
+      </Canvas>
+    </ThemeContext.Provider>
   )
 }
 
-const LazyCanvas = lazy(() => Promise.resolve({ default: PointCloudCanvas }))
-
-export default function PointCloudCow() {
+export default function PointCloudCow({ theme = 'dark' }: { theme?: 'dark' | 'light' }) {
   return (
     <div className="mx-auto w-full" style={{ maxWidth: 600, height: 320 }}>
       <Suspense fallback={<div style={{ width: '100%', height: 320 }} />}>
-        <LazyCanvas />
+        <PointCloudCanvas theme={theme} />
       </Suspense>
     </div>
   )

@@ -31,7 +31,7 @@ export default function LocationGrid() {
         {/* Header */}
         <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
           <div className="flex items-center gap-3">
-            <h2 className="font-['Playfair_Display',serif] text-[28px] font-bold text-white">
+            <h2 className="font-['Playfair_Display',serif] text-[28px] font-bold text-text">
               Our Locations
             </h2>
             <span className="text-[12px] font-semibold text-brand bg-brand-bg rounded-full" style={{ padding: '4px 12px' }}>

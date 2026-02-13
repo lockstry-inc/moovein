@@ -35,7 +35,11 @@ function buildPopupHTML(f: FacilityManifestEntry) {
   </div>`
 }
 
-export default function LocationMap() {
+interface Props {
+  theme?: 'dark' | 'light'
+}
+
+export default function LocationMap({ theme = 'dark' }: Props) {
   const mapContainer = useRef<HTMLDivElement>(null)
   const mapRef = useRef<mapboxgl.Map | null>(null)
   const popupRef = useRef<mapboxgl.Popup | null>(null)
@@ -282,10 +286,26 @@ export default function LocationMap() {
     map.setStyle(style.url)
   }, [activeStyle])
 
+  // Switch map style when theme changes
+  useEffect(() => {
+    const map = mapRef.current
+    if (!map) return
+    const targetStyle = theme === 'light' ? 'streets' : 'dark'
+    if (activeStyle !== targetStyle) {
+      switchStyle(targetStyle as MapStyleId)
+    }
+  }, [theme]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  const isLight = theme === 'light'
+  const toggleBg = isLight ? 'rgba(255,255,255,0.82)' : 'rgba(6,7,10,0.75)'
+  const vignetteBg = isLight
+    ? 'radial-gradient(ellipse at center, transparent 25%, rgba(245,245,247,0.9) 100%)'
+    : 'radial-gradient(ellipse at center, transparent 25%, rgba(6,7,10,0.9) 100%)'
+
   return (
     <section id="locations" className="py-16 px-6" style={{ background: 'var(--color-bg)' }}>
       <div className="max-w-[1100px] mx-auto">
-        <h2 className="font-['Playfair_Display',serif] text-[28px] font-bold text-white text-center mb-2">
+        <h2 className="font-['Playfair_Display',serif] text-[28px] font-bold text-text text-center mb-2">
           Find a Location Near You
         </h2>
         <p className="text-[14px] text-text-sec text-center mb-8">
@@ -299,7 +319,7 @@ export default function LocationMap() {
           <div ref={mapContainer} className="w-full h-full" />
 
           {/* Style toggle */}
-          <div className="absolute top-3 left-3 z-20 flex gap-1 rounded-lg p-1" style={{ background: 'rgba(6,7,10,0.75)', backdropFilter: 'blur(12px)' }}>
+          <div className="absolute top-3 left-3 z-20 flex gap-1 rounded-lg p-1" style={{ background: toggleBg, backdropFilter: 'blur(12px)' }}>
             {MAP_STYLES.map(s => (
               <button
                 key={s.id}
@@ -320,7 +340,7 @@ export default function LocationMap() {
             ref={vignetteRef}
             className="absolute inset-0 pointer-events-none z-10"
             style={{
-              background: 'radial-gradient(ellipse at center, transparent 25%, rgba(6,7,10,0.9) 100%)',
+              background: vignetteBg,
               opacity: 0,
               transition: 'opacity 0.4s ease',
             }}

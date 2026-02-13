@@ -7,8 +7,7 @@ export default function LandingFooter({ onCta }: { onCta: () => void }) {
           {/* Brand */}
           <div className="flex items-center gap-3">
             <div
-              className="w-9 h-9 rounded-[8px] shrink-0 overflow-hidden"
-              style={{ background: '#0e1014' }}
+              className="w-9 h-9 rounded-[8px] shrink-0 overflow-hidden bg-surface-2"
             >
               <img
                 src="/moovein.png"
@@ -17,7 +16,7 @@ export default function LandingFooter({ onCta }: { onCta: () => void }) {
                 style={{ mixBlendMode: 'screen' }}
               />
             </div>
-            <span className="font-['Playfair_Display',serif] text-[15px] font-semibold text-white">
+            <span className="font-['Playfair_Display',serif] text-[15px] font-semibold text-text">
               Moove In
             </span>
           </div>

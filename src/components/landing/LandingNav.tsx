@@ -1,33 +1,55 @@
-export default function LandingNav({ onCta }: { onCta: () => void }) {
+interface Props {
+  onCta: () => void
+  theme: 'dark' | 'light'
+  onToggleTheme: () => void
+}
+
+export default function LandingNav({ onCta, theme, onToggleTheme }: Props) {
   return (
     <nav
-      className="fixed top-0 left-0 right-0 h-[58px] bg-[rgba(6,7,10,0.92)] backdrop-blur-[24px] border-b border-border flex items-center justify-between z-100"
-      style={{ padding: '0 24px 0 20px' }}
+      className="fixed top-0 left-0 right-0 h-[58px] backdrop-blur-[24px] border-b border-border flex items-center justify-between z-100"
+      style={{
+        padding: '0 24px 0 20px',
+        background: theme === 'dark' ? 'rgba(6,7,10,0.92)' : 'rgba(245,245,247,0.92)',
+      }}
     >
       <div className="flex items-center gap-3">
         <div
           className="w-10 h-10 rounded-[10px] shrink-0 overflow-hidden"
-          style={{ background: '#0e1014' }}
+          style={{ background: theme === 'dark' ? '#0e1014' : '#e6e6ea' }}
         >
           <img
             src="/moovein.png"
             alt="Moove In"
             className="w-full h-full object-cover"
-            style={{ mixBlendMode: 'screen' }}
+            style={{ mixBlendMode: theme === 'dark' ? 'screen' : 'multiply' }}
           />
         </div>
-        <span className="font-['Playfair_Display',serif] text-[17px] font-semibold text-white">
+        <span className="font-['Playfair_Display',serif] text-[17px] font-semibold text-text">
           Moove In
         </span>
       </div>
 
-      <button
-        onClick={onCta}
-        className="bg-brand text-white text-[13px] font-semibold rounded-full cursor-pointer transition-all duration-200 hover:shadow-[0_0_20px_rgba(143,0,0,0.35)] hover:scale-[1.02]"
-        style={{ padding: '8px 20px' }}
-      >
-        Find a Location
-      </button>
+      <div className="flex items-center gap-3">
+        {/* Theme toggle */}
+        <button
+          onClick={onToggleTheme}
+          className="w-9 h-9 rounded-full flex items-center justify-center cursor-pointer border border-border bg-surface transition-all duration-200 hover:border-border-light"
+          title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+        >
+          <span className="text-[16px]">
+            {theme === 'dark' ? '\u2600\uFE0F' : '\uD83C\uDF19'}
+          </span>
+        </button>
+
+        <button
+          onClick={onCta}
+          className="bg-brand text-white text-[13px] font-semibold rounded-full cursor-pointer transition-all duration-200 hover:shadow-[0_0_20px_rgba(143,0,0,0.35)] hover:scale-[1.02]"
+          style={{ padding: '8px 20px' }}
+        >
+          Find a Location
+        </button>
+      </div>
     </nav>
   )
 }
