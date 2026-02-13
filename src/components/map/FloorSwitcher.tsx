@@ -9,7 +9,7 @@ export default function FloorSwitcher() {
 
   return (
     <div
-      className="fixed bottom-[72px] left-1/2 -translate-x-1/2 flex bg-surface border border-border rounded-[14px] z-90 md:bottom-[22px]"
+      className="fixed right-[22px] bottom-[76px] flex bg-surface border border-border rounded-[14px] z-90"
       style={{ gap: 4, padding: 5 }}
     >
       {facility.floors.map(floor => {
