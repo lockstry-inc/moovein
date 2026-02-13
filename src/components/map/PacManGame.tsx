@@ -486,16 +486,16 @@ export default function PacManGame({ floor, onExit }: Props) {
 
       {/* HUD */}
       <div
-        className="fixed top-[70px] left-1/2 -translate-x-1/2 z-[9999] flex items-center gap-6 rounded-full"
-        style={{ padding: '10px 28px', background: 'rgba(0,0,0,0.85)', backdropFilter: 'blur(12px)', border: '1px solid rgba(255,204,0,0.3)' }}
+        className="fixed top-[70px] left-1/2 -translate-x-1/2 z-[9999] flex items-center gap-10 rounded-[28px]"
+        style={{ padding: '18px 44px', background: 'rgba(0,0,0,0.9)', backdropFilter: 'blur(16px)', border: '2px solid rgba(255,204,0,0.35)', boxShadow: '0 8px 40px rgba(0,0,0,0.5)' }}
       >
-        <div className="text-[15px] font-bold" style={{ color: '#ffcc00' }}>PAC-MAN</div>
-        <div className="text-[14px] font-semibold text-white">Score: {score}</div>
-        <div className="text-[14px] font-semibold" style={{ color: '#ff6b6b' }}>{'♥'.repeat(lives)}</div>
+        <div className="text-[28px] font-bold tracking-[2px]" style={{ color: '#ffcc00' }}>PAC-MAN</div>
+        <div className="text-[24px] font-bold text-white">Score: {score}</div>
+        <div className="text-[28px]" style={{ color: '#ff6b6b', letterSpacing: 4 }}>{'♥'.repeat(lives)}</div>
         <button
           onClick={onExit}
-          className="text-[12px] font-semibold cursor-pointer rounded-full transition-colors duration-150"
-          style={{ padding: '4px 14px', background: 'rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.6)', border: '1px solid rgba(255,255,255,0.15)' }}
+          className="text-[16px] font-semibold cursor-pointer rounded-full transition-colors duration-150"
+          style={{ padding: '8px 22px', background: 'rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.6)', border: '1px solid rgba(255,255,255,0.2)' }}
         >
           ESC to Exit
         </button>
@@ -504,18 +504,18 @@ export default function PacManGame({ floor, onExit }: Props) {
       {/* Game over / Win overlay */}
       {gameOver && (
         <div className="fixed inset-0 flex flex-col items-center justify-center z-[9999]" style={{ background: 'rgba(0,0,0,0.7)' }}>
-          <div className="flex flex-col items-center gap-4 rounded-[20px]" style={{ padding: '40px 60px', background: 'rgba(0,0,0,0.9)', border: `2px solid ${won ? '#2dd4a0' : '#ff6b6b'}` }}>
-            <div className="text-[36px] font-bold" style={{ color: won ? '#2dd4a0' : '#ff6b6b' }}>
+          <div className="flex flex-col items-center gap-6 rounded-[24px]" style={{ padding: '56px 80px', background: 'rgba(0,0,0,0.92)', border: `3px solid ${won ? '#2dd4a0' : '#ff6b6b'}`, boxShadow: '0 12px 60px rgba(0,0,0,0.6)' }}>
+            <div className="text-[56px] font-bold tracking-[2px]" style={{ color: won ? '#2dd4a0' : '#ff6b6b' }}>
               {won ? 'YOU WIN!' : 'GAME OVER'}
             </div>
-            <div className="text-[20px] font-semibold" style={{ color: '#ffcc00' }}>Score: {score}</div>
-            <div className="flex gap-3 mt-2">
-              <button onClick={handleRestart} className="text-[14px] font-semibold cursor-pointer rounded-full transition-all duration-200 hover:scale-[1.05]"
-                style={{ padding: '10px 28px', background: won ? '#2dd4a0' : '#ffcc00', color: '#000', border: 'none' }}>
+            <div className="text-[32px] font-bold" style={{ color: '#ffcc00' }}>Score: {score}</div>
+            <div className="flex gap-4 mt-4">
+              <button onClick={handleRestart} className="text-[18px] font-bold cursor-pointer rounded-full transition-all duration-200 hover:scale-[1.05]"
+                style={{ padding: '14px 40px', background: won ? '#2dd4a0' : '#ffcc00', color: '#000', border: 'none' }}>
                 Play Again
               </button>
-              <button onClick={onExit} className="text-[14px] font-semibold cursor-pointer rounded-full transition-all duration-200 hover:scale-[1.05]"
-                style={{ padding: '10px 28px', background: 'rgba(255,255,255,0.1)', color: '#fff', border: '1px solid rgba(255,255,255,0.2)' }}>
+              <button onClick={onExit} className="text-[18px] font-bold cursor-pointer rounded-full transition-all duration-200 hover:scale-[1.05]"
+                style={{ padding: '14px 40px', background: 'rgba(255,255,255,0.1)', color: '#fff', border: '2px solid rgba(255,255,255,0.2)' }}>
                 Back to Map
               </button>
             </div>
