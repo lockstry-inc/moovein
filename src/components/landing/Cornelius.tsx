@@ -8,7 +8,7 @@ import { MeshSurfaceSampler } from 'three/examples/jsm/math/MeshSurfaceSampler.j
 
 const ThemeContext = createContext<'dark' | 'light'>('dark')
 
-const IDLE_MS = 5_000 // 5 seconds (dev — change to 60_000 for prod)
+const IDLE_MS = 60_000 // 1 minute
 const COW_POINTS = 3000
 const GRASS_POINTS = 800
 
