@@ -312,13 +312,14 @@ const grassVertexShader = /* glsl */ `
 
 const fragmentShader = /* glsl */ `
   uniform vec3 uColor;
+  uniform float uOpacityBoost;
   varying float vOpacity;
 
   void main() {
     float d = length(gl_PointCoord - 0.5);
     if (d > 0.5) discard;
-    float alpha = smoothstep(0.5, 0.3, d) * vOpacity;
-    gl_FragColor = vec4(uColor, alpha);
+    float alpha = smoothstep(0.5, 0.3, d) * vOpacity * uOpacityBoost;
+    gl_FragColor = vec4(uColor, min(alpha, 1.0));
   }
 `
 
@@ -347,21 +348,27 @@ function ScenePoints() {
     uTime: { value: 0 },
     uColor: { value: new THREE.Color('#ffffff') },
     uPixelRatio: { value: Math.min(window.devicePixelRatio, 2) },
+    uOpacityBoost: { value: 1.0 },
   }), [])
 
   const grassUniforms = useMemo(() => ({
     uTime: { value: 0 },
     uColor: { value: new THREE.Color('#2dd4a0') },
     uPixelRatio: { value: Math.min(window.devicePixelRatio, 2) },
+    uOpacityBoost: { value: 1.0 },
   }), [])
 
-  // Update colors and blending when theme changes
-  const cowColor = theme === 'dark' ? '#ffffff' : '#1a1a1e'
-  const grassColor = theme === 'dark' ? '#2dd4a0' : '#16a34a'
-  const blending = theme === 'dark' ? THREE.AdditiveBlending : THREE.NormalBlending
+  // Update colors, opacity, and blending when theme changes
+  const isLight = theme === 'light'
+  const cowColor = isLight ? '#000000' : '#ffffff'
+  const grassColor = isLight ? '#0d9460' : '#2dd4a0'
+  const blending = isLight ? THREE.NormalBlending : THREE.AdditiveBlending
+  const opacityBoost = isLight ? 2.8 : 1.0
   useMemo(() => {
     cowUniforms.uColor.value.set(cowColor)
+    cowUniforms.uOpacityBoost.value = opacityBoost
     grassUniforms.uColor.value.set(grassColor)
+    grassUniforms.uOpacityBoost.value = opacityBoost
     if (cowMatRef.current) {
       cowMatRef.current.blending = blending
       cowMatRef.current.needsUpdate = true
@@ -370,7 +377,7 @@ function ScenePoints() {
       grassMatRef.current.blending = blending
       grassMatRef.current.needsUpdate = true
     }
-  }, [cowColor, grassColor, blending, cowUniforms, grassUniforms])
+  }, [cowColor, grassColor, blending, opacityBoost, cowUniforms, grassUniforms])
 
   useFrame(({ clock }) => {
     const t = clock.elapsedTime
