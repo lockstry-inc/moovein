@@ -43,28 +43,28 @@ function buildCowGeometry(): THREE.BufferGeometry {
   rump.translate(-0.9, 0.2, 0)
   parts.push(rump)
 
-  // Neck — angled upward from shoulder
-  const neck = new THREE.CylinderGeometry(0.28, 0.35, 0.6, 12)
-  neck.rotateZ(Math.PI / 2 - 0.35)
-  neck.translate(1.35, 0.35, 0)
+  // Neck — angled steeply downward (grazing default pose)
+  const neck = new THREE.CylinderGeometry(0.28, 0.35, 0.8, 12)
+  neck.rotateZ(Math.PI / 2 + 0.85) // steep downward from shoulder
+  neck.translate(1.15, -0.3, 0)
   parts.push(neck)
 
-  // Head — flatter, more angular
+  // Head — near ground level, grazing pose
   const head = new THREE.SphereGeometry(0.36, 16, 12)
-  head.scale(1.2, 0.85, 0.8)
-  head.translate(1.65, 0.5, 0)
+  head.scale(1.1, 0.85, 0.8)
+  head.translate(1.3, -1.0, 0)
   parts.push(head)
 
-  // Snout / muzzle — boxy
-  const snout = new THREE.CylinderGeometry(0.16, 0.18, 0.25, 10)
-  snout.rotateZ(Math.PI / 2)
-  snout.translate(2.0, 0.35, 0)
+  // Snout / muzzle — at grass level
+  const snout = new THREE.CylinderGeometry(0.16, 0.18, 0.22, 10)
+  snout.rotateZ(Math.PI / 2 + 0.4) // angled slightly down
+  snout.translate(1.4, -1.32, 0)
   parts.push(snout)
 
-  // Jaw line
+  // Jaw line — near grass
   const jaw = new THREE.SphereGeometry(0.12, 8, 6)
-  jaw.scale(1.3, 0.5, 0.8)
-  jaw.translate(1.85, 0.22, 0)
+  jaw.scale(1.2, 0.5, 0.8)
+  jaw.translate(1.35, -1.42, 0)
   parts.push(jaw)
 
   // --- Legs (4) — longer, thinner, clearly visible ---
@@ -94,27 +94,27 @@ function buildCowGeometry(): THREE.BufferGeometry {
   const kbr = kneeGeo.clone(); kbr.translate(-0.85, -0.7, -0.3)
   parts.push(kfl, kfr, kbl, kbr)
 
-  // --- Horns ---
+  // --- Horns --- (on top of lowered head)
   const hornGeo = new THREE.ConeGeometry(0.04, 0.28, 6)
-  const hl = hornGeo.clone(); hl.rotateZ(0.3); hl.translate(1.52, 0.88, 0.16)
-  const hr = hornGeo.clone(); hr.rotateZ(0.3); hr.translate(1.52, 0.88, -0.16)
+  const hl = hornGeo.clone(); hl.rotateZ(0.3); hl.translate(1.22, -0.68, 0.16)
+  const hr = hornGeo.clone(); hr.rotateZ(0.3); hr.translate(1.22, -0.68, -0.16)
   parts.push(hl, hr)
 
-  // --- Ears ---
+  // --- Ears --- (on lowered head)
   const earGeo = new THREE.SphereGeometry(0.09, 8, 6)
   earGeo.scale(1.2, 0.35, 1.6)
-  const el = earGeo.clone(); el.translate(1.45, 0.72, 0.30)
-  const er = earGeo.clone(); er.translate(1.45, 0.72, -0.30)
+  const el = earGeo.clone(); el.translate(1.18, -0.78, 0.30)
+  const er = earGeo.clone(); er.translate(1.18, -0.78, -0.30)
   parts.push(el, er)
 
-  // --- Tail --- hangs downward from rump, close to body
-  const tail = new THREE.CylinderGeometry(0.035, 0.025, 0.55, 6)
-  tail.rotateZ(-0.9) // steeper angle — hangs down
+  // --- Tail --- thicker, hangs downward from rump
+  const tail = new THREE.CylinderGeometry(0.07, 0.04, 0.6, 8)
+  tail.rotateZ(-0.9)
   tail.translate(-1.42, -0.15, 0)
   parts.push(tail)
 
-  // Tuft at tail tip — kept close
-  const tuft = new THREE.SphereGeometry(0.045, 6, 4)
+  // Tuft at tail tip
+  const tuft = new THREE.SphereGeometry(0.08, 8, 6)
   tuft.translate(-1.58, -0.42, 0)
   parts.push(tuft)
 
@@ -200,7 +200,8 @@ function samplePoints(geometry: THREE.BufferGeometry, count: number) {
 }
 
 // ---------------------------------------------------------------------------
-// Vertex shader — grazing loop, tail wag, body breathing
+// Vertex shader — grazing loop (geometry is already head-down)
+// Animation LIFTS head up for chewing, then back down
 // ---------------------------------------------------------------------------
 const vertexShader = /* glsl */ `
   attribute vec3 aNormal;
@@ -215,31 +216,33 @@ const vertexShader = /* glsl */ `
     vec3 pos = position + aNormal * breath;
 
     // --- Grazing animation loop ---
-    // Cycle: 0-3s head down grazing, 3-4.5s rising, 4.5-6.5s up chewing, 6.5-8s lowering
+    // Geometry default = head DOWN (grazing). Animation lifts UP.
+    // Cycle: 0-3s grazing, 3-4.5s rising, 4.5-6.5s up chewing, 6.5-8s lowering
     float cycle = mod(uTime, 8.0);
-    float grazeAngle = -1.1; // radians — head down toward grass
+    float liftAngle = 1.1; // radians UP from grazing pose
     float headAngle;
 
     if (cycle < 3.0) {
-      // Grazing — head fully down, tiny nibble motion
-      headAngle = grazeAngle + sin(uTime * 4.0) * 0.04;
+      // Grazing — head stays down, tiny nibble motion
+      headAngle = sin(uTime * 4.0) * 0.04;
     } else if (cycle < 4.5) {
-      // Rising up
+      // Rising — lift head up
       float t = smoothstep(3.0, 4.5, cycle);
-      headAngle = mix(grazeAngle, 0.0, t);
+      headAngle = mix(0.0, liftAngle, t);
     } else if (cycle < 6.5) {
       // Head up — chewing (small jaw oscillation)
-      headAngle = sin(uTime * 5.0) * 0.06;
+      headAngle = liftAngle + sin(uTime * 5.0) * 0.06;
     } else {
-      // Lowering back down
+      // Lowering back to graze
       float t = smoothstep(6.5, 8.0, cycle);
-      headAngle = mix(0.0, grazeAngle, t);
+      headAngle = mix(liftAngle, 0.0, t);
     }
 
-    // Apply rotation to neck/head region — pivot at shoulder junction
-    float neckFactor = smoothstep(0.8, 1.5, pos.x);
-    float pivotX = 1.0;
-    float pivotY = 0.3;
+    // Apply rotation to neck/head region — pivot at shoulder base
+    // neckFactor: 0 at body (x<0.8), 1 at head (x>1.3)
+    float neckFactor = smoothstep(0.7, 1.3, pos.x);
+    float pivotX = 0.85;
+    float pivotY = -0.1;
     float dx = pos.x - pivotX;
     float dy = pos.y - pivotY;
     float angle = headAngle * neckFactor;
@@ -248,14 +251,14 @@ const vertexShader = /* glsl */ `
     pos.x = pivotX + dx * c - dy * s;
     pos.y = pivotY + dx * s + dy * c;
 
-    // Tail wag — swing laterally, only below body center
+    // Tail wag — swing laterally, only in tail region
     float tailFactor = smoothstep(-1.1, -1.6, pos.x) * smoothstep(0.3, -0.2, pos.y);
     pos.z += sin(uTime * 2.8) * 0.14 * tailFactor;
     pos.y += sin(uTime * 2.8 + 0.8) * 0.06 * tailFactor;
 
     // Ear flick (only when head is up — cycle 4.5-6.5)
     float earActive = smoothstep(4.0, 4.5, cycle) * (1.0 - smoothstep(6.5, 7.0, cycle));
-    float earFactor = smoothstep(0.6, 0.8, pos.y) * smoothstep(1.2, 1.5, pos.x) * earActive;
+    float earFactor = step(0.3, neckFactor) * earActive;
     pos.y += sin(uTime * 3.5 + 2.0) * 0.03 * earFactor;
 
     // Leg shifting
