@@ -208,6 +208,9 @@
 }
 .mapboxgl-popup-tip {
   border-top-color: var(--color-surface) !important;
+  border-bottom-color: var(--color-surface) !important;
+  border-left-color: var(--color-surface) !important;
+  border-right-color: var(--color-surface) !important;
 }
 .mapboxgl-popup-close-button {
   color: var(--color-text-dim) !important;
