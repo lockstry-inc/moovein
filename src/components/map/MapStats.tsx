@@ -24,54 +24,42 @@ export default function MapStats() {
 
   return (
     <div className="fixed bottom-[22px] left-[12px] bg-surface border border-border rounded-[14px] z-90">
-      <div className="flex">
-        {/* Left column: Floor 1 tab + Vacant */}
-        <div className="flex flex-col items-center flex-1">
-          {hasMultipleFloors && (
-            <div className="w-full border-b border-border" style={{ padding: 5 }}>
+      {/* Floor tabs row */}
+      {hasMultipleFloors && (
+        <div className="flex" style={{ gap: 4, padding: 5 }}>
+          {floors.map(f => {
+            const active = f.id === currentFloorId
+            return (
               <button
-                onClick={() => switchFloor(floors[0].id)}
-                className={`w-full rounded-[10px] text-[12px] font-semibold transition-all duration-200 cursor-pointer border-none ${
-                  floors[0].id === currentFloorId
+                key={f.id}
+                onClick={() => switchFloor(f.id)}
+                className={`flex-1 rounded-[10px] text-[12px] font-semibold transition-all duration-200 cursor-pointer border-none whitespace-nowrap ${
+                  active
                     ? 'bg-accent-bg text-accent shadow-[0_0_12px_rgba(45,212,160,0.15)]'
                     : 'bg-transparent text-text-sec hover:text-text hover:bg-surface-2'
                 }`}
                 style={{ padding: '8px 16px' }}
               >
-                {floors[0].name}
+                {f.name}
               </button>
-            </div>
-          )}
-          <div className="flex flex-col items-center gap-[2px]" style={{ padding: '10px 20px' }}>
-            <span className="text-[18px] font-bold text-accent">{vacant}</span>
-            <span className="text-[10px] font-semibold text-text-dim tracking-[0.5px] uppercase">Vacant</span>
-          </div>
+            )
+          })}
         </div>
+      )}
 
-        {/* Divider */}
-        <div className="w-px bg-border" />
+      {/* Full-width divider */}
+      {hasMultipleFloors && <div className="h-px bg-border" />}
 
-        {/* Right column: Floor 2 tab + Occupied */}
-        <div className="flex flex-col items-center flex-1">
-          {hasMultipleFloors && (
-            <div className="w-full border-b border-border" style={{ padding: 5 }}>
-              <button
-                onClick={() => switchFloor(floors[1].id)}
-                className={`w-full rounded-[10px] text-[12px] font-semibold transition-all duration-200 cursor-pointer border-none ${
-                  floors[1].id === currentFloorId
-                    ? 'bg-accent-bg text-accent shadow-[0_0_12px_rgba(45,212,160,0.15)]'
-                    : 'bg-transparent text-text-sec hover:text-text hover:bg-surface-2'
-                }`}
-                style={{ padding: '8px 16px' }}
-              >
-                {floors[1].name}
-              </button>
-            </div>
-          )}
-          <div className="flex flex-col items-center gap-[2px]" style={{ padding: '10px 20px' }}>
-            <span className="text-[18px] font-bold text-occ">{occupied}</span>
-            <span className="text-[10px] font-semibold text-text-dim tracking-[0.5px] uppercase">Occupied</span>
-          </div>
+      {/* Stats row */}
+      <div className="flex items-center justify-center" style={{ padding: '10px 20px', gap: 20 }}>
+        <div className="flex flex-col items-center gap-[2px]">
+          <span className="text-[18px] font-bold text-accent">{vacant}</span>
+          <span className="text-[10px] font-semibold text-text-dim tracking-[0.5px] uppercase">Vacant</span>
+        </div>
+        <div className="w-px h-7 bg-border" />
+        <div className="flex flex-col items-center gap-[2px]">
+          <span className="text-[18px] font-bold text-occ">{occupied}</span>
+          <span className="text-[10px] font-semibold text-text-dim tracking-[0.5px] uppercase">Occupied</span>
         </div>
       </div>
     </div>
