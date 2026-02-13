@@ -18,7 +18,7 @@ export default function SignatureCanvas({ onSign }: Props) {
     const ctx = canvas.getContext('2d')
     if (!ctx) return
     ctx.scale(2, 2)
-    ctx.strokeStyle = '#8F0000'
+    ctx.strokeStyle = '#2dd4a0'
     ctx.lineWidth = 2
     ctx.lineCap = 'round'
     ctx.lineJoin = 'round'

@@ -15,7 +15,7 @@ export default function ValueProps() {
             className="bg-surface border border-border rounded-[14px] flex flex-col items-center text-center transition-all duration-200 hover:border-border-light"
             style={{ padding: '24px 16px' }}
           >
-            <div className="w-10 h-10 rounded-[10px] bg-accent-bg flex items-center justify-center text-[18px] mb-3">
+            <div className="w-10 h-10 rounded-[10px] bg-brand-bg flex items-center justify-center text-[18px] mb-3">
               {p.icon}
             </div>
             <div className="text-[14px] font-semibold text-text mb-1">{p.title}</div>

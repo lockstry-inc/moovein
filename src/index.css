@@ -10,10 +10,13 @@
   --color-text: #eeeef0;
   --color-text-sec: #85868f;
   --color-text-dim: #4e4f58;
-  --color-accent: #8F0000;
-  --color-accent-bg: rgba(143, 0, 0, 0.16);
-  --color-accent-border: rgba(143, 0, 0, 0.38);
-  --color-accent-mid: rgba(143, 0, 0, 0.24);
+  --color-accent: #2dd4a0;
+  --color-accent-bg: rgba(45, 212, 160, 0.16);
+  --color-accent-border: rgba(45, 212, 160, 0.38);
+  --color-accent-mid: rgba(45, 212, 160, 0.24);
+  --color-brand: #8F0000;
+  --color-brand-bg: rgba(143, 0, 0, 0.16);
+  --color-brand-border: rgba(143, 0, 0, 0.38);
   --color-occ: #ef4468;
   --color-occ-bg: rgba(239, 68, 104, 0.14);
   --color-occ-border: rgba(239, 68, 104, 0.30);
@@ -122,8 +125,8 @@
 .unit.vacant .unit-id { color: var(--color-accent); }
 .unit.vacant:hover {
   background: var(--color-accent-mid);
-  border-color: rgba(143, 0, 0, 0.55);
-  box-shadow: 0 0 100px rgba(143, 0, 0, 0.15), 0 20px 80px rgba(0, 0, 0, 0.3);
+  border-color: rgba(45, 212, 160, 0.55);
+  box-shadow: 0 0 100px rgba(45, 212, 160, 0.15), 0 20px 80px rgba(0, 0, 0, 0.3);
   transform: scale(1.03);
 }
 .unit.vacant::before {
@@ -180,7 +183,7 @@
 .unit.dimmed .unit-id { opacity: 0 !important; }
 .unit.dimmed .unit-feats { opacity: 0 !important; }
 .unit.hl {
-  box-shadow: 0 0 90px rgba(143, 0, 0, 0.2), 0 0 0 10px rgba(143, 0, 0, 0.12) !important;
+  box-shadow: 0 0 90px rgba(45, 212, 160, 0.2), 0 0 0 10px rgba(45, 212, 160, 0.12) !important;
   z-index: 3;
 }
 .unit.hl .unit-id { opacity: 1 !important; }

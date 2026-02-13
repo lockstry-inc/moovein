@@ -29,7 +29,7 @@ function buildPopupHTML(f: FacilityManifestEntry) {
       ${f.sizes.map(s => `<span style="font-size: 10px; font-weight: 600; color: #8F0000; background: rgba(143,0,0,0.16); border-radius: 99px; padding: 2px 8px;">${s}</span>`).join('')}
     </div>
     ${f.hasMap
-      ? `<button data-facility-id="${f.id}" style="width: 100%; background: #8F0000; color: #06070a; border: none; border-radius: 8px; padding: 8px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: opacity 0.2s;">View Location &rarr;</button>`
+      ? `<button data-facility-id="${f.id}" style="width: 100%; background: #8F0000; color: #ffffff; border: none; border-radius: 8px; padding: 8px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: opacity 0.2s;">View Location &rarr;</button>`
       : `<div style="text-align: center; font-size: 11px; color: #4e4f58; padding: 6px 0;">Interactive map coming soon</div>`
     }
   </div>`
@@ -53,42 +53,44 @@ export default function LocationMap() {
 
   // Adds custom sources, layers, and interaction handlers after any style load
   const addCustomLayers = useCallback((map: mapboxgl.Map) => {
-    // 3D building extrusions
-    const layers = map.getStyle().layers
-    let labelLayerId: string | undefined
-    for (const layer of layers || []) {
-      if (layer.type === 'symbol' && (layer.layout as Record<string, unknown>)?.['text-field']) {
-        labelLayerId = layer.id
-        break
+    // 3D building extrusions (may not be available in all styles)
+    try {
+      const layers = map.getStyle().layers
+      let labelLayerId: string | undefined
+      for (const layer of layers || []) {
+        if (layer.type === 'symbol' && (layer.layout as Record<string, unknown>)?.['text-field']) {
+          labelLayerId = layer.id
+          break
+        }
       }
-    }
 
-    map.addLayer(
-      {
-        id: '3d-buildings',
-        source: 'composite',
-        'source-layer': 'building',
-        filter: ['==', 'extrude', 'true'],
-        type: 'fill-extrusion',
-        minzoom: 12,
-        paint: {
-          'fill-extrusion-color': [
-            'interpolate', ['linear'], ['zoom'],
-            12, '#15171c',
-            16, '#1d1f26',
-          ],
-          'fill-extrusion-height': ['get', 'height'],
-          'fill-extrusion-base': ['get', 'min_height'],
-          'fill-extrusion-opacity': [
-            'interpolate', ['linear'], ['zoom'],
-            12, 0,
-            13, 0.55,
-            16, 0.75,
-          ],
+      map.addLayer(
+        {
+          id: '3d-buildings',
+          source: 'composite',
+          'source-layer': 'building',
+          filter: ['==', 'extrude', 'true'],
+          type: 'fill-extrusion',
+          minzoom: 12,
+          paint: {
+            'fill-extrusion-color': [
+              'interpolate', ['linear'], ['zoom'],
+              12, '#15171c',
+              16, '#1d1f26',
+            ],
+            'fill-extrusion-height': ['get', 'height'],
+            'fill-extrusion-base': ['get', 'min_height'],
+            'fill-extrusion-opacity': [
+              'interpolate', ['linear'], ['zoom'],
+              12, 0,
+              13, 0.55,
+              16, 0.75,
+            ],
+          },
         },
-      },
-      labelLayerId,
-    )
+        labelLayerId,
+      )
+    } catch { /* composite source may not exist in all styles */ }
 
     // Facility data source
     map.addSource('facilities', {
@@ -246,8 +248,18 @@ export default function LocationMap() {
       }
     })
 
-    // Add custom layers on initial load + re-add after every style change
+    // Add custom layers on initial load
+    map.once('load', () => {
+      addCustomLayers(map)
+    })
+
+    // Re-add custom layers after style changes (not initial load)
+    let initialLoadDone = false
     map.on('style.load', () => {
+      if (!initialLoadDone) {
+        initialLoadDone = true
+        return
+      }
       addCustomLayers(map)
     })
 
@@ -294,8 +306,8 @@ export default function LocationMap() {
                 onClick={() => switchStyle(s.id)}
                 className="px-3 py-1.5 rounded-md text-[11px] font-semibold transition-all duration-200 cursor-pointer border-none"
                 style={{
-                  background: activeStyle === s.id ? 'var(--color-accent)' : 'transparent',
-                  color: activeStyle === s.id ? '#06070a' : 'var(--color-text-sec)',
+                  background: activeStyle === s.id ? 'var(--color-brand)' : 'transparent',
+                  color: activeStyle === s.id ? '#ffffff' : 'var(--color-text-sec)',
                 }}
               >
                 {s.label}

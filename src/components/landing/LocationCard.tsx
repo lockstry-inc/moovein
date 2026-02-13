@@ -9,7 +9,7 @@ export default function LocationCard({ facility }: { facility: FacilityManifestE
       onClick={() => facility.hasMap && selectFacility(facility.id)}
       className={`w-full text-left bg-surface border border-border rounded-[14px] transition-all duration-200 group ${
         facility.hasMap
-          ? 'cursor-pointer hover:border-accent-border'
+          ? 'cursor-pointer hover:border-brand-border'
           : 'cursor-default opacity-70'
       }`}
       style={{ padding: '18px 20px' }}
@@ -17,7 +17,7 @@ export default function LocationCard({ facility }: { facility: FacilityManifestE
       <div className="flex items-start justify-between gap-3">
         <div className="flex flex-col gap-[6px] min-w-0">
           <div className={`text-[15px] font-semibold text-white transition-colors ${
-            facility.hasMap ? 'group-hover:text-accent' : ''
+            facility.hasMap ? 'group-hover:text-brand' : ''
           }`}>
             {facility.name.replace('Moove In ', '')}
           </div>
@@ -31,7 +31,7 @@ export default function LocationCard({ facility }: { facility: FacilityManifestE
             {facility.sizes.map(s => (
               <span
                 key={s}
-                className="text-[10px] font-semibold text-accent bg-accent-bg rounded-full"
+                className="text-[10px] font-semibold text-brand bg-brand-bg rounded-full"
                 style={{ padding: '3px 9px' }}
               >
                 {s}
@@ -51,7 +51,7 @@ export default function LocationCard({ facility }: { facility: FacilityManifestE
 
         <div className="shrink-0 mt-1">
           {facility.hasMap ? (
-            <span className="text-text-dim text-[18px] group-hover:text-accent transition-colors">&rarr;</span>
+            <span className="text-text-dim text-[18px] group-hover:text-brand transition-colors">&rarr;</span>
           ) : (
             <span className="text-[10px] text-text-dim font-medium bg-surface-2 rounded-full" style={{ padding: '4px 10px' }}>
               Coming Soon

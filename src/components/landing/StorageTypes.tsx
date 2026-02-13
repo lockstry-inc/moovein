@@ -35,7 +35,7 @@ export default function StorageTypes() {
                 <div className="font-['Playfair_Display',serif] text-[18px] font-semibold text-white mb-1">
                   {t.name}
                 </div>
-                <div className="text-[13px] text-accent font-semibold mb-1">{t.dims}</div>
+                <div className="text-[13px] text-brand font-semibold mb-1">{t.dims}</div>
                 <div className="text-[11px] text-text-dim mb-3">{t.sqft}</div>
                 <div className="text-[12px] text-text-sec leading-[1.5] mb-4 flex-1">
                   {DESCRIPTIONS[key]}

@@ -27,7 +27,7 @@ export default function HeroSection({ onCta }: { onCta: () => void }) {
       {/* CTA */}
       <button
         onClick={onCta}
-        className="bg-accent text-bg font-semibold text-[15px] rounded-full cursor-pointer transition-all duration-300 hover:shadow-[0_0_30px_rgba(143,0,0,0.3)] hover:scale-[1.03] active:scale-[0.98]"
+        className="bg-brand text-white font-semibold text-[15px] rounded-full cursor-pointer transition-all duration-300 hover:shadow-[0_0_30px_rgba(143,0,0,0.4)] hover:scale-[1.03] active:scale-[0.98]"
         style={{ padding: '14px 36px' }}
       >
         Find Your Location

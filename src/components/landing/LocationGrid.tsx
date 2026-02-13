@@ -34,7 +34,7 @@ export default function LocationGrid() {
             <h2 className="font-['Playfair_Display',serif] text-[28px] font-bold text-white">
               Our Locations
             </h2>
-            <span className="text-[12px] font-semibold text-accent bg-accent-bg rounded-full" style={{ padding: '4px 12px' }}>
+            <span className="text-[12px] font-semibold text-brand bg-brand-bg rounded-full" style={{ padding: '4px 12px' }}>
               {facilities.length}
             </span>
           </div>
@@ -45,7 +45,7 @@ export default function LocationGrid() {
             placeholder="Search by city, state, or zip..."
             value={search}
             onChange={e => setSearch(e.target.value)}
-            className="bg-surface border border-border rounded-[10px] text-[13px] text-text font-medium outline-none transition-all duration-200 focus:border-accent-border placeholder:text-text-dim w-full md:w-[260px]"
+            className="bg-surface border border-border rounded-[10px] text-[13px] text-text font-medium outline-none transition-all duration-200 focus:border-brand-border placeholder:text-text-dim w-full md:w-[260px]"
             style={{ padding: '10px 16px' }}
           />
         </div>

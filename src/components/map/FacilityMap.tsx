@@ -100,7 +100,7 @@ export default function FacilityMap() {
     <div
       ref={containerRef}
       className="fixed top-[58px] left-0 right-0 bottom-0 overflow-hidden cursor-grab active:cursor-grabbing"
-      style={{ background: 'radial-gradient(ellipse at 50% 40%, rgba(143,0,0,0.015) 0%, transparent 60%), var(--color-bg)' }}
+      style={{ background: 'radial-gradient(ellipse at 50% 40%, rgba(45,212,160,0.015) 0%, transparent 60%), var(--color-bg)' }}
       onMouseDown={onMouseDown}
       onMouseMove={onMouseMove}
       onMouseUp={onMouseUp}
