@@ -5,7 +5,7 @@ import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js
 import { MeshSurfaceSampler } from 'three/examples/jsm/math/MeshSurfaceSampler.js'
 
 const COW_POINTS = 4500
-const PERSON_POINTS = 1500
+const GRASS_POINTS = 1200
 
 // ---------------------------------------------------------------------------
 // Procedural cow built from composed primitive geometries
@@ -13,11 +13,10 @@ const PERSON_POINTS = 1500
 function buildCowGeometry(): THREE.BufferGeometry {
   const parts: THREE.BufferGeometry[] = []
 
-  // Body — elongated barrel, flat top and bottom (not round)
-  // Use a cylinder on its side for a boxy barrel shape
+  // Body — elongated barrel, flat top and bottom
   const bodyBarrel = new THREE.CylinderGeometry(0.6, 0.6, 2.6, 16, 1)
   bodyBarrel.rotateZ(Math.PI / 2)
-  bodyBarrel.scale(1, 1, 0.85) // slightly narrower side-to-side
+  bodyBarrel.scale(1, 1, 0.85)
   parts.push(bodyBarrel)
 
   // Belly rounding (slight sag underneath)
@@ -52,7 +51,7 @@ function buildCowGeometry(): THREE.BufferGeometry {
 
   // Head — flatter, more angular
   const head = new THREE.SphereGeometry(0.36, 16, 12)
-  head.scale(1.2, 0.85, 0.8) // elongated, flat on top
+  head.scale(1.2, 0.85, 0.8)
   head.translate(1.65, 0.5, 0)
   parts.push(head)
 
@@ -70,19 +69,16 @@ function buildCowGeometry(): THREE.BufferGeometry {
 
   // --- Legs (4) — longer, thinner, clearly visible ---
   const legGeo = new THREE.CylinderGeometry(0.09, 0.07, 1.0, 8)
-
-  // Front legs
   const fl = legGeo.clone(); fl.translate(0.85, -1.05, 0.3)
   const fr = legGeo.clone(); fr.translate(0.85, -1.05, -0.3)
   parts.push(fl, fr)
 
-  // Rear legs (slightly thicker at top)
   const rearLegGeo = new THREE.CylinderGeometry(0.11, 0.07, 1.0, 8)
   const bl = rearLegGeo.clone(); bl.translate(-0.85, -1.05, 0.3)
   const br = rearLegGeo.clone(); br.translate(-0.85, -1.05, -0.3)
   parts.push(bl, br)
 
-  // Hooves — small flat cylinders
+  // Hooves
   const hoofGeo = new THREE.CylinderGeometry(0.09, 0.10, 0.06, 8)
   const hfl = hoofGeo.clone(); hfl.translate(0.85, -1.58, 0.3)
   const hfr = hoofGeo.clone(); hfr.translate(0.85, -1.58, -0.3)
@@ -90,7 +86,7 @@ function buildCowGeometry(): THREE.BufferGeometry {
   const hbr = hoofGeo.clone(); hbr.translate(-0.85, -1.58, -0.3)
   parts.push(hfl, hfr, hbl, hbr)
 
-  // Knee joints (subtle bumps)
+  // Knee joints
   const kneeGeo = new THREE.SphereGeometry(0.08, 6, 4)
   const kfl = kneeGeo.clone(); kfl.translate(0.85, -0.7, 0.3)
   const kfr = kneeGeo.clone(); kfr.translate(0.85, -0.7, -0.3)
@@ -104,21 +100,22 @@ function buildCowGeometry(): THREE.BufferGeometry {
   const hr = hornGeo.clone(); hr.rotateZ(0.3); hr.translate(1.52, 0.88, -0.16)
   parts.push(hl, hr)
 
-  // --- Ears --- (flatter, more prominent)
+  // --- Ears ---
   const earGeo = new THREE.SphereGeometry(0.09, 8, 6)
   earGeo.scale(1.2, 0.35, 1.6)
   const el = earGeo.clone(); el.translate(1.45, 0.72, 0.30)
   const er = earGeo.clone(); er.translate(1.45, 0.72, -0.30)
   parts.push(el, er)
 
-  // --- Tail --- (longer, starts at rump)
-  const tail = new THREE.CylinderGeometry(0.035, 0.025, 0.75, 6)
-  tail.rotateZ(-0.5)
-  tail.translate(-1.6, 0.1, 0)
+  // --- Tail --- hangs downward from rump, close to body
+  const tail = new THREE.CylinderGeometry(0.035, 0.025, 0.55, 6)
+  tail.rotateZ(-0.9) // steeper angle — hangs down
+  tail.translate(-1.42, -0.15, 0)
   parts.push(tail)
 
-  const tuft = new THREE.SphereGeometry(0.055, 6, 4)
-  tuft.translate(-1.88, 0.38, 0)
+  // Tuft at tail tip — kept close
+  const tuft = new THREE.SphereGeometry(0.045, 6, 4)
+  tuft.translate(-1.58, -0.42, 0)
   parts.push(tuft)
 
   // --- Udder ---
@@ -134,104 +131,36 @@ function buildCowGeometry(): THREE.BufferGeometry {
 }
 
 // ---------------------------------------------------------------------------
-// Procedural person standing next to the cow
+// Grass patch beneath the cow
 // ---------------------------------------------------------------------------
-function buildPersonGeometry(): THREE.BufferGeometry {
+function buildGrassGeometry(): THREE.BufferGeometry {
   const parts: THREE.BufferGeometry[] = []
-  const px = 2.35
 
-  // Head
-  const head = new THREE.SphereGeometry(0.15, 14, 10)
-  head.translate(px, 0.58, 0)
-  parts.push(head)
+  // Ground plane — wide, slightly in front and behind cow
+  const ground = new THREE.PlaneGeometry(5.5, 1.8, 20, 8)
+  ground.rotateX(-Math.PI / 2)
+  ground.translate(0.1, -1.62, 0)
+  parts.push(ground)
 
-  // Neck
-  const neck = new THREE.CylinderGeometry(0.06, 0.08, 0.12, 8)
-  neck.translate(px, 0.42, 0)
-  parts.push(neck)
-
-  // Torso
-  const torso = new THREE.CylinderGeometry(0.14, 0.17, 0.6, 10)
-  torso.translate(px, 0.06, 0)
-  parts.push(torso)
-
-  // Shoulders
-  const shoulders = new THREE.SphereGeometry(0.16, 10, 8)
-  shoulders.scale(1.2, 0.4, 0.8)
-  shoulders.translate(px, 0.30, 0)
-  parts.push(shoulders)
-
-  // Pelvis / hips
-  const hips = new THREE.SphereGeometry(0.16, 10, 8)
-  hips.scale(1, 0.5, 0.7)
-  hips.translate(px, -0.26, 0)
-  parts.push(hips)
-
-  // --- Legs ---
-  const lThigh = new THREE.CylinderGeometry(0.08, 0.07, 0.42, 8)
-  lThigh.translate(px + 0.03, -0.55, 0)
-  parts.push(lThigh)
-
-  const lShin = new THREE.CylinderGeometry(0.065, 0.055, 0.42, 8)
-  lShin.translate(px + 0.03, -0.95, 0)
-  parts.push(lShin)
-
-  const lFoot = new THREE.BoxGeometry(0.12, 0.05, 0.08)
-  lFoot.translate(px + 0.04, -1.19, 0)
-  parts.push(lFoot)
-
-  const rThigh = new THREE.CylinderGeometry(0.08, 0.07, 0.42, 8)
-  rThigh.translate(px - 0.04, -0.55, 0)
-  parts.push(rThigh)
-
-  const rShin = new THREE.CylinderGeometry(0.065, 0.055, 0.42, 8)
-  rShin.translate(px - 0.04, -0.95, 0)
-  parts.push(rShin)
-
-  const rFoot = new THREE.BoxGeometry(0.12, 0.05, 0.08)
-  rFoot.translate(px - 0.03, -1.19, 0)
-  parts.push(rFoot)
-
-  // --- Arms ---
-  const lUpperArm = new THREE.CylinderGeometry(0.055, 0.048, 0.30, 8)
-  lUpperArm.rotateZ(0.4)
-  lUpperArm.translate(px + 0.20, 0.16, 0)
-  parts.push(lUpperArm)
-
-  const lForearm = new THREE.CylinderGeometry(0.045, 0.038, 0.26, 8)
-  lForearm.rotateZ(0.7)
-  lForearm.translate(px + 0.34, 0.01, 0)
-  parts.push(lForearm)
-
-  const rUpperArm = new THREE.CylinderGeometry(0.055, 0.048, 0.30, 8)
-  rUpperArm.rotateZ(-0.15)
-  rUpperArm.translate(px - 0.11, 0.14, 0)
-  parts.push(rUpperArm)
-
-  const rForearm = new THREE.CylinderGeometry(0.045, 0.038, 0.26, 8)
-  rForearm.rotateZ(-0.3)
-  rForearm.translate(px - 0.17, -0.06, 0)
-  parts.push(rForearm)
-
-  // Hat brim
-  const brim = new THREE.CylinderGeometry(0.14, 0.17, 0.03, 12)
-  brim.translate(px, 0.71, 0)
-  parts.push(brim)
-
-  // Hat crown
-  const crown = new THREE.CylinderGeometry(0.10, 0.12, 0.12, 10)
-  crown.translate(px, 0.78, 0)
-  parts.push(crown)
+  // Grass blade clusters — thin cylinders poking up
+  for (let i = 0; i < 60; i++) {
+    const x = (Math.random() - 0.4) * 5.0
+    const z = (Math.random() - 0.5) * 1.4
+    const h = 0.06 + Math.random() * 0.12
+    const blade = new THREE.CylinderGeometry(0.008, 0.012, h, 3)
+    blade.translate(x, -1.62 + h / 2, z)
+    parts.push(blade)
+  }
 
   const nonIndexed = parts.map(p => p.index ? p.toNonIndexed() : p)
   const merged = mergeGeometries(nonIndexed, false)
-  if (!merged) throw new Error('Failed to merge person geometry')
+  if (!merged) throw new Error('Failed to merge grass geometry')
   merged.computeVertexNormals()
   return merged
 }
 
 // ---------------------------------------------------------------------------
-// Sample points from a surface
+// Sample points from surface
 // ---------------------------------------------------------------------------
 function samplePoints(geometry: THREE.BufferGeometry, count: number) {
   const tempMesh = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial())
@@ -261,9 +190,9 @@ function samplePoints(geometry: THREE.BufferGeometry, count: number) {
 }
 
 // ---------------------------------------------------------------------------
-// Cow shader — tail wag, head bob, body breathing
+// Vertex shader — tail wag, head bob, body breathing
 // ---------------------------------------------------------------------------
-const cowVertexShader = /* glsl */ `
+const vertexShader = /* glsl */ `
   attribute vec3 aNormal;
   attribute float aRandom;
   uniform float uTime;
@@ -271,17 +200,16 @@ const cowVertexShader = /* glsl */ `
   varying float vOpacity;
 
   void main() {
-    // Particle breathing
     float phase = uTime * 0.7 + aRandom * 6.2831;
     float breath = sin(phase) * 0.02;
     vec3 pos = position + aNormal * breath;
 
-    // Tail wag — points in tail region swing laterally
-    float tailFactor = smoothstep(-1.1, -1.9, pos.x);
-    pos.z += sin(uTime * 2.8) * 0.18 * tailFactor;
-    pos.y += sin(uTime * 2.8 + 0.8) * 0.10 * tailFactor;
+    // Tail wag — swing laterally, only below body center
+    float tailFactor = smoothstep(-1.1, -1.6, pos.x) * smoothstep(0.3, -0.2, pos.y);
+    pos.z += sin(uTime * 2.8) * 0.14 * tailFactor;
+    pos.y += sin(uTime * 2.8 + 0.8) * 0.06 * tailFactor;
 
-    // Head bob — gentle nod and drift
+    // Head bob
     float headFactor = smoothstep(1.2, 1.8, pos.x);
     pos.y += sin(uTime * 1.0) * 0.05 * headFactor;
     pos.x += sin(uTime * 0.8 + 1.0) * 0.03 * headFactor;
@@ -290,11 +218,11 @@ const cowVertexShader = /* glsl */ `
     float earFactor = smoothstep(0.6, 0.8, pos.y) * smoothstep(1.2, 1.5, pos.x);
     pos.y += sin(uTime * 3.5 + 2.0) * 0.025 * earFactor;
 
-    // Leg shifting — front legs shift slightly
+    // Leg shifting
     float legFactor = smoothstep(-0.5, -1.2, pos.y) * (1.0 - tailFactor);
     pos.x += sin(uTime * 0.6 + pos.z * 2.0) * 0.015 * legFactor;
 
-    // Whole-body breathing (rib cage expand)
+    // Rib cage breathing
     float bodyBreath = sin(uTime * 0.6) * 0.015;
     pos.y += bodyBreath * smoothstep(-0.6, 0.3, pos.y);
 
@@ -307,9 +235,9 @@ const cowVertexShader = /* glsl */ `
 `
 
 // ---------------------------------------------------------------------------
-// Person shader — weight shift, arm swing, upper body sway
+// Grass vertex shader — gentle wind sway
 // ---------------------------------------------------------------------------
-const personVertexShader = /* glsl */ `
+const grassVertexShader = /* glsl */ `
   attribute vec3 aNormal;
   attribute float aRandom;
   uniform float uTime;
@@ -317,33 +245,23 @@ const personVertexShader = /* glsl */ `
   varying float vOpacity;
 
   void main() {
-    // Particle breathing
-    float phase = uTime * 0.7 + aRandom * 6.2831;
-    float breath = sin(phase) * 0.015;
-    vec3 pos = position + aNormal * breath;
+    vec3 pos = position;
 
-    // Weight shift — upper body sways, feet stay planted
-    float heightRatio = smoothstep(-1.2, 0.7, pos.y);
-    pos.x += sin(uTime * 0.7 + 2.0) * 0.045 * heightRatio;
+    // Wind — sway grass points horizontally, more at tips (higher y)
+    float heightAboveGround = max(pos.y - (-1.65), 0.0);
+    float wind = sin(uTime * 1.5 + pos.x * 2.0 + aRandom * 4.0) * 0.03 * heightAboveGround;
+    pos.x += wind;
+    pos.z += sin(uTime * 1.2 + pos.x * 1.5) * 0.01 * heightAboveGround;
 
-    // Subtle forward-back lean
-    pos.y += sin(uTime * 0.5 + 1.5) * 0.015 * heightRatio;
-
-    // Arm swing — points far from torso center x
-    float armDist = abs(pos.x - 2.35);
-    float armFactor = smoothstep(0.08, 0.3, armDist);
-    pos.y += sin(uTime * 1.4 + aRandom * 3.14) * 0.035 * armFactor;
-    pos.x += sin(uTime * 1.2) * 0.02 * armFactor;
-
-    // Head look (slight)
-    float headFactor = smoothstep(0.5, 0.7, pos.y);
-    pos.x += sin(uTime * 0.9 + 0.5) * 0.02 * headFactor;
+    // Shimmer
+    float phase = uTime * 0.5 + aRandom * 6.2831;
+    pos.y += sin(phase) * 0.005;
 
     vec4 mvPos = modelViewMatrix * vec4(pos, 1.0);
-    float size = (0.4 + aRandom * 0.6) * uPixelRatio;
-    gl_PointSize = size * (25.0 / -mvPos.z);
+    float size = (0.3 + aRandom * 0.5) * uPixelRatio;
+    gl_PointSize = size * (20.0 / -mvPos.z);
     gl_Position = projectionMatrix * mvPos;
-    vOpacity = 0.25 + aRandom * 0.55;
+    vOpacity = 0.2 + aRandom * 0.5;
   }
 `
 
@@ -360,7 +278,7 @@ const fragmentShader = /* glsl */ `
 `
 
 // ---------------------------------------------------------------------------
-// Helper: create point cloud buffer geometry from sampled surface
+// Animated point cloud scene — cow only, side profile
 // ---------------------------------------------------------------------------
 function makePointGeo(surfaceGeo: THREE.BufferGeometry, count: number) {
   const { positions, normals, randoms } = samplePoints(surfaceGeo, count)
@@ -371,17 +289,13 @@ function makePointGeo(surfaceGeo: THREE.BufferGeometry, count: number) {
   return geo
 }
 
-// ---------------------------------------------------------------------------
-// The animated point cloud scene — side profile, cow + person
-// ---------------------------------------------------------------------------
 function ScenePoints() {
   const cowRef = useRef<THREE.Group>(null)
-  const personRef = useRef<THREE.Group>(null)
   const cowMatRef = useRef<THREE.ShaderMaterial>(null)
-  const personMatRef = useRef<THREE.ShaderMaterial>(null)
+  const grassMatRef = useRef<THREE.ShaderMaterial>(null)
 
   const cowGeo = useMemo(() => makePointGeo(buildCowGeometry(), COW_POINTS), [])
-  const personGeo = useMemo(() => makePointGeo(buildPersonGeometry(), PERSON_POINTS), [])
+  const grassGeo = useMemo(() => makePointGeo(buildGrassGeometry(), GRASS_POINTS), [])
 
   const cowUniforms = useMemo(() => ({
     uTime: { value: 0 },
@@ -389,39 +303,30 @@ function ScenePoints() {
     uPixelRatio: { value: Math.min(window.devicePixelRatio, 2) },
   }), [])
 
-  const personUniforms = useMemo(() => ({
+  const grassUniforms = useMemo(() => ({
     uTime: { value: 0 },
-    uColor: { value: new THREE.Color('#ffffff') },
+    uColor: { value: new THREE.Color('#2dd4a0') },
     uPixelRatio: { value: Math.min(window.devicePixelRatio, 2) },
   }), [])
 
   useFrame(({ clock }) => {
     const t = clock.elapsedTime
-
-    // Cow: gentle whole-body sway
     if (cowRef.current) {
       cowRef.current.rotation.z = Math.sin(t * 0.5) * 0.02
       cowRef.current.position.y = Math.sin(t * 0.3) * 0.015
     }
-
-    // Person: rhythmic weight shift
-    if (personRef.current) {
-      personRef.current.rotation.z = Math.sin(t * 0.4 + 1.2) * 0.025
-      personRef.current.position.y = Math.sin(t * 0.35 + 0.7) * 0.012
-    }
-
     if (cowMatRef.current) cowMatRef.current.uniforms.uTime.value = t
-    if (personMatRef.current) personMatRef.current.uniforms.uTime.value = t
+    if (grassMatRef.current) grassMatRef.current.uniforms.uTime.value = t
   })
 
   return (
-    <group position={[-0.3, 0.2, 0]} rotation={[0.05, 0, 0]}>
-      {/* Cow — scaled down to 85% so person feels proportional */}
-      <group ref={cowRef} scale={[0.85, 0.85, 0.85]}>
+    <group position={[0, 0.2, 0]} rotation={[0.05, 0, 0]}>
+      {/* Cow */}
+      <group ref={cowRef}>
         <points geometry={cowGeo}>
           <shaderMaterial
             ref={cowMatRef}
-            vertexShader={cowVertexShader}
+            vertexShader={vertexShader}
             fragmentShader={fragmentShader}
             uniforms={cowUniforms}
             transparent
@@ -431,26 +336,24 @@ function ScenePoints() {
         </points>
       </group>
 
-      {/* Person */}
-      <group ref={personRef}>
-        <points geometry={personGeo}>
-          <shaderMaterial
-            ref={personMatRef}
-            vertexShader={personVertexShader}
-            fragmentShader={fragmentShader}
-            uniforms={personUniforms}
-            transparent
-            blending={THREE.AdditiveBlending}
-            depthWrite={false}
-          />
-        </points>
-      </group>
+      {/* Grass */}
+      <points geometry={grassGeo}>
+        <shaderMaterial
+          ref={grassMatRef}
+          vertexShader={grassVertexShader}
+          fragmentShader={fragmentShader}
+          uniforms={grassUniforms}
+          transparent
+          blending={THREE.AdditiveBlending}
+          depthWrite={false}
+        />
+      </points>
     </group>
   )
 }
 
 // ---------------------------------------------------------------------------
-// Wrapper with Canvas — lazy-loadable
+// Wrapper with Canvas
 // ---------------------------------------------------------------------------
 function PointCloudCanvas() {
   return (
