@@ -32,6 +32,7 @@ export default function LocationMap() {
   const mapRef = useRef<mapboxgl.Map | null>(null)
   const popupRef = useRef<mapboxgl.Popup | null>(null)
   const hoveredIdRef = useRef<number | null>(null)
+  const vignetteRef = useRef<HTMLDivElement>(null)
   const facilities = useFacilityStore(s => s.facilities)
   const selectFacility = useFacilityStore(s => s.selectFacility)
 
@@ -66,6 +67,7 @@ export default function LocationMap() {
       style: 'mapbox://styles/mapbox/dark-v11',
       center: [-76.5, 40.0],
       zoom: 5.5,
+      pitch: 0,
       attributionControl: false,
       logoPosition: 'top-left',
       scrollZoom: true,
@@ -79,7 +81,73 @@ export default function LocationMap() {
 
     map.addControl(new mapboxgl.NavigationControl({ showCompass: false }), 'bottom-right')
 
+    // Zoom-driven vignette + pitch
+    map.on('zoom', () => {
+      const z = map.getZoom()
+      // Vignette: 0 at zoom ≤6, peaks at zoom ~14
+      const intensity = Math.max(0, Math.min(1, (z - 6) / 8))
+      if (vignetteRef.current) {
+        vignetteRef.current.style.opacity = String(intensity * 0.65)
+      }
+    })
+
+    // Ease pitch after zoom settles — 0° at overview, up to 50° when zoomed in
+    map.on('moveend', () => {
+      const z = map.getZoom()
+      const targetPitch = Math.max(0, Math.min(50, (z - 8) * (50 / 6)))
+      const currentPitch = map.getPitch()
+      if (Math.abs(currentPitch - targetPitch) > 4) {
+        map.easeTo({ pitch: targetPitch, duration: 600 })
+      }
+    })
+
     map.on('load', () => {
+      // Atmospheric fog — subtle haze that deepens with zoom
+      map.setFog({
+        color: '#06070a',
+        'high-color': '#0e1014',
+        'horizon-blend': 0.04,
+        'space-color': '#06070a',
+        'star-intensity': 0.0,
+      })
+
+      // 3D building extrusions — visible at higher zoom levels
+      const layers = map.getStyle().layers
+      // Find the label layer to insert buildings beneath it
+      let labelLayerId: string | undefined
+      for (const layer of layers || []) {
+        if (layer.type === 'symbol' && (layer.layout as Record<string, unknown>)?.['text-field']) {
+          labelLayerId = layer.id
+          break
+        }
+      }
+
+      map.addLayer(
+        {
+          id: '3d-buildings',
+          source: 'composite',
+          'source-layer': 'building',
+          filter: ['==', 'extrude', 'true'],
+          type: 'fill-extrusion',
+          minzoom: 12,
+          paint: {
+            'fill-extrusion-color': [
+              'interpolate', ['linear'], ['zoom'],
+              12, '#15171c',
+              16, '#1d1f26',
+            ],
+            'fill-extrusion-height': ['get', 'height'],
+            'fill-extrusion-base': ['get', 'min_height'],
+            'fill-extrusion-opacity': [
+              'interpolate', ['linear'], ['zoom'],
+              12, 0,
+              13, 0.55,
+              16, 0.75,
+            ],
+          },
+        },
+        labelLayerId,
+      )
       // Add facility data as a GeoJSON source with generateId for feature-state
       map.addSource('facilities', {
         type: 'geojson',
@@ -201,10 +269,21 @@ export default function LocationMap() {
         </p>
 
         <div
-          ref={mapContainer}
-          className="w-full rounded-[14px] border border-border overflow-hidden"
+          className="relative w-full rounded-[14px] border border-border overflow-hidden"
           style={{ height: 'min(70vh, 560px)' }}
-        />
+        >
+          <div ref={mapContainer} className="absolute inset-0" />
+          {/* Vignette overlay — intensifies as you zoom in */}
+          <div
+            ref={vignetteRef}
+            className="absolute inset-0 pointer-events-none z-10"
+            style={{
+              background: 'radial-gradient(ellipse at center, transparent 25%, rgba(6,7,10,0.9) 100%)',
+              opacity: 0,
+              transition: 'opacity 0.4s ease',
+            }}
+          />
+        </div>
       </div>
     </section>
   )
