@@ -3,7 +3,7 @@ import mapboxgl from 'mapbox-gl'
 import 'mapbox-gl/dist/mapbox-gl.css'
 import { useFacilityStore } from '../../stores/facilityStore'
 
-const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN || 'pk.eyJ1IjoibW9vdmVpbiIsImEiOiJjbHRlc3QifQ.demo'
+const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN || 'pk.eyJ1IjoiYmFrZXItc29hciIsImEiOiJjbWxrY3YxenEwMHByM2dvam41aHU1YTc1In0.m_d-qvD5Cm9P8PfFN5wsKw'
 
 export default function LocationMap() {
   const mapContainer = useRef<HTMLDivElement>(null)
