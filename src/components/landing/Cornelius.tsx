@@ -8,7 +8,7 @@ import { MeshSurfaceSampler } from 'three/examples/jsm/math/MeshSurfaceSampler.j
 
 const ThemeContext = createContext<'dark' | 'light'>('dark')
 
-const IDLE_MS = 60_000 // 1 minute
+const IDLE_MS = 5_000 // 5 seconds (dev — change to 60_000 for prod)
 const COW_POINTS = 3000
 const GRASS_POINTS = 800
 
@@ -409,11 +409,15 @@ export default function Cornelius({ theme = 'dark' }: CorneliusProps) {
 
   useEffect(() => {
     if (idle) {
-      // Mount first, then trigger fade-in on next frame
+      // Mount first, then trigger fade-in after browser paints the opacity:0 state
       setMounted(true)
-      requestAnimationFrame(() => setVisible(true))
+      const raf1 = requestAnimationFrame(() => {
+        const raf2 = requestAnimationFrame(() => setVisible(true))
+        return () => cancelAnimationFrame(raf2)
+      })
+      return () => cancelAnimationFrame(raf1)
     } else {
-      // Fade out, then unmount after transition
+      // Fade out, then unmount after transition completes
       setVisible(false)
       const t = setTimeout(() => setMounted(false), 800)
       return () => clearTimeout(t)
