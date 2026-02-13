@@ -9,6 +9,9 @@
 __pycache__/
 *.pyc
 
-# Node (for upcoming React app)
+# Node
 node_modules/
 dist/
+
+# Vite
+*.local

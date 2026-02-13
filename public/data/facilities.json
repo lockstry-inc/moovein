@@ -1,0 +1,10 @@
+[
+  {
+    "id": "richland",
+    "name": "Moove In Richland",
+    "address": "1234 Storage Way, Richland, WA 99352",
+    "phone": "(509) 555-0123",
+    "hours": "6:00 AM - 10:00 PM Daily",
+    "dataUrl": "/data/facility-richland.json"
+  }
+]
