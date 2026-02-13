@@ -134,13 +134,13 @@ const vertexShader = /* glsl */ `
 
     vec4 mvPos = modelViewMatrix * vec4(pos, 1.0);
 
-    // Size variation per-point
-    float size = (0.6 + aRandom * 0.9) * uPixelRatio;
-    gl_PointSize = size * (180.0 / -mvPos.z);
+    // Tiny point sizes — true point cloud look
+    float size = (0.4 + aRandom * 0.6) * uPixelRatio;
+    gl_PointSize = size * (25.0 / -mvPos.z);
     gl_Position = projectionMatrix * mvPos;
 
-    // Vary opacity by random seed
-    vOpacity = 0.35 + aRandom * 0.65;
+    // Vary opacity — some bright, some faint
+    vOpacity = 0.2 + aRandom * 0.6;
   }
 `
 
@@ -149,10 +149,10 @@ const fragmentShader = /* glsl */ `
   varying float vOpacity;
 
   void main() {
-    // Circular point with smooth glow falloff
+    // Circular point with tight soft edge
     float d = length(gl_PointCoord - 0.5);
     if (d > 0.5) discard;
-    float alpha = smoothstep(0.5, 0.1, d) * vOpacity;
+    float alpha = smoothstep(0.5, 0.3, d) * vOpacity;
     gl_FragColor = vec4(uColor, alpha);
   }
 `
@@ -214,7 +214,7 @@ function CowPoints() {
 function PointCloudCanvas() {
   return (
     <Canvas
-      camera={{ position: [0, 0, 4.2], fov: 35 }}
+      camera={{ position: [0, 0, 5.5], fov: 30 }}
       gl={{ alpha: true, antialias: true, powerPreference: 'high-performance' }}
       dpr={[1, 2]}
       style={{ background: 'transparent' }}
@@ -229,7 +229,7 @@ const LazyCanvas = lazy(() => Promise.resolve({ default: PointCloudCanvas }))
 
 export default function PointCloudCow() {
   return (
-    <div className="mx-auto" style={{ width: 280, height: 280 }}>
+    <div className="mx-auto w-full" style={{ maxWidth: 600, height: 320 }}>
       <Suspense fallback={
         <div
           className="w-[100px] h-[100px] rounded-[20px] overflow-hidden mx-auto"
