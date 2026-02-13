@@ -50,19 +50,20 @@ export default function IntroOverlay() {
         {/* Facility selector */}
         <div className="mb-6">
           <div className="text-[10px] font-bold text-text-dim tracking-[0.8px] uppercase mb-3 text-center">Select a facility</div>
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-3">
             {facilities.map(f => (
               <button
                 key={f.id}
                 onClick={() => handleSelect(f.id)}
-                className="w-full text-left p-4 bg-surface border border-border rounded-[12px] cursor-pointer transition-all duration-200 hover:bg-surface-2 hover:border-border-light group"
+                className="w-full text-left bg-surface border border-border rounded-[14px] cursor-pointer transition-all duration-200 hover:bg-surface-2 hover:border-border-light hover:border-accent-border group"
+                style={{ padding: '18px 22px' }}
               >
-                <div className="flex items-center justify-between">
-                  <div>
-                    <div className="text-[14px] font-semibold text-white group-hover:text-accent transition-colors">{f.name}</div>
-                    <div className="text-[12px] text-text-sec mt-0.5">{f.address}</div>
+                <div className="flex items-center justify-between gap-4">
+                  <div className="flex flex-col gap-[6px]">
+                    <div className="text-[16px] font-semibold text-white group-hover:text-accent transition-colors">{f.name}</div>
+                    <div className="text-[13px] text-text-sec leading-[1.3]">{f.address}</div>
                   </div>
-                  <div className="text-text-dim text-[18px] group-hover:text-accent transition-colors">&rarr;</div>
+                  <div className="text-text-dim text-[20px] group-hover:text-accent transition-colors shrink-0">&rarr;</div>
                 </div>
               </button>
             ))}
