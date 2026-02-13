@@ -41,11 +41,11 @@ export default function FilterSidebar() {
           <span className="text-[11px] font-bold text-text tracking-[0.5px] uppercase">Filter Units</span>
           <div className="flex gap-[3px] items-center">
             {activeFilters.size > 0 && (
-              <button onClick={clearFilters} className="text-[11px] font-semibold text-text-dim bg-transparent border-none font-['DM_Sans',sans-serif] px-[7px] py-[2px] rounded cursor-pointer transition-all duration-150 hover:text-accent hover:bg-accent-bg">
+              <button onClick={clearFilters} className="text-[11px] font-semibold text-text-dim bg-transparent border-none font-['DM_Sans',sans-serif] px-[7px] py-[2px] rounded-[4px] cursor-pointer transition-all duration-150 hover:text-accent hover:bg-accent-bg">
                 Clear
               </button>
             )}
-            <button onClick={toggleFilterSidebar} className="text-[11px] font-semibold text-text-dim bg-transparent border-none font-['DM_Sans',sans-serif] px-[7px] py-[2px] rounded cursor-pointer transition-all duration-150 hover:text-accent hover:bg-accent-bg">
+            <button onClick={toggleFilterSidebar} className="text-[11px] font-semibold text-text-dim bg-transparent border-none font-['DM_Sans',sans-serif] px-[7px] py-[2px] rounded-[4px] cursor-pointer transition-all duration-150 hover:text-accent hover:bg-accent-bg">
               &times;
             </button>
           </div>
@@ -69,7 +69,7 @@ export default function FilterSidebar() {
                   }`}
                 >
                   <div className="flex items-center gap-[7px]">
-                    <div className={`w-[14px] h-[14px] rounded flex items-center justify-center text-[8px] shrink-0 border-[1.5px] transition-all duration-200 ${
+                    <div className={`w-[14px] h-[14px] rounded-[4px] flex items-center justify-center text-[8px] shrink-0 border-[1.5px] transition-all duration-200 ${
                       isOn ? 'bg-accent border-accent text-bg' : 'border-border text-transparent'
                     }`}>
                       &#10003;
@@ -92,8 +92,9 @@ export default function FilterSidebar() {
         </div>
 
         {/* Feature legend */}
-        <div className="px-[14px] pb-3 pt-2 border-t border-border">
-          <div className="flex flex-wrap gap-x-[10px] gap-y-1">
+        <div className="px-[14px] pt-[10px] pb-3 border-t border-border">
+          <div className="text-[10px] font-semibold text-text-dim tracking-[0.8px] uppercase mb-[7px]">Feature Icons</div>
+          <div className="flex flex-wrap gap-x-[10px] gap-y-[4px]">
             {LEGEND_FEATURES.map(f => (
               <div key={f} className="flex items-center gap-[5px] text-[10px] text-text-sec font-medium">
                 <span className="text-[11px] w-4 text-center">{FEATURE_ICONS[f]}</span>
