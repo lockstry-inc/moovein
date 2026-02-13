@@ -1,0 +1,14 @@
+# OS
+.DS_Store
+
+# Debug overlay images from extraction tool
+*.debug.png
+*.debug-small.png
+
+# Python
+__pycache__/
+*.pyc
+
+# Node (for upcoming React app)
+node_modules/
+dist/
