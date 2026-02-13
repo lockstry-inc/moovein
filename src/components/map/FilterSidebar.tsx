@@ -52,8 +52,8 @@ export default function FilterSidebar() {
             )}
             <button
               onClick={toggleFilterSidebar}
-              className="text-[14px] font-semibold text-text-dim bg-transparent border-none font-['DM_Sans',sans-serif] cursor-pointer transition-all duration-150 hover:text-accent hover:bg-accent-bg"
-              style={{ padding: '4px 8px', borderRadius: 6 }}
+              className="text-[20px] leading-none font-semibold text-text-dim bg-transparent border-none font-['DM_Sans',sans-serif] cursor-pointer transition-all duration-150 hover:text-accent hover:bg-accent-bg"
+              style={{ padding: '4px 10px', borderRadius: 6 }}
             >
               &times;
             </button>

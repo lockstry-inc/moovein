@@ -79,25 +79,28 @@ body {
   to { transform: translateY(0); }
 }
 
-/* Unit styles — pure CSS for performance (382+ instances) */
+/* Unit styles — pure CSS for performance (382+ instances)
+   NOTE: All pixel values are scaled ~5x to match the large coordinate space
+   (units are ~159px in data vs ~33px in original HTML). At default zoom (~0.17),
+   these render at roughly 1/5th their CSS value. */
 .unit {
   position: absolute;
-  border-radius: 5px;
+  border-radius: 24px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 2;
   transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  border: 1.5px solid;
+  border: 7px solid;
 }
 
 .unit-id {
-  font-size: 9px;
+  font-size: 44px;
   font-weight: 700;
-  letter-spacing: 0.5px;
+  letter-spacing: 2.5px;
   pointer-events: none;
-  opacity: 0.9;
+  opacity: 0.85;
   transition: opacity 0.2s;
   position: relative;
   z-index: 4;
@@ -113,13 +116,13 @@ body {
 .unit.vacant:hover {
   background: var(--color-accent-mid);
   border-color: rgba(45, 212, 160, 0.55);
-  box-shadow: 0 0 20px rgba(45, 212, 160, 0.15), 0 4px 16px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 0 100px rgba(45, 212, 160, 0.15), 0 20px 80px rgba(0, 0, 0, 0.3);
   transform: scale(1.03);
 }
 .unit.vacant::before {
   content: '';
   position: absolute;
-  inset: -6px;
+  inset: -30px;
   z-index: -1;
 }
 
@@ -127,7 +130,7 @@ body {
   background: var(--color-occ-bg);
   border-color: var(--color-occ-border);
   cursor: default;
-  opacity: 0.65;
+  opacity: 0.55;
 }
 .unit.occupied .unit-id { color: var(--color-occ); opacity: 0.7; }
 .unit.occupied:hover { box-shadow: none; }
@@ -135,25 +138,25 @@ body {
 .unit.sel-u {
   background: var(--color-sel-bg) !important;
   border-color: var(--color-sel-border) !important;
-  box-shadow: 0 0 24px rgba(79, 196, 240, 0.15), 0 0 0 3px rgba(79, 196, 240, 0.08);
+  box-shadow: 0 0 120px rgba(79, 196, 240, 0.15), 0 0 0 15px rgba(79, 196, 240, 0.08);
 }
 .unit.sel-u .unit-id { color: var(--color-sel) !important; opacity: 1; }
 
 /* Feature icons overlay on units */
 .unit-feats {
   position: absolute;
-  bottom: 2px;
-  right: 3px;
+  bottom: 10px;
+  right: 15px;
   display: flex;
-  gap: 1px;
+  gap: 5px;
   pointer-events: none;
   opacity: 0;
   transition: opacity 0.3s;
   z-index: 5;
 }
 .unit.show-feats .unit-feats { opacity: 1; }
-.unit-feat { font-size: 8px; line-height: 1; }
-.unit.show-feats .unit-id { transform: translateY(-3px); }
+.unit-feat { font-size: 40px; line-height: 1; }
+.unit.show-feats .unit-id { transform: translateY(-15px); }
 
 /* Dimmed/highlighted filter states */
 .unit.dimmed,
@@ -170,7 +173,7 @@ body {
 .unit.dimmed .unit-id { opacity: 0 !important; }
 .unit.dimmed .unit-feats { opacity: 0 !important; }
 .unit.hl {
-  box-shadow: 0 0 18px rgba(45, 212, 160, 0.2), 0 0 0 2px rgba(45, 212, 160, 0.12) !important;
+  box-shadow: 0 0 90px rgba(45, 212, 160, 0.2), 0 0 0 10px rgba(45, 212, 160, 0.12) !important;
   z-index: 3;
 }
 .unit.hl .unit-id { opacity: 1 !important; }

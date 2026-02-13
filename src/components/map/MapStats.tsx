@@ -21,8 +21,8 @@ export default function MapStats() {
 
   return (
     <div
-      className="fixed bottom-[22px] flex items-center bg-surface border border-border rounded-[14px] z-90 transition-[left] duration-350"
-      style={{ left: filterSidebarOpen ? 264 : 24, padding: '12px 20px', gap: 20 }}
+      className="fixed flex items-center bg-surface border border-border rounded-[14px] z-90 transition-all duration-350"
+      style={{ left: 12, top: filterSidebarOpen ? 540 : 124, padding: '12px 20px', gap: 20 }}
     >
       <div className="flex flex-col gap-[2px]">
         <span className="text-[18px] font-bold text-accent">{vacant}</span>
