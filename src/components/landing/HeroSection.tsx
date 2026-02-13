@@ -29,37 +29,24 @@ export default function HeroSection({ onCta, theme }: Props) {
   return (
     <section
       className="relative overflow-hidden"
-      style={{
-        minHeight: 'min(85vh, 620px)',
-        background: theme === 'dark'
-          ? 'linear-gradient(135deg, #0a0c12 0%, #141824 40%, #1a1020 70%, #0a0c12 100%)'
-          : 'linear-gradient(135deg, #1a1c2e 0%, #2a2040 40%, #1e1830 70%, #141628 100%)',
-      }}
+      style={{ minHeight: 'min(85vh, 620px)' }}
     >
-      {/* Subtle grid pattern overlay */}
+      {/* Background image */}
       <div
-        className="absolute inset-0 opacity-[0.03]"
+        className="absolute inset-0"
         style={{
-          backgroundImage: 'linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)',
-          backgroundSize: '40px 40px',
+          backgroundImage: 'url(/landing.webp)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
         }}
       />
 
-      {/* Gradient orbs for depth */}
+      {/* Dark overlay for text readability */}
       <div
-        className="absolute rounded-full blur-[120px]"
+        className="absolute inset-0"
         style={{
-          width: 500, height: 500,
-          top: '-15%', right: '-10%',
-          background: 'radial-gradient(circle, rgba(143,0,0,0.15) 0%, transparent 70%)',
-        }}
-      />
-      <div
-        className="absolute rounded-full blur-[100px]"
-        style={{
-          width: 400, height: 400,
-          bottom: '-10%', left: '-5%',
-          background: 'radial-gradient(circle, rgba(45,212,160,0.08) 0%, transparent 70%)',
+          background: 'linear-gradient(to bottom, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.65) 50%, rgba(0,0,0,0.8) 100%)',
         }}
       />
 
