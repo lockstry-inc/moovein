@@ -5,7 +5,7 @@ import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js
 import { MeshSurfaceSampler } from 'three/examples/jsm/math/MeshSurfaceSampler.js'
 
 const COW_POINTS = 4500
-const GRASS_POINTS = 1200
+const GRASS_POINTS = 1500
 
 // ---------------------------------------------------------------------------
 // Procedural cow built from composed primitive geometries
@@ -142,14 +142,24 @@ function buildGrassGeometry(): THREE.BufferGeometry {
   ground.translate(0.1, -1.62, 0)
   parts.push(ground)
 
-  // Grass blade clusters — thin cylinders poking up
-  for (let i = 0; i < 60; i++) {
+  // Grass blade clusters — taller blades for visible grass
+  for (let i = 0; i < 80; i++) {
     const x = (Math.random() - 0.4) * 5.0
     const z = (Math.random() - 0.5) * 1.4
-    const h = 0.06 + Math.random() * 0.12
-    const blade = new THREE.CylinderGeometry(0.008, 0.012, h, 3)
+    const h = 0.12 + Math.random() * 0.25
+    const blade = new THREE.CylinderGeometry(0.008, 0.014, h, 3)
     blade.translate(x, -1.62 + h / 2, z)
     parts.push(blade)
+  }
+
+  // Taller grass tufts near where the cow grazes (front-right area)
+  for (let i = 0; i < 20; i++) {
+    const x = 0.8 + Math.random() * 1.5
+    const z = (Math.random() - 0.5) * 1.0
+    const h = 0.18 + Math.random() * 0.30
+    const tuft = new THREE.CylinderGeometry(0.006, 0.015, h, 3)
+    tuft.translate(x, -1.62 + h / 2, z)
+    parts.push(tuft)
   }
 
   const nonIndexed = parts.map(p => p.index ? p.toNonIndexed() : p)
@@ -190,7 +200,7 @@ function samplePoints(geometry: THREE.BufferGeometry, count: number) {
 }
 
 // ---------------------------------------------------------------------------
-// Vertex shader — tail wag, head bob, body breathing
+// Vertex shader — grazing loop, tail wag, body breathing
 // ---------------------------------------------------------------------------
 const vertexShader = /* glsl */ `
   attribute vec3 aNormal;
@@ -204,19 +214,49 @@ const vertexShader = /* glsl */ `
     float breath = sin(phase) * 0.02;
     vec3 pos = position + aNormal * breath;
 
+    // --- Grazing animation loop ---
+    // Cycle: 0-3s head down grazing, 3-4.5s rising, 4.5-6.5s up chewing, 6.5-8s lowering
+    float cycle = mod(uTime, 8.0);
+    float grazeAngle = -1.1; // radians — head down toward grass
+    float headAngle;
+
+    if (cycle < 3.0) {
+      // Grazing — head fully down, tiny nibble motion
+      headAngle = grazeAngle + sin(uTime * 4.0) * 0.04;
+    } else if (cycle < 4.5) {
+      // Rising up
+      float t = smoothstep(3.0, 4.5, cycle);
+      headAngle = mix(grazeAngle, 0.0, t);
+    } else if (cycle < 6.5) {
+      // Head up — chewing (small jaw oscillation)
+      headAngle = sin(uTime * 5.0) * 0.06;
+    } else {
+      // Lowering back down
+      float t = smoothstep(6.5, 8.0, cycle);
+      headAngle = mix(0.0, grazeAngle, t);
+    }
+
+    // Apply rotation to neck/head region — pivot at shoulder junction
+    float neckFactor = smoothstep(0.8, 1.5, pos.x);
+    float pivotX = 1.0;
+    float pivotY = 0.3;
+    float dx = pos.x - pivotX;
+    float dy = pos.y - pivotY;
+    float angle = headAngle * neckFactor;
+    float c = cos(angle);
+    float s = sin(angle);
+    pos.x = pivotX + dx * c - dy * s;
+    pos.y = pivotY + dx * s + dy * c;
+
     // Tail wag — swing laterally, only below body center
     float tailFactor = smoothstep(-1.1, -1.6, pos.x) * smoothstep(0.3, -0.2, pos.y);
     pos.z += sin(uTime * 2.8) * 0.14 * tailFactor;
     pos.y += sin(uTime * 2.8 + 0.8) * 0.06 * tailFactor;
 
-    // Head bob
-    float headFactor = smoothstep(1.2, 1.8, pos.x);
-    pos.y += sin(uTime * 1.0) * 0.05 * headFactor;
-    pos.x += sin(uTime * 0.8 + 1.0) * 0.03 * headFactor;
-
-    // Ear flick
-    float earFactor = smoothstep(0.6, 0.8, pos.y) * smoothstep(1.2, 1.5, pos.x);
-    pos.y += sin(uTime * 3.5 + 2.0) * 0.025 * earFactor;
+    // Ear flick (only when head is up — cycle 4.5-6.5)
+    float earActive = smoothstep(4.0, 4.5, cycle) * (1.0 - smoothstep(6.5, 7.0, cycle));
+    float earFactor = smoothstep(0.6, 0.8, pos.y) * smoothstep(1.2, 1.5, pos.x) * earActive;
+    pos.y += sin(uTime * 3.5 + 2.0) * 0.03 * earFactor;
 
     // Leg shifting
     float legFactor = smoothstep(-0.5, -1.2, pos.y) * (1.0 - tailFactor);
