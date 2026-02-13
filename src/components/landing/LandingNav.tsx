@@ -13,11 +13,11 @@ export default function LandingNav({ onCta, theme, onToggleTheme }: Props) {
         background: theme === 'dark' ? 'rgba(6,7,10,0.92)' : 'rgba(245,245,247,0.92)',
       }}
     >
-      <div className="flex items-center gap-2">
+      <div className="flex items-baseline gap-2">
         <span className="font-['Playfair_Display',serif] text-[19px] font-bold text-text tracking-[-0.3px]">
           Moove In
         </span>
-        <span className="text-[11px] font-semibold text-text-dim tracking-[0.5px] uppercase hidden sm:inline">
+        <span className="text-[11px] font-semibold text-text-dim tracking-[2px] uppercase hidden sm:inline">
           Self Storage
         </span>
       </div>
