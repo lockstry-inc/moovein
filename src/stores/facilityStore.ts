@@ -91,11 +91,28 @@ export const useFacilityStore = create<FacilityState>((set, get) => ({
     try {
       const res = await fetch(entry.dataUrl)
       const data: Facility = await res.json()
+      const floorId = data.floors[0]?.id || 'floor-1'
+      const floor = data.floors.find(f => f.id === floorId)
+
+      // Center the floor plan in the viewport
+      const ww = typeof window !== 'undefined' ? window.innerWidth : 1200
+      const wh = typeof window !== 'undefined' ? window.innerHeight - 58 : 800
+      let mapScale = 1, panX = 0, panY = 0
+      if (floor) {
+        mapScale = Math.min(ww / (floor.width + 48), wh / (floor.height + 48)) * 0.85
+        panX = (ww - floor.width * mapScale) / 2
+        panY = (wh - floor.height * mapScale) / 2 + 29
+      }
+
       set({
         currentFacility: data,
-        currentFloorId: data.floors[0]?.id || 'floor-1',
+        currentFloorId: floorId,
         loading: false,
         appPhase: 'map',
+        scale: mapScale,
+        panX,
+        panY,
+        smoothTransition: 0,
       })
     } catch {
       set({ error: 'Failed to load facility data', loading: false })
