@@ -272,7 +272,7 @@ export default function LocationMap() {
           className="relative w-full rounded-[14px] border border-border overflow-hidden"
           style={{ height: 'min(70vh, 560px)' }}
         >
-          <div ref={mapContainer} className="absolute inset-0" />
+          <div ref={mapContainer} className="w-full h-full" />
           {/* Vignette overlay — intensifies as you zoom in */}
           <div
             ref={vignetteRef}
