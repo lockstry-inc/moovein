@@ -55,7 +55,7 @@ function placeDots(grid: boolean[][], cols: number, rows: number) {
   const dotPositions: Vec[] = []
   for (let r = 0; r < rows; r++) {
     for (let c = 0; c < cols; c++) {
-      if (grid[r][c] && (r + c) % 2 === 0) {
+      if (grid[r][c] && (r % 3 === 0) && (c % 3 === 0)) {
         dotSet.add(dotKey(c, r, cols))
         dotPositions.push({ x: c, y: r })
       }
@@ -158,6 +158,8 @@ interface GameState {
   won: boolean
   moveTimer: number
   ghostMoveTimer: number
+  dotCanvas: HTMLCanvasElement  // pre-rendered dot layer
+  dotCanvasDirty: boolean       // re-render dot canvas when true
 }
 
 function createGameState(floor: Floor): GameState {
@@ -181,6 +183,18 @@ function createGameState(floor: Floor): GameState {
     { x: 1, y: rows - 2 },
   ]
 
+  // Pre-render dots onto an offscreen canvas
+  const dotCanvas = document.createElement('canvas')
+  dotCanvas.width = cols * TILE
+  dotCanvas.height = rows * TILE
+  const dotCtx = dotCanvas.getContext('2d')!
+  dotCtx.fillStyle = 'rgba(255, 255, 200, 0.8)'
+  for (const d of filteredDotPositions) {
+    dotCtx.beginPath()
+    dotCtx.arc(d.x * TILE + TILE / 2, d.y * TILE + TILE / 2, 4, 0, Math.PI * 2)
+    dotCtx.fill()
+  }
+
   return {
     grid, cols, rows,
     dotSet, dotPositions: filteredDotPositions,
@@ -195,6 +209,7 @@ function createGameState(floor: Floor): GameState {
     })),
     score: 0, lives: 3, gameOver: false, won: false,
     moveTimer: 0, ghostMoveTimer: 0,
+    dotCanvas, dotCanvasDirty: false,
   }
 }
 
@@ -281,13 +296,10 @@ export default function PacManGame({ floor, onExit }: Props) {
       const key = dotKey(pac.pos.x, pac.pos.y, cols)
       if (s.dotSet.has(key)) {
         s.dotSet.delete(key)
-        // Remove from positions array (swap-and-pop for O(1))
         const idx = s.dotPositions.findIndex(d => d.x === pac.pos.x && d.y === pac.pos.y)
-        if (idx >= 0) {
-          s.dotPositions[idx] = s.dotPositions[s.dotPositions.length - 1]
-          s.dotPositions.pop()
-        }
+        if (idx >= 0) { s.dotPositions[idx] = s.dotPositions[s.dotPositions.length - 1]; s.dotPositions.pop() }
         s.score += 10
+        s.dotCanvasDirty = true
       }
       if (s.pelletSet.has(key)) {
         s.pelletSet.delete(key)
