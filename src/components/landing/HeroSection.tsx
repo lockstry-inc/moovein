@@ -71,16 +71,21 @@ export default function HeroSection({ onCta, theme }: Props) {
           ))}
         </div>
 
-        {/* Heading */}
-        <h1
-          className="font-['Playfair_Display',serif] text-[40px] md:text-[56px] font-bold text-center leading-[1.1] mb-4"
-          style={{ color: '#ffffff' }}
-        >
-          Find Self-Storage<br />Near You
-        </h1>
+        {/* Brand heading */}
+        <div className="flex items-baseline justify-center gap-3 mb-3">
+          <h1 className="font-['Playfair_Display',serif] text-[40px] md:text-[56px] font-bold" style={{ color: '#ffffff' }}>
+            Moove In
+          </h1>
+          <span className="text-[14px] md:text-[18px] font-semibold tracking-[3px] uppercase" style={{ color: 'rgba(255,255,255,0.4)' }}>
+            Self Storage
+          </span>
+        </div>
 
         {/* Subheading */}
-        <p className="text-[16px] md:text-[18px] text-center mb-8" style={{ color: 'rgba(255,255,255,0.55)' }}>
+        <p className="font-['Playfair_Display',serif] text-[28px] md:text-[40px] font-bold text-center mb-3" style={{ color: 'rgba(255,255,255,0.85)' }}>
+          Find Storage Near You
+        </p>
+        <p className="text-[15px] text-center mb-8" style={{ color: 'rgba(255,255,255,0.45)' }}>
           {facilities.length} locations across the Northeast &amp; Mid-Atlantic
         </p>
 
