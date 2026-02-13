@@ -25,12 +25,12 @@ export default function Topbar() {
           </>
         )}
       </div>
-      <div className="flex items-center gap-2">
+      <div className="flex items-center" style={{ gap: 12 }}>
         {facility && (
           <>
             <span className="text-[12px] text-text-dim font-medium">{facility.hours}</span>
             <div className="w-px h-4 bg-border" />
-            <span className="text-[12px] text-text-dim font-medium">{facility.phone}</span>
+            <span className="text-[12px] text-text-sec font-medium">{facility.phone}</span>
           </>
         )}
       </div>

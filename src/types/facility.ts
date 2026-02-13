@@ -43,12 +43,18 @@ export interface Floor {
   siteFeatures: SiteFeature[]
 }
 
+export interface FacilityHours {
+  office: { label: string; time: string }[]
+  gate: string
+}
+
 export interface Facility {
   id: string
   name: string
   address: string
   phone: string
   hours: string
+  officeHours: FacilityHours
   floors: Floor[]
 }
 

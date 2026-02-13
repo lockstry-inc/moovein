@@ -9,11 +9,11 @@ export default function StepLease() {
   const setSignature = useCheckoutStore(s => s.setSignature)
 
   return (
-    <div className="p-[22px_20px]">
+    <div style={{ padding: '22px 20px' }}>
       <div className="text-[10px] font-semibold text-text-dim tracking-[0.8px] uppercase mb-[10px]">Review & Sign Lease</div>
 
       {/* Lease text */}
-      <div className="bg-bg border border-border rounded-[14px] p-4 mb-[14px] max-h-[260px] overflow-y-auto">
+      <div className="bg-bg border border-border rounded-[14px] mb-[14px] max-h-[260px] overflow-y-auto" style={{ padding: 16 }}>
         <div className="text-[13px] font-bold text-white mb-[10px]">Self-Storage Rental Agreement</div>
         <div className="text-[11px] text-text-sec leading-[1.7]">
           {LEASE_SECTIONS.map(s => (
@@ -25,7 +25,7 @@ export default function StepLease() {
       </div>
 
       {/* Signature */}
-      <div className="bg-surface-2 border border-border rounded-[10px] p-[14px] mb-[14px]">
+      <div className="bg-surface-2 border border-border rounded-[10px] mb-[14px]" style={{ padding: 14 }}>
         <div className="text-[10px] font-semibold text-text-dim tracking-[0.8px] uppercase mb-2">Your Signature</div>
         <SignatureCanvas onSign={(url) => setSignature(url)} />
         <div className="text-[10px] text-text-dim mt-[6px]">Draw your signature above to sign the lease agreement</div>

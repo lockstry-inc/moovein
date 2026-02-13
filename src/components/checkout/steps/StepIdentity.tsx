@@ -19,13 +19,14 @@ export default function StepIdentity() {
   }
 
   return (
-    <div className="p-[22px_20px]">
+    <div style={{ padding: '22px 20px' }}>
       <div className="text-[10px] font-semibold text-text-dim tracking-[0.8px] uppercase mb-[10px]">Verify Your Identity</div>
 
       {/* ID Scan */}
       <div
         onClick={handleScan}
-        className={`w-full p-[18px] rounded-[14px] cursor-pointer transition-all duration-200 flex flex-col items-center gap-2 text-center mb-[10px] border-[1.5px] ${
+        style={{ padding: 18 }}
+        className={`w-full rounded-[14px] cursor-pointer transition-all duration-200 flex flex-col items-center gap-2 text-center mb-[10px] border-[1.5px] ${
           idVerified
             ? 'border-solid border-accent bg-accent-bg'
             : 'border-dashed border-border-light bg-surface-2 hover:bg-surface-3 hover:border-accent-border'

@@ -19,15 +19,15 @@ export default function FloorSwitcher() {
           <button
             key={floor.id}
             onClick={() => switchFloor(floor.id)}
-            className={`rounded-[10px] text-[12px] font-semibold transition-all duration-200 cursor-pointer border-none ${
+            className={`rounded-[10px] text-[13px] font-semibold transition-all duration-200 cursor-pointer border-none ${
               active
                 ? 'bg-accent-bg text-accent shadow-[0_0_12px_rgba(45,212,160,0.15)]'
                 : 'bg-transparent text-text-sec hover:text-text hover:bg-surface-2'
             }`}
-            style={{ padding: '9px 18px' }}
+            style={{ padding: '10px 20px' }}
           >
             {floor.name}
-            <span className="ml-1.5 text-[10px] opacity-70">{vacantCount}</span>
+            <span style={{ marginLeft: 8, fontSize: 10, opacity: 0.6 }}>{vacantCount}</span>
           </button>
         )
       })}

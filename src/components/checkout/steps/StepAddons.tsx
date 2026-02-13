@@ -6,7 +6,7 @@ export default function StepAddons() {
   const toggleAddon = useCheckoutStore(s => s.toggleAddon)
 
   return (
-    <div className="p-[22px_20px]">
+    <div style={{ padding: '22px 20px' }}>
       <div className="text-[10px] font-semibold text-text-dim tracking-[0.8px] uppercase mb-[10px]">Protection & Add-ons</div>
 
       {ADDONS.map(addon => {
@@ -15,7 +15,8 @@ export default function StepAddons() {
           <div
             key={addon.id}
             onClick={() => toggleAddon(addon.id)}
-            className={`flex items-center justify-between p-[12px_13px] rounded-[10px] cursor-pointer transition-all duration-200 mb-[6px] border-[1.5px] ${
+            style={{ padding: '12px 13px' }}
+            className={`flex items-center justify-between rounded-[10px] cursor-pointer transition-all duration-200 mb-[6px] border-[1.5px] ${
               isOn
                 ? 'bg-accent-bg border-accent'
                 : 'bg-surface-2 border-border hover:bg-surface-3 hover:border-border-light'

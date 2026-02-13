@@ -32,8 +32,12 @@ export function useMapControls(containerRef: React.RefObject<HTMLDivElement | nu
     const rect = containerRef.current?.getBoundingClientRect()
     if (!rect) return
 
-    // Multiplicative zoom — feels consistent at any scale
-    const factor = e.deltaY > 0 ? 0.9 : 1.1
+    // Normalize deltaY across browsers/devices (trackpad vs mouse wheel)
+    const rawDelta = Math.abs(e.deltaY)
+    const normalizedDelta = Math.min(rawDelta, 100) / 100
+    // Gentle zoom: 2–6% per tick for smooth feel
+    const strength = normalizedDelta * 0.06
+    const factor = e.deltaY > 0 ? 1 - strength : 1 + strength
     const next = Math.max(0.05, Math.min(2.5, scale * factor))
 
     // Zoom toward cursor: keep the world point under the cursor fixed

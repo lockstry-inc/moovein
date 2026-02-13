@@ -15,7 +15,7 @@ export default function StepPayment({ unit }: Props) {
   const type = UNIT_TYPES[unit.type]
 
   return (
-    <div className="p-[22px_20px]">
+    <div style={{ padding: '22px 20px' }}>
       <div className="text-[10px] font-semibold text-text-dim tracking-[0.8px] uppercase mb-[10px]">Payment</div>
 
       {/* Express pay */}

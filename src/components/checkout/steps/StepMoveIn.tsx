@@ -19,7 +19,7 @@ export default function StepMoveIn() {
   }, [])
 
   return (
-    <div className="p-[22px_20px]">
+    <div style={{ padding: '22px 20px' }}>
       <div className="text-[10px] font-semibold text-text-dim tracking-[0.8px] uppercase mb-[10px]">Select Move-in Date</div>
       <div className="flex flex-wrap gap-[6px]">
         {dates.map(date => {

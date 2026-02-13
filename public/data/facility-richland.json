@@ -2,8 +2,16 @@
   "id": "richland",
   "name": "Moove In Richland",
   "address": "651 S Richland Ave, York, PA 17403",
-  "phone": "(509) 555-0123",
-  "hours": "6:00 AM - 10:00 PM Daily",
+  "phone": "(717) 900-1700",
+  "hours": "Gate 6AM–10PM",
+  "officeHours": {
+    "office": [
+      { "label": "Sunday", "time": "Closed" },
+      { "label": "Mon–Fri", "time": "9:30 AM – 5:30 PM" },
+      { "label": "Saturday", "time": "8:00 AM – 1:00 PM" }
+    ],
+    "gate": "6:00 AM – 10:00 PM Daily"
+  },
   "floors": [
     {
       "id": "floor-1",

@@ -11,12 +11,12 @@
   --color-text-sec: #85868f;
   --color-text-dim: #4e4f58;
   --color-accent: #2dd4a0;
-  --color-accent-bg: rgba(45, 212, 160, 0.12);
-  --color-accent-border: rgba(45, 212, 160, 0.28);
-  --color-accent-mid: rgba(45, 212, 160, 0.18);
+  --color-accent-bg: rgba(45, 212, 160, 0.16);
+  --color-accent-border: rgba(45, 212, 160, 0.38);
+  --color-accent-mid: rgba(45, 212, 160, 0.24);
   --color-occ: #ef4468;
-  --color-occ-bg: rgba(239, 68, 104, 0.10);
-  --color-occ-border: rgba(239, 68, 104, 0.22);
+  --color-occ-bg: rgba(239, 68, 104, 0.14);
+  --color-occ-border: rgba(239, 68, 104, 0.30);
   --color-sel: #4fc4f0;
   --color-sel-bg: rgba(79, 196, 240, 0.14);
   --color-sel-border: rgba(79, 196, 240, 0.5);
@@ -97,7 +97,7 @@ body {
   font-weight: 700;
   letter-spacing: 0.5px;
   pointer-events: none;
-  opacity: 0.7;
+  opacity: 0.9;
   transition: opacity 0.2s;
   position: relative;
   z-index: 4;
@@ -112,8 +112,8 @@ body {
 .unit.vacant .unit-id { color: var(--color-accent); }
 .unit.vacant:hover {
   background: var(--color-accent-mid);
-  border-color: rgba(45, 212, 160, 0.5);
-  box-shadow: 0 0 20px rgba(45, 212, 160, 0.1), 0 4px 16px rgba(0, 0, 0, 0.3);
+  border-color: rgba(45, 212, 160, 0.55);
+  box-shadow: 0 0 20px rgba(45, 212, 160, 0.15), 0 4px 16px rgba(0, 0, 0, 0.3);
   transform: scale(1.03);
 }
 .unit.vacant::before {
@@ -127,9 +127,9 @@ body {
   background: var(--color-occ-bg);
   border-color: var(--color-occ-border);
   cursor: default;
-  opacity: 0.5;
+  opacity: 0.65;
 }
-.unit.occupied .unit-id { color: var(--color-occ); opacity: 0.5; }
+.unit.occupied .unit-id { color: var(--color-occ); opacity: 0.7; }
 .unit.occupied:hover { box-shadow: none; }
 
 .unit.sel-u {

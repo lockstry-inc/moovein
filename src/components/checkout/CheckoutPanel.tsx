@@ -61,21 +61,27 @@ export default function CheckoutPanel() {
       <div
         className={`fixed bg-surface z-210 flex flex-col ${
           isDesktop
-            ? 'top-0 right-0 w-[400px] max-w-[90vw] h-screen border-l border-border'
+            ? 'top-0 right-0 h-screen border-l border-border'
             : 'inset-0'
         }`}
         style={{
+          width: isDesktop ? 420 : undefined,
+          maxWidth: isDesktop ? '90vw' : undefined,
           animation: isDesktop
             ? 'panelSlideIn 0.45s cubic-bezier(0.16, 1, 0.3, 1)'
             : 'panelSlideUp 0.45s cubic-bezier(0.16, 1, 0.3, 1)',
         }}
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-5 py-4 border-b border-border shrink-0">
+        <div
+          className="flex items-center justify-between border-b border-border shrink-0"
+          style={{ padding: '16px 22px' }}
+        >
           <CheckoutProgress />
           <button
             onClick={handleClose}
-            className="w-[34px] h-[34px] bg-surface-2 border border-border rounded-[9px] text-text-sec text-[16px] cursor-pointer flex items-center justify-center transition-all duration-200 hover:bg-surface-3 hover:text-text"
+            className="bg-surface-2 border border-border rounded-[9px] text-text-sec text-[16px] cursor-pointer flex items-center justify-center transition-all duration-200 hover:bg-surface-3 hover:text-text"
+            style={{ width: 36, height: 36 }}
           >
             &#10005;
           </button>

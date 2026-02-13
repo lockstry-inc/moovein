@@ -23,7 +23,7 @@ export default function StepUnitDetails({ unit }: Props) {
   ]
 
   return (
-    <div className="p-[22px_20px]">
+    <div style={{ padding: '22px 20px' }}>
       <div className="text-[11px] font-bold text-text-dim tracking-[2px] uppercase mb-1">UNIT {unit.id}</div>
       <div className="font-['Playfair_Display',serif] text-[22px] font-bold text-white mb-[3px]">{type.name}</div>
       <div className="text-[14px] text-text-sec mb-[18px]">{type.dims} &middot; {type.sqft}</div>
@@ -42,7 +42,7 @@ export default function StepUnitDetails({ unit }: Props) {
       </div>
 
       {/* Pricing */}
-      <div className="bg-bg border border-border rounded-[14px] p-4 mb-3">
+      <div className="bg-bg border border-border rounded-[14px] mb-3" style={{ padding: 16 }}>
         <div className="text-[12px] text-text-sec mb-[3px]">Monthly rate</div>
         <div className="text-[26px] font-bold text-white tracking-[-0.5px]">
           ${type.price}<span className="text-[13px] text-text-sec font-normal"> /mo</span>

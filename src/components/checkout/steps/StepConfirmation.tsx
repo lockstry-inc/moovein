@@ -19,7 +19,7 @@ export default function StepConfirmation({ unit }: Props) {
   }
 
   return (
-    <div className="text-center p-[24px_8px]">
+    <div className="text-center" style={{ padding: '24px 20px' }}>
       <div className="text-[44px] mb-[14px]">{'\uD83C\uDF89'}</div>
       <div className="font-['Playfair_Display',serif] text-[22px] font-bold text-white mb-[6px]">Space Reserved!</div>
       <div className="text-[13px] text-text-sec leading-[1.5] mb-5">
@@ -27,7 +27,7 @@ export default function StepConfirmation({ unit }: Props) {
       </div>
 
       {/* Details */}
-      <div className="bg-bg border border-border rounded-[14px] p-4 text-left mb-4">
+      <div className="bg-bg border border-border rounded-[14px] text-left mb-4" style={{ padding: 16 }}>
         <Row label="Unit" value={`${unit.id} \u00b7 ${type.name}`} />
         <Row label="Move-in" value={selectedDate || '\u2014'} />
         <Row label="Access Code" value="7291" />
