@@ -1,10 +1,12 @@
 import { useFacilityStore } from '../../stores/facilityStore'
+import { useTheme } from '../../hooks/useTheme'
 
 export default function Topbar() {
   const facility = useFacilityStore(s => s.currentFacility)
   const currentFloorId = useFacilityStore(s => s.currentFloorId)
   const goToLanding = useFacilityStore(s => s.goToLanding)
   const floor = facility?.floors.find(f => f.id === currentFloorId)
+  const { theme, toggleTheme } = useTheme()
 
   return (
     <div className="fixed top-0 left-0 right-0 h-[58px] bg-surface/92 backdrop-blur-[24px] border-b border-border flex items-center justify-between z-100" style={{ padding: '0 24px 0 20px' }}>
@@ -37,8 +39,20 @@ export default function Topbar() {
           </>
         )}
       </div>
+      <div className="flex items-center shrink-0" style={{ gap: 14 }}>
+        {/* Theme toggle */}
+        <button
+          onClick={toggleTheme}
+          className="w-9 h-9 rounded-full flex items-center justify-center cursor-pointer border border-border bg-surface transition-all duration-200 hover:border-border-light"
+          title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+        >
+          <span className="text-[16px]">
+            {theme === 'dark' ? '\u2600\uFE0F' : '\uD83C\uDF19'}
+          </span>
+        </button>
       {facility && (
-        <div className="flex items-center shrink-0" style={{ gap: 14 }}>
+        <>
+          <div className="w-px h-8 bg-border shrink-0" />
           {facility.officeHours ? (
             <div className="flex flex-col items-end" style={{ gap: 1 }}>
               {facility.officeHours.office
@@ -60,8 +74,9 @@ export default function Topbar() {
           <span className="text-[12px] text-text-sec font-medium shrink-0 whitespace-nowrap">
             {facility.phone}
           </span>
-        </div>
+        </>
       )}
+      </div>
     </div>
   )
 }

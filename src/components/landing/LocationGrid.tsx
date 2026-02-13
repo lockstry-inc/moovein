@@ -16,13 +16,16 @@ function haversineDistance(lat1: number, lng1: number, lat2: number, lng2: numbe
 export default function LocationGrid() {
   const facilities = useFacilityStore(s => s.facilities)
   const [search, setSearch] = useState('')
-  const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null)
+  // Default center: Richland, York PA (primary facility) — ensures PA/NJ/MD
+  // locations sort near the top even when geolocation is unavailable
+  const DEFAULT_CENTER = { lat: 39.9426, lng: -76.7144 }
+  const [sortCenter, setSortCenter] = useState(DEFAULT_CENTER)
 
   useEffect(() => {
     if (!navigator.geolocation) return
     navigator.geolocation.getCurrentPosition(
-      (pos) => setUserLocation({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
-      () => {} // silently fail — fall back to alphabetical
+      (pos) => setSortCenter({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
+      () => {} // silently fail — keeps Richland-based fallback
     )
   }, [])
 
@@ -41,15 +44,10 @@ export default function LocationGrid() {
   const sorted = [...filtered].sort((a, b) => {
     // hasMap facilities always first
     if (a.hasMap !== b.hasMap) return a.hasMap ? -1 : 1
-    // If user location available, sort by proximity
-    if (userLocation) {
-      const distA = haversineDistance(userLocation.lat, userLocation.lng, a.lat, a.lng)
-      const distB = haversineDistance(userLocation.lat, userLocation.lng, b.lat, b.lng)
-      return distA - distB
-    }
-    // Fallback: alphabetical by state then city
-    if (a.state !== b.state) return a.state.localeCompare(b.state)
-    return a.city.localeCompare(b.city)
+    // Sort by proximity to user (or fallback center)
+    const distA = haversineDistance(sortCenter.lat, sortCenter.lng, a.lat, a.lng)
+    const distB = haversineDistance(sortCenter.lat, sortCenter.lng, b.lat, b.lng)
+    return distA - distB
   })
 
   return (

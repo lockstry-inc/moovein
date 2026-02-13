@@ -21,7 +21,7 @@ export default function StepPayment({ unit }: Props) {
       {/* Express pay */}
       <div className="flex flex-col gap-[7px] mb-[14px]">
         <button
-          className="w-full rounded-[10px] border-none cursor-pointer flex items-center justify-center gap-[6px] transition-all duration-200 hover:-translate-y-[1px] bg-white text-black"
+          className="w-full rounded-[10px] border border-border cursor-pointer flex items-center justify-center gap-[6px] transition-all duration-200 hover:-translate-y-[1px] bg-white text-black"
           style={{ padding: '13px 0' }}
         >
           <svg viewBox="0 0 17 20" width="14" height="17" fill="black">

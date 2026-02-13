@@ -26,7 +26,7 @@ export default function HeroSection({ onCta, theme }: Props) {
         Self storage, reimagined.
       </p>
       <p className="text-[14px] text-text-dim mb-10 text-center">
-        31+ locations across the Northeast &amp; Mid-Atlantic
+        31 locations across the Northeast &amp; Mid-Atlantic
       </p>
 
       {/* CTA */}
