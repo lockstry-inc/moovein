@@ -43,28 +43,28 @@ function buildCowGeometry(): THREE.BufferGeometry {
   rump.translate(-0.9, 0.2, 0)
   parts.push(rump)
 
-  // Neck — angled steeply downward (grazing default pose)
-  const neck = new THREE.CylinderGeometry(0.28, 0.35, 0.8, 12)
-  neck.rotateZ(Math.PI / 2 + 0.85) // steep downward from shoulder
-  neck.translate(1.15, -0.3, 0)
+  // Neck — angled steeply downward (grazing default pose), thinner + further forward
+  const neck = new THREE.CylinderGeometry(0.22, 0.28, 0.85, 12)
+  neck.rotateZ(Math.PI / 2 + 0.85)
+  neck.translate(1.35, -0.25, 0)
   parts.push(neck)
 
-  // Head — near ground level, grazing pose
-  const head = new THREE.SphereGeometry(0.36, 16, 12)
+  // Head — near ground level, grazing pose, pushed forward from legs
+  const head = new THREE.SphereGeometry(0.34, 16, 12)
   head.scale(1.1, 0.85, 0.8)
-  head.translate(1.3, -1.0, 0)
+  head.translate(1.55, -0.95, 0)
   parts.push(head)
 
   // Snout / muzzle — at grass level
-  const snout = new THREE.CylinderGeometry(0.16, 0.18, 0.22, 10)
-  snout.rotateZ(Math.PI / 2 + 0.4) // angled slightly down
-  snout.translate(1.4, -1.32, 0)
+  const snout = new THREE.CylinderGeometry(0.15, 0.17, 0.22, 10)
+  snout.rotateZ(Math.PI / 2 + 0.4)
+  snout.translate(1.65, -1.25, 0)
   parts.push(snout)
 
   // Jaw line — near grass
-  const jaw = new THREE.SphereGeometry(0.12, 8, 6)
+  const jaw = new THREE.SphereGeometry(0.11, 8, 6)
   jaw.scale(1.2, 0.5, 0.8)
-  jaw.translate(1.35, -1.42, 0)
+  jaw.translate(1.58, -1.38, 0)
   parts.push(jaw)
 
   // --- Legs (4) — longer, thinner, clearly visible ---
@@ -94,17 +94,17 @@ function buildCowGeometry(): THREE.BufferGeometry {
   const kbr = kneeGeo.clone(); kbr.translate(-0.85, -0.7, -0.3)
   parts.push(kfl, kfr, kbl, kbr)
 
-  // --- Horns --- (on top of lowered head)
+  // --- Horns --- (on top of lowered head, moved forward)
   const hornGeo = new THREE.ConeGeometry(0.04, 0.28, 6)
-  const hl = hornGeo.clone(); hl.rotateZ(0.3); hl.translate(1.22, -0.68, 0.16)
-  const hr = hornGeo.clone(); hr.rotateZ(0.3); hr.translate(1.22, -0.68, -0.16)
+  const hl = hornGeo.clone(); hl.rotateZ(0.3); hl.translate(1.48, -0.60, 0.16)
+  const hr = hornGeo.clone(); hr.rotateZ(0.3); hr.translate(1.48, -0.60, -0.16)
   parts.push(hl, hr)
 
-  // --- Ears --- (on lowered head)
+  // --- Ears --- (on lowered head, moved forward)
   const earGeo = new THREE.SphereGeometry(0.09, 8, 6)
   earGeo.scale(1.2, 0.35, 1.6)
-  const el = earGeo.clone(); el.translate(1.18, -0.78, 0.30)
-  const er = earGeo.clone(); er.translate(1.18, -0.78, -0.30)
+  const el = earGeo.clone(); el.translate(1.42, -0.72, 0.30)
+  const er = earGeo.clone(); er.translate(1.42, -0.72, -0.30)
   parts.push(el, er)
 
   // --- Tail --- thicker, hangs downward from rump
@@ -239,9 +239,9 @@ const vertexShader = /* glsl */ `
     }
 
     // Apply rotation to neck/head region — pivot at shoulder base
-    // neckFactor: 0 at body (x<0.8), 1 at head (x>1.3)
-    float neckFactor = smoothstep(0.7, 1.3, pos.x);
-    float pivotX = 0.85;
+    // neckFactor: 0 at body (x<1.0), 1 at head (x>1.4) — tight range avoids body distortion
+    float neckFactor = smoothstep(1.0, 1.4, pos.x);
+    float pivotX = 0.95;
     float pivotY = -0.1;
     float dx = pos.x - pivotX;
     float dy = pos.y - pivotY;
@@ -416,19 +416,7 @@ const LazyCanvas = lazy(() => Promise.resolve({ default: PointCloudCanvas }))
 export default function PointCloudCow() {
   return (
     <div className="mx-auto w-full" style={{ maxWidth: 600, height: 320 }}>
-      <Suspense fallback={
-        <div
-          className="w-[100px] h-[100px] rounded-[20px] overflow-hidden mx-auto"
-          style={{ background: '#0e1014', marginTop: 90 }}
-        >
-          <img
-            src="/moovein.png"
-            alt="Moove In"
-            className="w-full h-full object-cover"
-            style={{ mixBlendMode: 'screen' }}
-          />
-        </div>
-      }>
+      <Suspense fallback={<div style={{ width: '100%', height: 320 }} />}>
         <LazyCanvas />
       </Suspense>
     </div>
