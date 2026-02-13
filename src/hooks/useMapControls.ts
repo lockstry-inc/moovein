@@ -46,7 +46,7 @@ export function useMapControls(containerRef: React.RefObject<HTMLDivElement | nu
     const newPanX = cursorX - (cursorX - panX) * (next / scale)
     const newPanY = cursorY - (cursorY - panY) * (next / scale)
 
-    useFacilityStore.setState({ scale: next, panX: newPanX, panY: newPanY, smoothTransition: false })
+    useFacilityStore.setState({ scale: next, panX: newPanX, panY: newPanY, smoothTransition: 120 })
   }, [])
 
   const centerMap = useCallback(() => {

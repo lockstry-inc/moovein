@@ -32,7 +32,7 @@ interface FacilityState {
   scale: number
   panX: number
   panY: number
-  smoothTransition: boolean
+  smoothTransition: number  // 0 = none (drag), >0 = duration in ms
 
   // Tooltip
   tooltip: TooltipState
@@ -69,7 +69,7 @@ export const useFacilityStore = create<FacilityState>((set, get) => ({
   scale: 1,
   panX: 0,
   panY: 0,
-  smoothTransition: false,
+  smoothTransition: 0,
   tooltip: { visible: false, unitId: '', x: 0, y: 0 },
 
   loadFacilities: async () => {
@@ -104,7 +104,7 @@ export const useFacilityStore = create<FacilityState>((set, get) => ({
   dismissIntro: () => set({ appPhase: 'map' }),
 
   switchFloor: (floorId: string) => {
-    set({ currentFloorId: floorId, smoothTransition: true })
+    set({ currentFloorId: floorId, smoothTransition: 450 })
     // Reset view when switching floors
     const state = get()
     const ww = typeof window !== 'undefined' ? window.innerWidth : 1200
@@ -116,7 +116,7 @@ export const useFacilityStore = create<FacilityState>((set, get) => ({
         scale: mapScale,
         panX: (ww - floor.width * mapScale) / 2,
         panY: (wh - floor.height * mapScale) / 2 + 29,
-        smoothTransition: true,
+        smoothTransition: 450,
       })
     }
   },
@@ -136,7 +136,7 @@ export const useFacilityStore = create<FacilityState>((set, get) => ({
 
   deselectUnit: () => set({ selectedUnitId: null, appPhase: 'map' }),
 
-  setViewport: (scale, panX, panY) => set({ scale, panX, panY, smoothTransition: false }),
+  setViewport: (scale, panX, panY) => set({ scale, panX, panY, smoothTransition: 0 }),
 
   zoomBy: (delta: number) => {
     const { scale, panX, panY } = get()
@@ -149,7 +149,7 @@ export const useFacilityStore = create<FacilityState>((set, get) => ({
     const cy = wh / 2
     const newPanX = cx - (cx - panX) * (next / scale)
     const newPanY = cy - (cy - panY) * (next / scale)
-    set({ scale: next, panX: newPanX, panY: newPanY, smoothTransition: true })
+    set({ scale: next, panX: newPanX, panY: newPanY, smoothTransition: 350 })
   },
 
   resetView: () => {
@@ -163,7 +163,7 @@ export const useFacilityStore = create<FacilityState>((set, get) => ({
         scale: mapScale,
         panX: (ww - floor.width * mapScale) / 2,
         panY: (wh - floor.height * mapScale) / 2 + 29,
-        smoothTransition: true,
+        smoothTransition: 450,
       })
     }
   },

@@ -39,9 +39,9 @@ export default function FacilityMap() {
         className="absolute will-change-transform origin-[0_0]"
         style={{
           transform: `translate(${panX}px, ${panY}px) scale(${scale})`,
-          transition: smooth ? 'transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)' : 'none',
+          transition: smooth > 0 ? `transform ${smooth / 1000}s ${smooth > 200 ? 'cubic-bezier(0.16, 1, 0.3, 1)' : 'ease-out'}` : 'none',
         }}
-        onTransitionEnd={() => useFacilityStore.setState({ smoothTransition: false })}
+        onTransitionEnd={() => useFacilityStore.setState({ smoothTransition: 0 })}
       >
         {floor && <FacilityFloor floor={floor} />}
       </div>
