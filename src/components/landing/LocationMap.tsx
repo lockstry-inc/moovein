@@ -68,7 +68,7 @@ export default function LocationMap() {
       zoom: 5.5,
       attributionControl: false,
       logoPosition: 'top-left',
-      cooperativeGestures: true,
+      scrollZoom: true,
     })
 
     // Remove Mapbox logo
