@@ -64,6 +64,7 @@ export default function StepPayment({ unit }: Props) {
       <OrderSummary unitPrice={type.price} unitLabel={`${type.name} \u00b7 ${type.dims}`} />
 
       {/* Agreements */}
+      <div className="mt-[18px]" />
       <Checkbox checked={paymentAgreed} onToggle={() => toggleCheckbox('paymentAgreed')}>
         I agree to the Rental Agreement and Terms of Service
       </Checkbox>

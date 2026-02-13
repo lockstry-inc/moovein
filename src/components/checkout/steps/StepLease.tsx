@@ -32,6 +32,7 @@ export default function StepLease() {
       </div>
 
       {/* Checkboxes */}
+      <div className="mt-[18px]" />
       <Checkbox checked={leaseAgreed} onToggle={() => toggleCheckbox('leaseAgreed')}>
         I have read and agree to the Rental Agreement terms above
       </Checkbox>
