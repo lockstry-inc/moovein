@@ -4,7 +4,8 @@ import * as THREE from 'three'
 import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js'
 import { MeshSurfaceSampler } from 'three/examples/jsm/math/MeshSurfaceSampler.js'
 
-const POINT_COUNT = 4500
+const COW_POINTS = 3500
+const PERSON_POINTS = 1200
 
 // ---------------------------------------------------------------------------
 // Procedural cow built from composed primitive geometries
@@ -78,7 +79,6 @@ function buildCowGeometry(): THREE.BufferGeometry {
   udder.translate(-0.35, -0.62, 0)
   parts.push(udder)
 
-  // Ensure all parts are non-indexed so mergeGeometries works cleanly
   const nonIndexed = parts.map(p => p.index ? p.toNonIndexed() : p)
   const merged = mergeGeometries(nonIndexed, false)
   if (!merged) throw new Error('Failed to merge cow geometry')
@@ -87,7 +87,110 @@ function buildCowGeometry(): THREE.BufferGeometry {
 }
 
 // ---------------------------------------------------------------------------
-// Sample points from the cow surface
+// Procedural person standing next to the cow
+// ---------------------------------------------------------------------------
+function buildPersonGeometry(): THREE.BufferGeometry {
+  const parts: THREE.BufferGeometry[] = []
+
+  // Person positioned at cow's head, facing same direction
+  const px = 2.15
+
+  // Head
+  const head = new THREE.SphereGeometry(0.15, 14, 10)
+  head.translate(px, 0.58, 0)
+  parts.push(head)
+
+  // Neck
+  const neck = new THREE.CylinderGeometry(0.06, 0.08, 0.12, 8)
+  neck.translate(px, 0.42, 0)
+  parts.push(neck)
+
+  // Torso
+  const torso = new THREE.CylinderGeometry(0.14, 0.17, 0.6, 10)
+  torso.translate(px, 0.06, 0)
+  parts.push(torso)
+
+  // Shoulders
+  const shoulders = new THREE.SphereGeometry(0.16, 10, 8)
+  shoulders.scale(1.2, 0.4, 0.8)
+  shoulders.translate(px, 0.30, 0)
+  parts.push(shoulders)
+
+  // Pelvis / hips
+  const hips = new THREE.SphereGeometry(0.16, 10, 8)
+  hips.scale(1, 0.5, 0.7)
+  hips.translate(px, -0.26, 0)
+  parts.push(hips)
+
+  // --- Legs ---
+  // Left leg (slightly forward)
+  const lThigh = new THREE.CylinderGeometry(0.08, 0.07, 0.42, 8)
+  lThigh.translate(px + 0.03, -0.55, 0)
+  parts.push(lThigh)
+
+  const lShin = new THREE.CylinderGeometry(0.065, 0.055, 0.42, 8)
+  lShin.translate(px + 0.03, -0.95, 0)
+  parts.push(lShin)
+
+  const lFoot = new THREE.BoxGeometry(0.12, 0.05, 0.08)
+  lFoot.translate(px + 0.04, -1.19, 0)
+  parts.push(lFoot)
+
+  // Right leg (slightly back)
+  const rThigh = new THREE.CylinderGeometry(0.08, 0.07, 0.42, 8)
+  rThigh.translate(px - 0.04, -0.55, 0)
+  parts.push(rThigh)
+
+  const rShin = new THREE.CylinderGeometry(0.065, 0.055, 0.42, 8)
+  rShin.translate(px - 0.04, -0.95, 0)
+  parts.push(rShin)
+
+  const rFoot = new THREE.BoxGeometry(0.12, 0.05, 0.08)
+  rFoot.translate(px - 0.03, -1.19, 0)
+  parts.push(rFoot)
+
+  // --- Arms ---
+  // Left arm (reaching toward cow — holding lead)
+  const lUpperArm = new THREE.CylinderGeometry(0.055, 0.048, 0.30, 8)
+  lUpperArm.rotateZ(0.4)
+  lUpperArm.translate(px + 0.20, 0.16, 0)
+  parts.push(lUpperArm)
+
+  const lForearm = new THREE.CylinderGeometry(0.045, 0.038, 0.26, 8)
+  lForearm.rotateZ(0.7)
+  lForearm.translate(px + 0.34, 0.01, 0)
+  parts.push(lForearm)
+
+  // Right arm (relaxed at side)
+  const rUpperArm = new THREE.CylinderGeometry(0.055, 0.048, 0.30, 8)
+  rUpperArm.rotateZ(-0.15)
+  rUpperArm.translate(px - 0.11, 0.14, 0)
+  parts.push(rUpperArm)
+
+  const rForearm = new THREE.CylinderGeometry(0.045, 0.038, 0.26, 8)
+  rForearm.rotateZ(-0.3)
+  rForearm.translate(px - 0.17, -0.06, 0)
+  parts.push(rForearm)
+
+  // Hat brim (nice silhouette touch)
+  const brim = new THREE.CylinderGeometry(0.14, 0.17, 0.03, 12)
+  brim.translate(px, 0.71, 0)
+  parts.push(brim)
+
+  // Hat crown
+  const crown = new THREE.CylinderGeometry(0.10, 0.12, 0.12, 10)
+  crown.translate(px, 0.78, 0)
+  parts.push(crown)
+
+  const nonIndexed = parts.map(p => p.index ? p.toNonIndexed() : p)
+  const merged = mergeGeometries(nonIndexed, false)
+  if (!merged) throw new Error('Failed to merge person geometry')
+  merged.computeVertexNormals()
+  return merged
+}
+
+// ---------------------------------------------------------------------------
+// Sample points from a surface
 // ---------------------------------------------------------------------------
 function samplePoints(geometry: THREE.BufferGeometry, count: number) {
   const tempMesh = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial())
@@ -158,52 +261,91 @@ const fragmentShader = /* glsl */ `
 `
 
 // ---------------------------------------------------------------------------
-// The animated point cloud scene
+// Helper: create point cloud buffer geometry from sampled surface
 // ---------------------------------------------------------------------------
-function CowPoints() {
-  const groupRef = useRef<THREE.Group>(null)
-  const matRef = useRef<THREE.ShaderMaterial>(null)
+function makePointGeo(surfaceGeo: THREE.BufferGeometry, count: number) {
+  const { positions, normals, randoms } = samplePoints(surfaceGeo, count)
+  const geo = new THREE.BufferGeometry()
+  geo.setAttribute('position', new THREE.BufferAttribute(positions, 3))
+  geo.setAttribute('aNormal', new THREE.BufferAttribute(normals, 3))
+  geo.setAttribute('aRandom', new THREE.BufferAttribute(randoms, 1))
+  return geo
+}
 
-  const geometry = useMemo(() => {
-    const cowGeo = buildCowGeometry()
-    const { positions, normals, randoms } = samplePoints(cowGeo, POINT_COUNT)
+// ---------------------------------------------------------------------------
+// The animated point cloud scene — side profile, cow + person
+// ---------------------------------------------------------------------------
+function ScenePoints() {
+  const cowRef = useRef<THREE.Group>(null)
+  const personRef = useRef<THREE.Group>(null)
+  const cowMatRef = useRef<THREE.ShaderMaterial>(null)
+  const personMatRef = useRef<THREE.ShaderMaterial>(null)
 
-    const geo = new THREE.BufferGeometry()
-    geo.setAttribute('position', new THREE.BufferAttribute(positions, 3))
-    geo.setAttribute('aNormal', new THREE.BufferAttribute(normals, 3))
-    geo.setAttribute('aRandom', new THREE.BufferAttribute(randoms, 1))
+  const cowGeo = useMemo(() => makePointGeo(buildCowGeometry(), COW_POINTS), [])
+  const personGeo = useMemo(() => makePointGeo(buildPersonGeometry(), PERSON_POINTS), [])
 
-    return geo
-  }, [])
+  const cowUniforms = useMemo(() => ({
+    uTime: { value: 0 },
+    uColor: { value: new THREE.Color('#2dd4a0') },
+    uPixelRatio: { value: Math.min(window.devicePixelRatio, 2) },
+  }), [])
 
-  const uniforms = useMemo(() => ({
+  const personUniforms = useMemo(() => ({
     uTime: { value: 0 },
     uColor: { value: new THREE.Color('#2dd4a0') },
     uPixelRatio: { value: Math.min(window.devicePixelRatio, 2) },
   }), [])
 
   useFrame(({ clock }) => {
-    if (groupRef.current) {
-      groupRef.current.rotation.y = clock.elapsedTime * 0.15
+    const t = clock.elapsedTime
+
+    // Cow: gentle weight-shifting sway + subtle bob
+    if (cowRef.current) {
+      cowRef.current.rotation.z = Math.sin(t * 0.5) * 0.012
+      cowRef.current.position.y = Math.sin(t * 0.3) * 0.008
     }
-    if (matRef.current) {
-      matRef.current.uniforms.uTime.value = clock.elapsedTime
+
+    // Person: slight weight shift, different phase
+    if (personRef.current) {
+      personRef.current.rotation.z = Math.sin(t * 0.4 + 1.2) * 0.018
+      personRef.current.position.y = Math.sin(t * 0.35 + 0.7) * 0.006
     }
+
+    if (cowMatRef.current) cowMatRef.current.uniforms.uTime.value = t
+    if (personMatRef.current) personMatRef.current.uniforms.uTime.value = t
   })
 
   return (
-    <group ref={groupRef} position={[0, 0.3, 0]} rotation={[0.1, 0, 0]}>
-      <points geometry={geometry}>
-        <shaderMaterial
-          ref={matRef}
-          vertexShader={vertexShader}
-          fragmentShader={fragmentShader}
-          uniforms={uniforms}
-          transparent
-          blending={THREE.AdditiveBlending}
-          depthWrite={false}
-        />
-      </points>
+    <group position={[-0.25, 0.25, 0]} rotation={[0.05, 0, 0]}>
+      {/* Cow */}
+      <group ref={cowRef}>
+        <points geometry={cowGeo}>
+          <shaderMaterial
+            ref={cowMatRef}
+            vertexShader={vertexShader}
+            fragmentShader={fragmentShader}
+            uniforms={cowUniforms}
+            transparent
+            blending={THREE.AdditiveBlending}
+            depthWrite={false}
+          />
+        </points>
+      </group>
+
+      {/* Person */}
+      <group ref={personRef}>
+        <points geometry={personGeo}>
+          <shaderMaterial
+            ref={personMatRef}
+            vertexShader={vertexShader}
+            fragmentShader={fragmentShader}
+            uniforms={personUniforms}
+            transparent
+            blending={THREE.AdditiveBlending}
+            depthWrite={false}
+          />
+        </points>
+      </group>
     </group>
   )
 }
@@ -219,7 +361,7 @@ function PointCloudCanvas() {
       dpr={[1, 2]}
       style={{ background: 'transparent' }}
     >
-      <CowPoints />
+      <ScenePoints />
     </Canvas>
   )
 }
