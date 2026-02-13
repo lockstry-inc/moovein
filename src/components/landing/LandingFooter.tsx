@@ -5,11 +5,11 @@ export default function LandingFooter({ onCta }: { onCta: () => void }) {
         {/* Top row */}
         <div className="flex flex-col items-center gap-6 mb-8">
           {/* Brand */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-baseline gap-2">
             <span className="font-['Playfair_Display',serif] text-[17px] font-bold text-text">
               Moove In
             </span>
-            <span className="text-[11px] font-semibold text-text-dim tracking-[0.5px] uppercase">
+            <span className="text-[11px] font-semibold text-text-dim tracking-[2px] uppercase">
               Self Storage
             </span>
           </div>
