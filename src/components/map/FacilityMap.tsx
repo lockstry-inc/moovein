@@ -111,7 +111,7 @@ export default function FacilityMap() {
         ref={transformRef}
         className="absolute will-change-transform origin-[0_0]"
       >
-        {floor && <FacilityFloor floor={floor} />}
+        {floor && <FacilityFloor key={currentFloorId} floor={floor} />}
       </div>
     </div>
   )

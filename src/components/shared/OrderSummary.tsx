@@ -13,7 +13,7 @@ export default function OrderSummary({ unitPrice, unitLabel }: Props) {
   if (oneTime) totalStr += ` + $${oneTime}`
 
   return (
-    <div className="bg-surface-2 border border-border rounded-[14px] p-[14px] mb-3">
+    <div className="bg-surface-2 border border-border rounded-[14px] mb-3" style={{ padding: 14 }}>
       <div className="flex justify-between py-[5px] text-[12px]">
         <span className="text-text-sec">{unitLabel}</span>
         <span className="text-text font-semibold">${unitPrice}/mo</span>

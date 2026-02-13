@@ -28,11 +28,12 @@ export default function StepMoveIn() {
             <div
               key={date}
               onClick={() => setSelectedDate(date)}
-              className={`py-[9px] px-[14px] rounded-[10px] text-[12px] font-medium cursor-pointer transition-all duration-200 border-[1.5px] ${
+              className={`rounded-[10px] text-[12px] font-semibold cursor-pointer transition-all duration-200 border-[1.5px] ${
                 isSelected
                   ? 'bg-accent-bg border-accent text-accent'
-                  : 'bg-surface-2 border-border text-text hover:border-border-light'
+                  : 'bg-surface-2 border-border text-text-sec hover:border-border-light hover:text-text hover:bg-surface-3'
               }`}
+              style={{ padding: '10px 15px' }}
             >
               {date}
             </div>

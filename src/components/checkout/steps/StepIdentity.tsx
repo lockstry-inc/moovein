@@ -83,7 +83,8 @@ export default function StepIdentity() {
 function Input({ placeholder, value, onChange, className = '' }: { placeholder: string; value: string; onChange: (v: string) => void; className?: string }) {
   return (
     <input
-      className={`bg-surface-2 border-[1.5px] border-border rounded-[10px] py-[11px] px-[13px] text-[13px] font-['DM_Sans',sans-serif] text-text outline-none transition-[border-color] duration-200 w-full placeholder:text-text-dim focus:border-accent ${className}`}
+      className={`bg-surface-2 border-[1.5px] border-border rounded-[10px] text-[13px] font-['DM_Sans',sans-serif] text-text outline-none transition-[border-color] duration-200 w-full placeholder:text-text-dim focus:border-accent ${className}`}
+      style={{ padding: '11px 13px' }}
       placeholder={placeholder}
       value={value}
       onChange={e => onChange(e.target.value)}

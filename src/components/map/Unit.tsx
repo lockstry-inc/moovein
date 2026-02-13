@@ -67,7 +67,6 @@ const Unit = memo(function Unit({ unit, index }: Props) {
       data-id={unit.id}
       aria-label={`Unit ${unit.id}, ${isOccupied ? 'Occupied' : 'Vacant'}`}
     >
-      <span className="unit-id">{unit.id}</span>
       <div className="unit-feats">
         {feats.map(f => (
           <span key={f.key} className="unit-feat">{f.icon}</span>
