@@ -19,7 +19,7 @@ export default function CheckoutProgress() {
               isDone
                 ? 'w-2 h-2 bg-accent'
                 : isCurrent
-                  ? 'w-[10px] h-[10px] bg-accent shadow-[0_0_8px_rgba(45,212,160,0.4)]'
+                  ? 'w-[10px] h-[10px] bg-accent shadow-[0_0_8px_rgba(143,0,0,0.4)]'
                   : 'w-2 h-2 bg-surface-3'
             }`}
           />

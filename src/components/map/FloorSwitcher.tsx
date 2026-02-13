@@ -21,7 +21,7 @@ export default function FloorSwitcher() {
             onClick={() => switchFloor(floor.id)}
             className={`rounded-[10px] text-[13px] font-semibold transition-all duration-200 cursor-pointer border-none ${
               active
-                ? 'bg-accent-bg text-accent shadow-[0_0_12px_rgba(45,212,160,0.15)]'
+                ? 'bg-accent-bg text-accent shadow-[0_0_12px_rgba(143,0,0,0.15)]'
                 : 'bg-transparent text-text-sec hover:text-text hover:bg-surface-2'
             }`}
             style={{ padding: '10px 20px' }}

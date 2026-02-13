@@ -5,7 +5,7 @@ export default function HeroSection({ onCta }: { onCta: () => void }) {
     <section
       className="min-h-screen flex flex-col items-center justify-center relative"
       style={{
-        background: 'radial-gradient(ellipse at 50% 40%, rgba(45, 212, 160, 0.06) 0%, transparent 60%), var(--color-bg)',
+        background: 'radial-gradient(ellipse at 50% 40%, rgba(143, 0, 0, 0.06) 0%, transparent 60%), var(--color-bg)',
       }}
     >
       {/* 3D Point Cloud Cow */}
@@ -27,7 +27,7 @@ export default function HeroSection({ onCta }: { onCta: () => void }) {
       {/* CTA */}
       <button
         onClick={onCta}
-        className="bg-accent text-bg font-semibold text-[15px] rounded-full cursor-pointer transition-all duration-300 hover:shadow-[0_0_30px_rgba(45,212,160,0.3)] hover:scale-[1.03] active:scale-[0.98]"
+        className="bg-accent text-bg font-semibold text-[15px] rounded-full cursor-pointer transition-all duration-300 hover:shadow-[0_0_30px_rgba(143,0,0,0.3)] hover:scale-[1.03] active:scale-[0.98]"
         style={{ padding: '14px 36px' }}
       >
         Find Your Location

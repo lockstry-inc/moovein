@@ -35,7 +35,7 @@ export default function MapStats() {
                 onClick={() => switchFloor(f.id)}
                 className={`flex-1 rounded-[10px] text-[12px] font-semibold transition-all duration-200 cursor-pointer border-none whitespace-nowrap ${
                   active
-                    ? 'bg-accent-bg text-accent shadow-[0_0_12px_rgba(45,212,160,0.15)]'
+                    ? 'bg-accent-bg text-accent shadow-[0_0_12px_rgba(143,0,0,0.15)]'
                     : 'bg-transparent text-text-sec hover:text-text hover:bg-surface-2'
                 }`}
                 style={{ padding: '8px 16px' }}

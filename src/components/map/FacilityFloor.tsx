@@ -22,7 +22,7 @@ export default function FacilityFloor({ floor }: Props) {
       >
         <div className="absolute inset-0 opacity-40" style={{
           borderRadius: 60,
-          backgroundImage: 'linear-gradient(rgba(45,212,160,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(45,212,160,0.03) 1px, transparent 1px)',
+          backgroundImage: 'linear-gradient(rgba(143,0,0,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(143,0,0,0.03) 1px, transparent 1px)',
           backgroundSize: '200px 200px',
         }} />
       </div>
