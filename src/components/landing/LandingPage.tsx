@@ -3,7 +3,6 @@ import { useFacilityStore } from '../../stores/facilityStore'
 import { useTheme } from '../../hooks/useTheme'
 import LandingNav from './LandingNav'
 import HeroSection from './HeroSection'
-import ValueProps from './ValueProps'
 import LocationMap from './LocationMap'
 import LocationGrid from './LocationGrid'
 import StorageTypes from './StorageTypes'
@@ -26,7 +25,6 @@ export default function LandingPage() {
     <div className="min-h-screen" style={{ paddingTop: 58 }}>
       <LandingNav onCta={scrollToLocations} theme={theme} onToggleTheme={toggleTheme} />
       <HeroSection onCta={scrollToLocations} theme={theme} />
-      <ValueProps />
       <div ref={locationsRef}>
         <LocationMap theme={theme} />
       </div>

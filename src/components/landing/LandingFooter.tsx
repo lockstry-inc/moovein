@@ -5,19 +5,12 @@ export default function LandingFooter({ onCta }: { onCta: () => void }) {
         {/* Top row */}
         <div className="flex flex-col items-center gap-6 mb-8">
           {/* Brand */}
-          <div className="flex items-center gap-3">
-            <div
-              className="w-9 h-9 rounded-[8px] shrink-0 overflow-hidden bg-surface-2"
-            >
-              <img
-                src="/moovein.png"
-                alt="Moove In"
-                className="w-full h-full object-cover"
-                style={{ mixBlendMode: 'screen' }}
-              />
-            </div>
-            <span className="font-['Playfair_Display',serif] text-[15px] font-semibold text-text">
+          <div className="flex items-center gap-2">
+            <span className="font-['Playfair_Display',serif] text-[17px] font-bold text-text">
               Moove In
+            </span>
+            <span className="text-[11px] font-semibold text-text-dim tracking-[0.5px] uppercase">
+              Self Storage
             </span>
           </div>
 

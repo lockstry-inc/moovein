@@ -16,6 +16,16 @@ function haversineDistance(lat1: number, lng1: number, lat2: number, lng2: numbe
 export default function LocationGrid() {
   const facilities = useFacilityStore(s => s.facilities)
   const [search, setSearch] = useState('')
+
+  // Listen for search from hero section
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const query = (e as CustomEvent).detail
+      if (query) setSearch(query)
+    }
+    window.addEventListener('hero-search', handler)
+    return () => window.removeEventListener('hero-search', handler)
+  }, [])
   // Default center: Richland, York PA (primary facility) — ensures PA/NJ/MD
   // locations sort near the top even when geolocation is unavailable
   const DEFAULT_CENTER = { lat: 39.9426, lng: -76.7144 }
