@@ -26,7 +26,7 @@ export default function CheckoutFooter({ unit }: Props) {
         )}
         <button
           onClick={nextStep}
-          className="flex-1 bg-accent text-bg border-none rounded-[10px] text-[14px] font-bold font-['DM_Sans',sans-serif] cursor-pointer transition-all duration-200 hover:brightness-110 hover:-translate-y-[1px]"
+          className="flex-1 bg-brand text-white border-none rounded-[10px] text-[14px] font-bold font-['DM_Sans',sans-serif] cursor-pointer transition-all duration-200 hover:brightness-110 hover:-translate-y-[1px]"
           style={{ padding: '14px 0' }}
         >
           {BTN_LABELS[step - 1]}

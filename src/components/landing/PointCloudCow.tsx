@@ -361,14 +361,15 @@ function ScenePoints() {
   // Update colors, opacity, and blending when theme changes
   const isLight = theme === 'light'
   const cowColor = isLight ? '#000000' : '#ffffff'
-  const grassColor = isLight ? '#0d9460' : '#2dd4a0'
+  const grassColor = isLight ? '#057a42' : '#2dd4a0'
   const blending = isLight ? THREE.NormalBlending : THREE.AdditiveBlending
-  const opacityBoost = isLight ? 2.8 : 1.0
+  const cowOpacityBoost = isLight ? 2.8 : 1.0
+  const grassOpacityBoost = isLight ? 4.5 : 1.0
   useMemo(() => {
     cowUniforms.uColor.value.set(cowColor)
-    cowUniforms.uOpacityBoost.value = opacityBoost
+    cowUniforms.uOpacityBoost.value = cowOpacityBoost
     grassUniforms.uColor.value.set(grassColor)
-    grassUniforms.uOpacityBoost.value = opacityBoost
+    grassUniforms.uOpacityBoost.value = grassOpacityBoost
     if (cowMatRef.current) {
       cowMatRef.current.blending = blending
       cowMatRef.current.needsUpdate = true
@@ -377,7 +378,7 @@ function ScenePoints() {
       grassMatRef.current.blending = blending
       grassMatRef.current.needsUpdate = true
     }
-  }, [cowColor, grassColor, blending, opacityBoost, cowUniforms, grassUniforms])
+  }, [cowColor, grassColor, blending, cowOpacityBoost, grassOpacityBoost, cowUniforms, grassUniforms])
 
   useFrame(({ clock }) => {
     const t = clock.elapsedTime

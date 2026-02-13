@@ -20,7 +20,7 @@ export default function UnitCard({ unit }: Props) {
       <div className="flex items-start justify-between mb-2">
         <div>
           <div className="text-[10px] font-bold text-text-dim tracking-[1px] uppercase">Unit {unit.id}</div>
-          <div className="font-['Playfair_Display',serif] text-[16px] font-bold text-white">{type.name}</div>
+          <div className="font-['Playfair_Display',serif] text-[16px] font-bold text-text">{type.name}</div>
         </div>
         <div className="text-right">
           <div className="text-[18px] font-bold text-accent">${type.price}</div>

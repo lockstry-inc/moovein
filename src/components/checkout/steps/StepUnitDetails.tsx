@@ -25,18 +25,18 @@ export default function StepUnitDetails({ unit }: Props) {
   return (
     <div style={{ padding: '22px 20px' }}>
       <div className="text-[11px] font-bold text-text-dim tracking-[2px] uppercase mb-1">UNIT {unit.id}</div>
-      <div className="font-['Playfair_Display',serif] text-[22px] font-bold text-white mb-[3px]">{type.name}</div>
+      <div className="font-['Playfair_Display',serif] text-[22px] font-bold text-text mb-[3px]">{type.name}</div>
       <div className="text-[14px] text-text-sec mb-[18px]">{type.dims} &middot; {type.sqft}</div>
 
       {/* Features */}
       <div className="mb-[18px]">
         {features.map((f, i) => (
-          <div key={i} className="flex items-center justify-between py-[10px] border-b border-[rgba(38,40,48,0.7)] last:border-b-0">
+          <div key={i} className="flex items-center justify-between py-[10px] border-b border-border last:border-b-0">
             <div className="flex items-center gap-[9px]">
               <div className="w-7 h-7 bg-surface-2 rounded-[7px] flex items-center justify-center text-[13px] shrink-0">{f.icon}</div>
               <span className="text-[13px] font-medium text-text">{f.name}</span>
             </div>
-            <span className={`text-[12px] font-semibold ${f.on ? 'text-accent' : 'text-text-sec'}`}>{f.val}</span>
+            <span className={`text-[12px] font-semibold ${f.on ? 'text-brand' : 'text-text-sec'}`}>{f.val}</span>
           </div>
         ))}
       </div>
@@ -44,7 +44,7 @@ export default function StepUnitDetails({ unit }: Props) {
       {/* Pricing */}
       <div className="bg-bg border border-border rounded-[14px] mb-3" style={{ padding: 16 }}>
         <div className="text-[12px] text-text-sec mb-[3px]">Monthly rate</div>
-        <div className="text-[26px] font-bold text-white tracking-[-0.5px]">
+        <div className="text-[26px] font-bold text-text tracking-[-0.5px]">
           ${type.price}<span className="text-[13px] text-text-sec font-normal"> /mo</span>
         </div>
         <div className="text-[11px] text-text-dim mt-[6px] leading-[1.4]">

@@ -14,7 +14,7 @@ export default function StepLease() {
 
       {/* Lease text */}
       <div className="bg-bg border border-border rounded-[14px] mb-[14px] max-h-[260px] overflow-y-auto" style={{ padding: 16 }}>
-        <div className="text-[13px] font-bold text-white mb-[10px]">Self-Storage Rental Agreement</div>
+        <div className="text-[13px] font-bold text-text mb-[10px]">Self-Storage Rental Agreement</div>
         <div className="text-[11px] text-text-sec leading-[1.7]">
           {LEASE_SECTIONS.map(s => (
             <p key={s.number} className="mb-2 last:mb-0">
@@ -47,7 +47,7 @@ function Checkbox({ checked, onToggle, children }: { checked: boolean; onToggle:
   return (
     <div onClick={onToggle} className="flex items-start gap-[9px] mb-[10px] cursor-pointer">
       <div className={`w-[18px] h-[18px] rounded-[5px] shrink-0 flex items-center justify-center text-[10px] transition-all duration-200 mt-[1px] border-[1.5px] ${
-        checked ? 'bg-accent border-accent text-bg' : 'bg-surface-2 border-border text-transparent'
+        checked ? 'bg-brand border-brand text-white' : 'bg-surface-2 border-border text-transparent'
       }`}>
         &#10003;
       </div>

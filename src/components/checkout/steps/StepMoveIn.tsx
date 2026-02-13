@@ -30,7 +30,7 @@ export default function StepMoveIn() {
               onClick={() => setSelectedDate(date)}
               className={`rounded-[10px] text-[12px] font-semibold cursor-pointer transition-all duration-200 border-[1.5px] ${
                 isSelected
-                  ? 'bg-accent-bg border-accent text-accent'
+                  ? 'bg-brand-bg border-brand text-brand'
                   : 'bg-surface-2 border-border text-text-sec hover:border-border-light hover:text-text hover:bg-surface-3'
               }`}
               style={{ padding: '10px 15px' }}

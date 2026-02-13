@@ -7,12 +7,12 @@ export default function Topbar() {
   const floor = facility?.floors.find(f => f.id === currentFloorId)
 
   return (
-    <div className="fixed top-0 left-0 right-0 h-[58px] bg-[rgba(6,7,10,0.92)] backdrop-blur-[24px] border-b border-border flex items-center justify-between z-100" style={{ padding: '0 24px 0 20px' }}>
+    <div className="fixed top-0 left-0 right-0 h-[58px] bg-surface/92 backdrop-blur-[24px] border-b border-border flex items-center justify-between z-100" style={{ padding: '0 24px 0 20px' }}>
       <div className="flex items-center gap-3">
         {/* Back button */}
         <button
           onClick={goToLanding}
-          className="flex items-center gap-2 bg-transparent border-none cursor-pointer text-text-sec hover:text-accent transition-colors duration-200 shrink-0"
+          className="flex items-center gap-2 bg-transparent border-none cursor-pointer text-text-sec hover:text-brand transition-colors duration-200 shrink-0"
           style={{ padding: '4px 0' }}
         >
           <span className="text-[16px]">&larr;</span>
@@ -22,12 +22,11 @@ export default function Topbar() {
         <div className="w-px h-5 bg-border" />
 
         <div
-          className="w-10 h-10 rounded-[10px] shrink-0 overflow-hidden"
-          style={{ background: '#0e1014' }}
+          className="w-10 h-10 rounded-[10px] shrink-0 overflow-hidden bg-surface-2"
         >
-          <img src="/moovein.png" alt="Moove In" className="w-full h-full object-cover" style={{ mixBlendMode: 'screen' }} />
+          <img src="/moovein.png" alt="Moove In" className="w-full h-full object-cover logo-blend" />
         </div>
-        <span className="font-['Playfair_Display',serif] text-[17px] font-semibold text-white">Moove In</span>
+        <span className="font-['Playfair_Display',serif] text-[17px] font-semibold text-text">Moove In</span>
         {facility && (
           <>
             <div className="w-px h-5 bg-border" />

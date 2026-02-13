@@ -28,12 +28,12 @@ export default function StepIdentity() {
         style={{ padding: 18 }}
         className={`w-full rounded-[14px] cursor-pointer transition-all duration-200 flex flex-col items-center gap-2 text-center mb-[10px] border-[1.5px] ${
           idVerified
-            ? 'border-solid border-accent bg-accent-bg'
-            : 'border-dashed border-border-light bg-surface-2 hover:bg-surface-3 hover:border-accent-border'
+            ? 'border-solid border-brand bg-brand-bg'
+            : 'border-dashed border-border-light bg-surface-2 hover:bg-surface-3 hover:border-brand-border'
         }`}
       >
         <span className="text-[24px]">{idVerified ? '\u2713' : '\uD83D\uDCF7'}</span>
-        <span className={`text-[13px] font-semibold ${idVerified ? 'text-accent' : 'text-white'}`}>
+        <span className={`text-[13px] font-semibold ${idVerified ? 'text-brand' : 'text-text'}`}>
           {idVerified ? 'License Scanned Successfully' : "Scan Your Driver's License"}
         </span>
         <span className="text-[11px] text-text-sec leading-[1.3]">
@@ -83,7 +83,7 @@ export default function StepIdentity() {
 function Input({ placeholder, value, onChange, className = '' }: { placeholder: string; value: string; onChange: (v: string) => void; className?: string }) {
   return (
     <input
-      className={`bg-surface-2 border-[1.5px] border-border rounded-[10px] text-[13px] font-['DM_Sans',sans-serif] text-text outline-none transition-[border-color] duration-200 w-full placeholder:text-text-dim focus:border-accent ${className}`}
+      className={`bg-surface-2 border-[1.5px] border-border rounded-[10px] text-[13px] font-['DM_Sans',sans-serif] text-text outline-none transition-[border-color] duration-200 w-full placeholder:text-text-dim focus:border-brand ${className}`}
       style={{ padding: '11px 13px' }}
       placeholder={placeholder}
       value={value}

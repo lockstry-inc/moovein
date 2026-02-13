@@ -28,12 +28,12 @@ export default function UnitTooltip() {
       }}
     >
       <div
-        className="bg-[rgba(14,16,20,0.96)] backdrop-blur-[16px] border border-border-light rounded-[14px] shadow-[0_8px_32px_rgba(0,0,0,0.4)]"
+        className="bg-surface/96 backdrop-blur-[16px] border border-border-light rounded-[14px] shadow-[0_8px_32px_rgba(0,0,0,0.4)]"
         style={{ padding: '12px 16px' }}
       >
         <div className="flex items-center gap-2">
           <div className={`w-2 h-2 rounded-full shrink-0 ${isOcc ? 'bg-occ' : 'bg-accent shadow-[0_0_6px_var(--color-accent)]'}`} />
-          <span className="text-[13px] font-bold text-white">{unit.id}</span>
+          <span className="text-[13px] font-bold text-text">{unit.id}</span>
         </div>
         <div className="text-[12px] text-text-sec mt-1">{type.name} &middot; {type.dims}</div>
         <div className="flex gap-2 mt-[5px] text-[11px] text-text-sec">

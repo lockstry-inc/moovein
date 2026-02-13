@@ -26,7 +26,7 @@ export default function OrderSummary({ unitPrice, unitLabel }: Props) {
       ))}
       <div className="flex justify-between pt-[10px] mt-[5px] border-t border-border">
         <span className="text-text font-semibold text-[12px]">Due today</span>
-        <span className="text-white font-bold text-[16px]">{totalStr}</span>
+        <span className="text-text font-bold text-[16px]">{totalStr}</span>
       </div>
     </div>
   )

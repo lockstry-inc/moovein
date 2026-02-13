@@ -35,22 +35,22 @@
   --color-surface: #ffffff;
   --color-surface-2: #f0f0f2;
   --color-surface-3: #e6e6ea;
-  --color-border: #d4d4d8;
-  --color-border-light: #c4c4c8;
+  --color-border: #c8c8cc;
+  --color-border-light: #b0b0b6;
   --color-text: #1a1a1e;
-  --color-text-sec: #5c5c66;
-  --color-text-dim: #9b9ba3;
-  --color-accent-bg: rgba(45, 212, 160, 0.12);
-  --color-accent-border: rgba(45, 212, 160, 0.45);
-  --color-accent-mid: rgba(45, 212, 160, 0.18);
-  --color-brand-bg: rgba(143, 0, 0, 0.10);
-  --color-brand-border: rgba(143, 0, 0, 0.30);
-  --color-occ-bg: rgba(239, 68, 104, 0.10);
-  --color-occ-border: rgba(239, 68, 104, 0.25);
-  --color-sel-bg: rgba(79, 196, 240, 0.10);
-  --color-sel-border: rgba(79, 196, 240, 0.4);
-  --color-aisle: rgba(140, 120, 220, 0.06);
-  --color-aisle-b: rgba(140, 120, 220, 0.10);
+  --color-text-sec: #4a4a54;
+  --color-text-dim: #7a7a84;
+  --color-accent-bg: rgba(45, 212, 160, 0.18);
+  --color-accent-border: rgba(45, 212, 160, 0.55);
+  --color-accent-mid: rgba(45, 212, 160, 0.28);
+  --color-brand-bg: rgba(143, 0, 0, 0.14);
+  --color-brand-border: rgba(143, 0, 0, 0.40);
+  --color-occ-bg: rgba(239, 68, 104, 0.16);
+  --color-occ-border: rgba(239, 68, 104, 0.40);
+  --color-sel-bg: rgba(79, 196, 240, 0.16);
+  --color-sel-border: rgba(79, 196, 240, 0.55);
+  --color-aisle: rgba(140, 120, 220, 0.08);
+  --color-aisle-b: rgba(140, 120, 220, 0.14);
 }
 
 @layer base {
@@ -274,6 +274,17 @@
 [data-theme="light"] .mapboxgl-ctrl-group button span {
   filter: none !important;
 }
+
+/* Map floor stays dark in light mode */
+[data-theme="light"] .map-floor-bg {
+  --color-surface: #1a1c24;
+  --color-surface-2: #22242c;
+  --color-border: #2e303a;
+}
+
+/* Logo blend: screen in dark, normal in light */
+.logo-blend { mix-blend-mode: screen; }
+[data-theme="light"] .logo-blend { mix-blend-mode: normal; }
 
 /* Signature canvas */
 .sig-canvas { touch-action: none; }

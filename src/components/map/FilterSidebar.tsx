@@ -44,7 +44,7 @@ export default function FilterSidebar() {
             {activeFilters.size > 0 && (
               <button
                 onClick={clearFilters}
-                className="text-[11px] font-semibold text-text-dim bg-transparent border-none font-['DM_Sans',sans-serif] cursor-pointer transition-all duration-150 hover:text-accent hover:bg-accent-bg"
+                className="text-[11px] font-semibold text-text-dim bg-transparent border-none font-['DM_Sans',sans-serif] cursor-pointer transition-all duration-150 hover:text-brand hover:bg-brand-bg"
                 style={{ padding: '4px 10px', borderRadius: 6 }}
               >
                 Clear
@@ -73,14 +73,14 @@ export default function FilterSidebar() {
                   onClick={() => toggleFilter(f.key)}
                   className={`flex items-center justify-between rounded-[10px] cursor-pointer transition-all duration-200 select-none border-[1.5px] ${
                     isOn
-                      ? 'bg-accent-bg border-accent'
+                      ? 'bg-brand-bg border-brand'
                       : 'bg-surface-2 border-transparent hover:bg-surface-3 hover:border-border'
                   }`}
                   style={{ padding: '10px 12px' }}
                 >
                   <div className="flex items-center gap-[9px]">
                     <div className={`w-[16px] h-[16px] rounded-[5px] flex items-center justify-center text-[9px] shrink-0 border-[1.5px] transition-all duration-200 ${
-                      isOn ? 'bg-accent border-accent text-bg' : 'border-border text-transparent'
+                      isOn ? 'bg-brand border-brand text-white' : 'border-border text-transparent'
                     }`}>
                       &#10003;
                     </div>
@@ -90,7 +90,7 @@ export default function FilterSidebar() {
                     </div>
                   </div>
                   <div className="flex flex-col items-end gap-[1px]">
-                    <span className={`text-[12px] font-bold transition-colors duration-200 ${isOn ? 'text-accent' : 'text-text-dim'}`}>
+                    <span className={`text-[12px] font-bold transition-colors duration-200 ${isOn ? 'text-brand' : 'text-text-dim'}`}>
                       {count} avail
                     </span>
                     <span className="text-[10px] text-text-dim">from {f.price}/mo</span>

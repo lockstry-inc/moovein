@@ -7,7 +7,7 @@ interface Props {
 
 export default function FacilityFloor({ floor }: Props) {
   return (
-    <div className="relative">
+    <div className="relative map-floor-bg">
       {/* Floor background — padding/radius scaled for large coordinate space */}
       <div
         className="absolute bg-surface border border-border z-0"

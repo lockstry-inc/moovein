@@ -52,12 +52,12 @@ export default function StepPayment({ unit }: Props) {
 
       {/* Card form */}
       <div className="mb-[14px]">
-        <input className="bg-surface-2 border-[1.5px] border-border rounded-[10px] text-[13px] font-['DM_Sans',sans-serif] text-text outline-none w-full placeholder:text-text-dim focus:border-accent transition-[border-color] duration-200 mb-2 tracking-[1.5px]" style={{ padding: '11px 13px' }} placeholder="Card number" />
+        <input className="bg-surface-2 border-[1.5px] border-border rounded-[10px] text-[13px] font-['DM_Sans',sans-serif] text-text outline-none w-full placeholder:text-text-dim focus:border-brand transition-[border-color] duration-200 mb-2 tracking-[1.5px]" style={{ padding: '11px 13px' }} placeholder="Card number" />
         <div className="grid grid-cols-2 gap-2 mb-2">
-          <input className="bg-surface-2 border-[1.5px] border-border rounded-[10px] text-[13px] font-['DM_Sans',sans-serif] text-text outline-none w-full placeholder:text-text-dim focus:border-accent transition-[border-color] duration-200" style={{ padding: '11px 13px' }} placeholder="MM / YY" />
-          <input className="bg-surface-2 border-[1.5px] border-border rounded-[10px] text-[13px] font-['DM_Sans',sans-serif] text-text outline-none w-full placeholder:text-text-dim focus:border-accent transition-[border-color] duration-200" style={{ padding: '11px 13px' }} placeholder="CVC" />
+          <input className="bg-surface-2 border-[1.5px] border-border rounded-[10px] text-[13px] font-['DM_Sans',sans-serif] text-text outline-none w-full placeholder:text-text-dim focus:border-brand transition-[border-color] duration-200" style={{ padding: '11px 13px' }} placeholder="MM / YY" />
+          <input className="bg-surface-2 border-[1.5px] border-border rounded-[10px] text-[13px] font-['DM_Sans',sans-serif] text-text outline-none w-full placeholder:text-text-dim focus:border-brand transition-[border-color] duration-200" style={{ padding: '11px 13px' }} placeholder="CVC" />
         </div>
-        <input className="bg-surface-2 border-[1.5px] border-border rounded-[10px] text-[13px] font-['DM_Sans',sans-serif] text-text outline-none w-full placeholder:text-text-dim focus:border-accent transition-[border-color] duration-200" style={{ padding: '11px 13px' }} placeholder="Name on card" />
+        <input className="bg-surface-2 border-[1.5px] border-border rounded-[10px] text-[13px] font-['DM_Sans',sans-serif] text-text outline-none w-full placeholder:text-text-dim focus:border-brand transition-[border-color] duration-200" style={{ padding: '11px 13px' }} placeholder="Name on card" />
       </div>
 
       {/* Order summary */}
@@ -82,7 +82,7 @@ function Checkbox({ checked, onToggle, children }: { checked: boolean; onToggle:
   return (
     <div onClick={onToggle} className="flex items-start gap-[9px] mb-[10px] cursor-pointer">
       <div className={`w-[18px] h-[18px] rounded-[5px] shrink-0 flex items-center justify-center text-[10px] transition-all duration-200 mt-[1px] border-[1.5px] ${
-        checked ? 'bg-accent border-accent text-bg' : 'bg-surface-2 border-border text-transparent'
+        checked ? 'bg-brand border-brand text-white' : 'bg-surface-2 border-border text-transparent'
       }`}>
         &#10003;
       </div>

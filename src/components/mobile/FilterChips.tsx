@@ -15,7 +15,7 @@ export default function FilterChips() {
   const clearFilters = useFacilityStore(s => s.clearFilters)
 
   return (
-    <div className="fixed top-[58px] left-0 right-0 z-95 bg-[rgba(6,7,10,0.92)] backdrop-blur-[16px] border-b border-border px-3 py-2">
+    <div className="fixed top-[58px] left-0 right-0 z-95 bg-surface/92 backdrop-blur-[16px] border-b border-border px-3 py-2">
       <div className="flex gap-[6px] overflow-x-auto no-scrollbar">
         {activeFilters.size > 0 && (
           <button
@@ -33,7 +33,7 @@ export default function FilterChips() {
               onClick={() => toggleFilter(c.key)}
               className={`shrink-0 px-3 py-[6px] rounded-full text-[11px] font-semibold cursor-pointer whitespace-nowrap transition-all duration-200 border ${
                 active
-                  ? 'bg-accent-bg border-accent text-accent'
+                  ? 'bg-brand-bg border-brand text-brand'
                   : 'bg-surface-2 border-border text-text-sec hover:border-border-light'
               }`}
             >

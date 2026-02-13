@@ -1,10 +1,30 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useFacilityStore } from '../../stores/facilityStore'
 import LocationCard from './LocationCard'
+
+function haversineDistance(lat1: number, lng1: number, lat2: number, lng2: number) {
+  const R = 3959 // Earth radius in miles
+  const dLat = (lat2 - lat1) * Math.PI / 180
+  const dLng = (lng2 - lng1) * Math.PI / 180
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+    Math.sin(dLng / 2) * Math.sin(dLng / 2)
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+}
 
 export default function LocationGrid() {
   const facilities = useFacilityStore(s => s.facilities)
   const [search, setSearch] = useState('')
+  const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null)
+
+  useEffect(() => {
+    if (!navigator.geolocation) return
+    navigator.geolocation.getCurrentPosition(
+      (pos) => setUserLocation({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
+      () => {} // silently fail — fall back to alphabetical
+    )
+  }, [])
 
   const filtered = search
     ? facilities.filter(f => {
@@ -18,9 +38,16 @@ export default function LocationGrid() {
       })
     : facilities
 
-  // Sort: hasMap facilities first, then alphabetically by state then city
   const sorted = [...filtered].sort((a, b) => {
+    // hasMap facilities always first
     if (a.hasMap !== b.hasMap) return a.hasMap ? -1 : 1
+    // If user location available, sort by proximity
+    if (userLocation) {
+      const distA = haversineDistance(userLocation.lat, userLocation.lng, a.lat, a.lng)
+      const distB = haversineDistance(userLocation.lat, userLocation.lng, b.lat, b.lng)
+      return distA - distB
+    }
+    // Fallback: alphabetical by state then city
     if (a.state !== b.state) return a.state.localeCompare(b.state)
     return a.city.localeCompare(b.city)
   })

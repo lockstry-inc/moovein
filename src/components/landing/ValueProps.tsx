@@ -2,7 +2,7 @@ const PROPS = [
   { icon: '\u2714', title: 'No Deposit', desc: 'Move in without upfront costs. Just your first month.' },
   { icon: '\u21BB', title: 'Cancel Anytime', desc: 'Month-to-month flexibility. No long-term commitments.' },
   { icon: '\uD83D\uDCF1', title: 'Online Reservations', desc: 'Reserve your unit instantly from any device.' },
-  { icon: '\uD83D\uDD12', title: '24/7 Access', desc: 'Gate access from 6AM\u201310PM daily at all locations.' },
+  { icon: '\uD83D\uDD12', title: '24/7 Access', desc: 'Smart lock-enabled units for round-the-clock entry at your convenience.' },
 ]
 
 export default function ValueProps() {

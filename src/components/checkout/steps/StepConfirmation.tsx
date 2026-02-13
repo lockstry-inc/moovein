@@ -21,7 +21,7 @@ export default function StepConfirmation({ unit }: Props) {
   return (
     <div className="text-center" style={{ padding: '32px 20px 24px' }}>
       <div className="text-[48px] mb-[16px]">{'\uD83C\uDF89'}</div>
-      <div className="font-['Playfair_Display',serif] text-[24px] font-bold text-white mb-[8px]">Space Reserved!</div>
+      <div className="font-['Playfair_Display',serif] text-[24px] font-bold text-text mb-[8px]">Space Reserved!</div>
       <div className="text-[13px] text-text-sec leading-[1.5] mb-6">
         Your unit is ready. Here&apos;s everything you need for move-in day.
       </div>
@@ -56,9 +56,9 @@ export default function StepConfirmation({ unit }: Props) {
 
 function Row({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex justify-between py-[7px] text-[12px] border-b border-[rgba(38,40,48,0.5)] last:border-b-0">
+    <div className="flex justify-between py-[7px] text-[12px] border-b border-border last:border-b-0">
       <span className="text-text-sec">{label}</span>
-      <span className="text-white font-semibold">{value}</span>
+      <span className="text-text font-semibold">{value}</span>
     </div>
   )
 }
