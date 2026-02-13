@@ -5,14 +5,12 @@ import FacilityFloor from './FacilityFloor'
 
 export default function FacilityMap() {
   const containerRef = useRef<HTMLDivElement>(null)
+  const transformRef = useRef<HTMLDivElement>(null)
   const { onMouseDown, onMouseMove, onMouseUp, onWheel } = useMapControls(containerRef)
-  const scale = useFacilityStore(s => s.scale)
-  const panX = useFacilityStore(s => s.panX)
-  const panY = useFacilityStore(s => s.panY)
-  const smooth = useFacilityStore(s => s.smoothTransition)
+
+  // Only subscribe to data that triggers React re-renders (not viewport)
   const facility = useFacilityStore(s => s.currentFacility)
   const currentFloorId = useFacilityStore(s => s.currentFloorId)
-
   const floor = facility?.floors.find(f => f.id === currentFloorId)
 
   // Prevent default wheel on the container
@@ -22,6 +20,80 @@ export default function FacilityMap() {
     const handler = (e: WheelEvent) => e.preventDefault()
     el.addEventListener('wheel', handler, { passive: false })
     return () => el.removeEventListener('wheel', handler)
+  }, [])
+
+  // rAF-based smooth viewport interpolation — replaces CSS transitions
+  // Lerp speed adapts to interaction type: instant for drag, smooth for zoom
+  useEffect(() => {
+    const el = transformRef.current
+    if (!el) return
+
+    // Visual state (what's actually rendered)
+    const initial = useFacilityStore.getState()
+    const vis = { scale: initial.scale, panX: initial.panX, panY: initial.panY }
+    el.style.transform = `translate(${vis.panX}px, ${vis.panY}px) scale(${vis.scale})`
+
+    let rafId: number | null = null
+    let lastTime = 0
+
+    const animate = (time: number) => {
+      const { scale, panX, panY, smoothTransition } = useFacilityStore.getState()
+
+      // Frame-rate independent lerp: normalize to 60fps frame time
+      const dt = lastTime ? Math.min((time - lastTime) / 16.67, 3) : 1
+      lastTime = time
+
+      // Lerp speed based on interaction type
+      let baseLerp: number
+      if (smoothTransition === 0) baseLerp = 1.0       // drag: instant
+      else if (smoothTransition <= 150) baseLerp = 0.18 // wheel: snappy smooth
+      else baseLerp = 0.09                              // button/reset: elegant glide
+
+      const lerp = Math.min(1, 1 - Math.pow(1 - baseLerp, dt))
+
+      vis.scale += (scale - vis.scale) * lerp
+      vis.panX += (panX - vis.panX) * lerp
+      vis.panY += (panY - vis.panY) * lerp
+
+      el.style.transform = `translate(${vis.panX}px, ${vis.panY}px) scale(${vis.scale})`
+
+      // Check if settled (close enough to snap)
+      const settled =
+        Math.abs(scale - vis.scale) < 0.00005 &&
+        Math.abs(panX - vis.panX) < 0.01 &&
+        Math.abs(panY - vis.panY) < 0.01
+
+      if (settled) {
+        vis.scale = scale
+        vis.panX = panX
+        vis.panY = panY
+        el.style.transform = `translate(${panX}px, ${panY}px) scale(${scale})`
+        rafId = null
+      } else {
+        rafId = requestAnimationFrame(animate)
+      }
+    }
+
+    const startAnimation = () => {
+      if (!rafId) {
+        lastTime = 0
+        rafId = requestAnimationFrame(animate)
+      }
+    }
+
+    // Subscribe to store viewport changes (bypasses React render cycle)
+    const unsub = useFacilityStore.subscribe(
+      (state, prev) => {
+        if (state.scale !== prev.scale || state.panX !== prev.panX || state.panY !== prev.panY) {
+          startAnimation()
+        }
+      }
+    )
+
+    return () => {
+      unsub()
+      if (rafId) cancelAnimationFrame(rafId)
+    }
   }, [])
 
   return (
@@ -36,12 +108,8 @@ export default function FacilityMap() {
       onWheel={onWheel}
     >
       <div
+        ref={transformRef}
         className="absolute will-change-transform origin-[0_0]"
-        style={{
-          transform: `translate(${panX}px, ${panY}px) scale(${scale})`,
-          transition: smooth > 0 ? `transform ${smooth / 1000}s ${smooth > 200 ? 'cubic-bezier(0.16, 1, 0.3, 1)' : 'ease-out'}` : 'none',
-        }}
-        onTransitionEnd={() => useFacilityStore.setState({ smoothTransition: 0 })}
       >
         {floor && <FacilityFloor floor={floor} />}
       </div>
