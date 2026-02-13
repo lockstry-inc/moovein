@@ -9,10 +9,10 @@ export default function Topbar() {
     <div className="fixed top-0 left-0 right-0 h-[58px] bg-[rgba(6,7,10,0.92)] backdrop-blur-[24px] border-b border-border flex items-center justify-between z-100" style={{ padding: '0 24px 0 20px' }}>
       <div className="flex items-center gap-3">
         <div
-          className="w-10 h-10 rounded-[10px] flex items-center justify-center shrink-0 overflow-hidden border border-border-light"
-          style={{ background: '#1a1c22' }}
+          className="w-10 h-10 rounded-[10px] flex items-center justify-center shrink-0 overflow-hidden"
+          style={{ background: '#0e1014' }}
         >
-          <img src="/moovein.png" alt="Moove In" className="w-[22px] h-[22px]" />
+          <img src="/moovein.png" alt="Moove In" className="w-[34px] h-[34px]" style={{ mixBlendMode: 'screen' }} />
         </div>
         <span className="font-['Playfair_Display',serif] text-[17px] font-semibold text-white">Moove In</span>
         {facility && (

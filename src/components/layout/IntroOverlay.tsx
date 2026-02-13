@@ -40,8 +40,8 @@ export default function IntroOverlay() {
       >
         {/* Logo */}
         <div className="flex flex-col items-center mb-8">
-          <div className="w-16 h-16 rounded-2xl overflow-hidden mb-4 bg-surface-2 border border-border-light">
-            <img src="/moovein.png" alt="Moove In" className="w-full h-full object-cover" />
+          <div className="w-20 h-20 rounded-2xl overflow-hidden mb-4" style={{ background: '#0e1014' }}>
+            <img src="/moovein.png" alt="Moove In" className="w-full h-full object-cover" style={{ mixBlendMode: 'screen' }} />
           </div>
           <h1 className="font-['Playfair_Display',serif] text-[28px] font-bold text-white mb-1">Moove In</h1>
           <p className="text-[14px] text-text-sec">Self storage, reimagined.</p>
