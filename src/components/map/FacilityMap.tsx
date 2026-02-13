@@ -36,7 +36,7 @@ export default function FacilityMap() {
       onWheel={onWheel}
     >
       <div
-        className="absolute origin-center will-change-transform"
+        className="absolute will-change-transform origin-[0_0]"
         style={{
           transform: `translate(${panX}px, ${panY}px) scale(${scale})`,
           transition: smooth ? 'transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)' : 'none',

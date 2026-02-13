@@ -29,7 +29,7 @@ export function useMapControls(containerRef: React.RefObject<HTMLDivElement | nu
   const onWheel = useCallback((e: React.WheelEvent) => {
     e.stopPropagation()
     const { scale } = useFacilityStore.getState()
-    const next = Math.max(0.15, Math.min(2.5, scale + (e.deltaY > 0 ? -1 : 1) * 0.08))
+    const next = Math.max(0.05, Math.min(2.5, scale + (e.deltaY > 0 ? -1 : 1) * 0.08))
     useFacilityStore.setState({ scale: next, smoothTransition: false })
   }, [])
 

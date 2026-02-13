@@ -140,7 +140,7 @@ export const useFacilityStore = create<FacilityState>((set, get) => ({
 
   zoomBy: (delta: number) => {
     const { scale } = get()
-    const next = Math.max(0.15, Math.min(2.5, scale + delta))
+    const next = Math.max(0.05, Math.min(2.5, scale + delta))
     set({ scale: next, smoothTransition: true })
   },
 
