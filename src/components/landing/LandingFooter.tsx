@@ -1,8 +1,9 @@
 export default function LandingFooter({ onCta }: { onCta: () => void }) {
   return (
-    <footer className="border-t border-border" style={{ background: 'var(--color-surface)', padding: '40px 24px 28px' }}>
+    <footer className="border-t border-border px-6" style={{ background: 'var(--color-surface)', padding: '48px 24px 32px' }}>
       <div className="max-w-[1100px] mx-auto">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-6 mb-8">
+        {/* Top row */}
+        <div className="flex flex-col items-center gap-6 mb-8">
           {/* Brand */}
           <div className="flex items-center gap-3">
             <div
@@ -21,6 +22,10 @@ export default function LandingFooter({ onCta }: { onCta: () => void }) {
             </span>
           </div>
 
+          <div className="text-[12px] text-text-dim font-medium text-center">
+            No deposit &middot; Cancel anytime &middot; Online reservations
+          </div>
+
           {/* CTA */}
           <button
             onClick={onCta}
@@ -31,14 +36,12 @@ export default function LandingFooter({ onCta }: { onCta: () => void }) {
           </button>
         </div>
 
-        {/* Bottom */}
-        <div className="flex flex-col items-center gap-3">
-          <div className="text-[12px] text-text-dim font-medium">
-            No deposit &middot; Cancel anytime &middot; Online reservations
-          </div>
-          <div className="text-[11px] text-text-dim">
-            &copy; {new Date().getFullYear()} Moove In Self Storage. All rights reserved.
-          </div>
+        {/* Divider */}
+        <div className="w-full h-px bg-border mb-6" />
+
+        {/* Copyright */}
+        <div className="text-[11px] text-text-dim text-center">
+          &copy; {new Date().getFullYear()} Moove In Self Storage. All rights reserved.
         </div>
       </div>
     </footer>

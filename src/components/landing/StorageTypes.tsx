@@ -23,14 +23,14 @@ export default function StorageTypes() {
         </p>
 
         {/* Cards */}
-        <div className="flex gap-3 overflow-x-auto pb-2 snap-x snap-mandatory md:grid md:grid-cols-5 md:overflow-visible">
+        <div className="flex gap-3 overflow-x-auto pb-2 snap-x snap-mandatory md:grid md:grid-cols-5 md:overflow-visible md:pb-0">
           {ORDER.map(key => {
             const t = UNIT_TYPES[key]
             return (
               <div
                 key={key}
-                className="bg-bg border border-border rounded-[14px] flex flex-col snap-center shrink-0 transition-all duration-200 hover:border-border-light"
-                style={{ padding: '22px 18px', minWidth: 180 }}
+                className="bg-bg border border-border rounded-[14px] flex flex-col snap-center shrink-0 min-w-[180px] md:shrink md:min-w-0 transition-all duration-200 hover:border-border-light"
+                style={{ padding: '22px 18px' }}
               >
                 <div className="font-['Playfair_Display',serif] text-[18px] font-semibold text-white mb-1">
                   {t.name}

@@ -45,8 +45,8 @@ export default function LocationGrid() {
             placeholder="Search by city, state, or zip..."
             value={search}
             onChange={e => setSearch(e.target.value)}
-            className="bg-surface border border-border rounded-[10px] text-[13px] text-text font-medium outline-none transition-all duration-200 focus:border-accent-border placeholder:text-text-dim"
-            style={{ padding: '10px 16px', width: 260 }}
+            className="bg-surface border border-border rounded-[10px] text-[13px] text-text font-medium outline-none transition-all duration-200 focus:border-accent-border placeholder:text-text-dim w-full md:w-[260px]"
+            style={{ padding: '10px 16px' }}
           />
         </div>
 
