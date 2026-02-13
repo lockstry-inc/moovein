@@ -75,6 +75,10 @@ export default function LocationGrid() {
           />
         </div>
 
+        <div className="text-[11px] text-text-dim font-medium mb-4">
+          Sorted by proximity to your location
+        </div>
+
         {/* Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
           {sorted.map(f => (
