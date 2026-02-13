@@ -1,3 +1,5 @@
+import PointCloudCow from './PointCloudCow'
+
 export default function HeroSection({ onCta }: { onCta: () => void }) {
   return (
     <section
@@ -6,18 +8,8 @@ export default function HeroSection({ onCta }: { onCta: () => void }) {
         background: 'radial-gradient(ellipse at 50% 40%, rgba(45, 212, 160, 0.06) 0%, transparent 60%), var(--color-bg)',
       }}
     >
-      {/* Logo */}
-      <div
-        className="w-[100px] h-[100px] rounded-[20px] overflow-hidden mb-6"
-        style={{ background: '#0e1014' }}
-      >
-        <img
-          src="/moovein.png"
-          alt="Moove In"
-          className="w-full h-full object-cover"
-          style={{ mixBlendMode: 'screen' }}
-        />
-      </div>
+      {/* 3D Point Cloud Cow */}
+      <PointCloudCow />
 
       {/* Heading */}
       <h1 className="font-['Playfair_Display',serif] text-[48px] md:text-[64px] font-bold text-white mb-3 text-center">
