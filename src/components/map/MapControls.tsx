@@ -5,7 +5,7 @@ export default function MapControls() {
   const resetView = useFacilityStore(s => s.resetView)
 
   return (
-    <div className="fixed bottom-[22px] right-[22px] flex gap-[5px] z-90">
+    <div className="flex gap-[5px]">
       <button
         onClick={() => zoomBy(0.2)}
         className="bg-surface border border-border rounded-[12px] text-text-sec text-[18px] font-['DM_Sans',sans-serif] cursor-pointer flex items-center justify-center transition-all duration-200 hover:bg-surface-2 hover:text-text"
