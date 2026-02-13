@@ -1,35 +1,42 @@
 import { useEffect } from 'react'
 import { useFacilityStore } from './stores/facilityStore'
 import { useIsDesktop } from './hooks/useMediaQuery'
+import LandingPage from './components/landing/LandingPage'
 import Topbar from './components/layout/Topbar'
-import IntroOverlay from './components/layout/IntroOverlay'
 import FacilityMap from './components/map/FacilityMap'
 import FilterSidebar from './components/map/FilterSidebar'
 import MapLegend from './components/map/MapLegend'
 import MapStats from './components/map/MapStats'
 import MapControls from './components/map/MapControls'
-import FloorSwitcher from './components/map/FloorSwitcher'
 import UnitTooltip from './components/map/UnitTooltip'
 import CheckoutPanel from './components/checkout/CheckoutPanel'
 import UnitCardList from './components/mobile/UnitCardList'
 import FilterChips from './components/mobile/FilterChips'
+import FloorSwitcher from './components/map/FloorSwitcher'
 
 export default function App() {
   const appPhase = useFacilityStore(s => s.appPhase)
   const isDesktop = useIsDesktop()
-  const loadFacilities = useFacilityStore(s => s.loadFacilities)
 
+  // Toggle body overflow based on phase
   useEffect(() => {
-    loadFacilities()
-  }, [loadFacilities])
+    if (appPhase === 'landing') {
+      document.body.classList.remove('map-active')
+    } else {
+      document.body.classList.add('map-active')
+    }
+  }, [appPhase])
+
+  if (appPhase === 'landing') {
+    return <LandingPage />
+  }
 
   return (
     <>
       <Topbar />
       {isDesktop ? <FacilityMap /> : <UnitCardList />}
-      {appPhase === 'intro' && <IntroOverlay />}
       {appPhase === 'checkout' && <CheckoutPanel />}
-      {isDesktop && appPhase !== 'intro' && (
+      {isDesktop && appPhase === 'map' && (
         <>
           <FilterSidebar />
           <MapLegend />
@@ -38,7 +45,7 @@ export default function App() {
           <UnitTooltip />
         </>
       )}
-      {!isDesktop && appPhase !== 'intro' && (
+      {!isDesktop && appPhase === 'map' && (
         <>
           <FilterChips />
           <FloorSwitcher />

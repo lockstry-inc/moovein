@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import type { Facility, FacilityManifestEntry, UnitType } from '../types/facility'
 
-type AppPhase = 'intro' | 'map' | 'checkout'
+type AppPhase = 'landing' | 'map' | 'checkout'
 
 interface TooltipState {
   visible: boolean
@@ -40,7 +40,7 @@ interface FacilityState {
   // Actions
   loadFacilities: () => Promise<void>
   selectFacility: (id: string) => Promise<void>
-  dismissIntro: () => void
+  goToLanding: () => void
   switchFloor: (floorId: string) => void
   toggleFilter: (type: UnitType) => void
   clearFilters: () => void
@@ -61,7 +61,7 @@ export const useFacilityStore = create<FacilityState>((set, get) => ({
   currentFacility: null,
   loading: false,
   error: null,
-  appPhase: 'intro',
+  appPhase: 'landing',
   currentFloorId: 'floor-1',
   activeFilters: new Set(),
   filterSidebarOpen: true,
@@ -86,7 +86,7 @@ export const useFacilityStore = create<FacilityState>((set, get) => ({
   selectFacility: async (id: string) => {
     const { facilities } = get()
     const entry = facilities.find(f => f.id === id)
-    if (!entry) return
+    if (!entry || !entry.hasMap) return
     set({ loading: true })
     try {
       const res = await fetch(entry.dataUrl)
@@ -95,13 +95,20 @@ export const useFacilityStore = create<FacilityState>((set, get) => ({
         currentFacility: data,
         currentFloorId: data.floors[0]?.id || 'floor-1',
         loading: false,
+        appPhase: 'map',
       })
     } catch {
       set({ error: 'Failed to load facility data', loading: false })
     }
   },
 
-  dismissIntro: () => set({ appPhase: 'map' }),
+  goToLanding: () => set({
+    appPhase: 'landing',
+    currentFacility: null,
+    selectedUnitId: null,
+    activeFilters: new Set(),
+    filterSidebarOpen: true,
+  }),
 
   switchFloor: (floorId: string) => {
     set({ currentFloorId: floorId, smoothTransition: 450 })

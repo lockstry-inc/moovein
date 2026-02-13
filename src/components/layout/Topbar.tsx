@@ -3,11 +3,24 @@ import { useFacilityStore } from '../../stores/facilityStore'
 export default function Topbar() {
   const facility = useFacilityStore(s => s.currentFacility)
   const currentFloorId = useFacilityStore(s => s.currentFloorId)
+  const goToLanding = useFacilityStore(s => s.goToLanding)
   const floor = facility?.floors.find(f => f.id === currentFloorId)
 
   return (
     <div className="fixed top-0 left-0 right-0 h-[58px] bg-[rgba(6,7,10,0.92)] backdrop-blur-[24px] border-b border-border flex items-center justify-between z-100" style={{ padding: '0 24px 0 20px' }}>
       <div className="flex items-center gap-3">
+        {/* Back button */}
+        <button
+          onClick={goToLanding}
+          className="flex items-center gap-2 bg-transparent border-none cursor-pointer text-text-sec hover:text-accent transition-colors duration-200 shrink-0"
+          style={{ padding: '4px 0' }}
+        >
+          <span className="text-[16px]">&larr;</span>
+          <span className="text-[12px] font-medium hidden md:inline">All Locations</span>
+        </button>
+
+        <div className="w-px h-5 bg-border" />
+
         <div
           className="w-10 h-10 rounded-[10px] shrink-0 overflow-hidden"
           style={{ background: '#0e1014' }}
