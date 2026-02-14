@@ -1,59 +1,37 @@
 #!/usr/bin/env python3
 """
-Validate extracted unit data against the ground truth unit mix from the
-Richland architectural drawings (planning/richland-unit-mix.pdf).
+Validate extracted unit data against ground truth.
 
-Compares detected unit counts (by real size) against the expected counts
-from the Unit Count Matrix, identifying missing and excess units.
+When run without --expected-*, this just reports detected counts per size.
+When an accurate unit mix becomes available, pass expected counts via flags
+to compare detected vs expected.
 
 Usage:
-  python tools/validate-unit-mix.py
+  python tools/validate-unit-mix.py                          # report only
+  python tools/validate-unit-mix.py --floor1 output/f1.json  # single floor
+  python tools/validate-unit-mix.py --expected-total 669     # with target
 """
 
 import json
 from collections import Counter
 
 # ---------------------------------------------------------------------------
-# Ground truth from Unit Count Matrix (planning/richland-unit-mix.pdf)
-# Columns: First Floor | Second Floor | Building 2 | Building 3
-#
-# NOTE: The first floor plan image (richland-1.png) is labeled "B23-F1"
-# (Building 2-3, Floor 1) and contains ALL first floor areas including
-# Building 2 and Building 3 wings. Similarly, the second floor image
-# contains the second floor plus B2/B3 upper levels.
-#
-# So the expected counts for each IMAGE are:
-#   Floor 1 image = "First Floor" + "Building 2" + "Building 3" columns
-#   Floor 2 image = "Second Floor" column only (B2/B3 are ground-floor only based on layout)
+# Ground truth: currently unavailable (old unit mix was inaccurate).
+# When an accurate unit ID → size mapping is available, update this dict
+# or pass --expected-total / --expected-floor1 / --expected-floor2 flags.
 # ---------------------------------------------------------------------------
 
-# Per the Unit Count Matrix:
-#   Unit Size | First Floor | Second Floor | Building 2 | Building 3 | Total
+# Placeholder — fill in when accurate data is available
 GROUND_TRUTH_MATRIX = {
-    #              F1    F2    B2   B3   Total
-    '5x5':      ( 76,   25,    4,   0,   103),
-    '5x10':     (107,   49,   11,   2,   169),
-    '5x15':     (  2,    1,    5,   6,    14),
-    '7.6x10':   ( 14,   38,    0,   0,    52),
-    '10x10':    ( 90,   40,    6,   8,   144),
-    '10x15':    ( 77,   18,    1,   3,    96),  # 77+18+1+3 = 99, matrix says 96
-    '10x20':    ( 40,    8,    1,   0,    50),  # 40+8+1+0 = 49, matrix says 50
-    '10x25':    (  6,    8,    0,   0,    10),  # 6+8 = 14, matrix says 10
-    '10x30':    ( 22,    0,    1,   2,    25),
-    '10x40':    (  0,    0,    0,   1,     1),
+    # '5x5':    (F1, F2, B2, B3, Total),
+    # '5x10':   (...),
+    # etc.
 }
-# Subtotals: F1=442, F2=185, B2=33, B3=19, Total=669 (but row sums don't all match)
 
-# Expected counts for each floor plan IMAGE
-# Floor 1 image includes B2+B3 wings
 EXPECTED_FLOOR1 = {}
 EXPECTED_FLOOR2 = {}
-for size, (f1, f2, b2, b3, _total) in GROUND_TRUTH_MATRIX.items():
-    EXPECTED_FLOOR1[size] = f1 + b2 + b3  # main first floor + both wings
-    EXPECTED_FLOOR2[size] = f2             # second floor only
-
-EXPECTED_FLOOR1_TOTAL = sum(EXPECTED_FLOOR1.values())
-EXPECTED_FLOOR2_TOTAL = sum(EXPECTED_FLOOR2.values())
+EXPECTED_FLOOR1_TOTAL = 0
+EXPECTED_FLOOR2_TOTAL = 0
 
 
 def px_to_feet(px):
@@ -178,7 +156,8 @@ def main():
     args = parser.parse_args()
 
     print('Moove In Richland — Unit Mix Validation')
-    print('Ground truth: planning/richland-unit-mix.pdf')
+    if not GROUND_TRUTH_MATRIX:
+        print('NOTE: No ground truth data configured. Showing detected counts only.')
 
     all_issues = []
     floors = []
