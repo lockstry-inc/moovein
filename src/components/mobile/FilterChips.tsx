@@ -2,11 +2,16 @@ import { useFacilityStore } from '../../stores/facilityStore'
 import type { UnitType } from '../../types/facility'
 
 const CHIPS: { key: UnitType; label: string }[] = [
-  { key: 'xs', label: 'Locker' },
-  { key: 'sm', label: 'Compact' },
-  { key: 'md', label: 'Standard' },
-  { key: 'lg', label: 'Large' },
-  { key: 'xl', label: 'Extra Large' },
+  { key: '5x5',    label: "5'\u00d75'" },
+  { key: '5x10',   label: "5'\u00d710'" },
+  { key: '5x15',   label: "5'\u00d715'" },
+  { key: '7.6x10', label: "7'6\u2033\u00d710'" },
+  { key: '10x10',  label: "10'\u00d710'" },
+  { key: '10x15',  label: "10'\u00d715'" },
+  { key: '10x20',  label: "10'\u00d720'" },
+  { key: '10x25',  label: "10'\u00d725'" },
+  { key: '10x30',  label: "10'\u00d730'" },
+  { key: '10x40',  label: "10'\u00d740'" },
 ]
 
 export default function FilterChips() {

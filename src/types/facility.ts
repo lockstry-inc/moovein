@@ -1,4 +1,7 @@
-export type UnitType = 'xs' | 'sm' | 'md' | 'lg' | 'xl'
+export type UnitType =
+  | '5x5' | '5x10' | '5x15'
+  | '7.6x10'
+  | '10x10' | '10x15' | '10x20' | '10x25' | '10x30' | '10x40'
 
 export interface UnitTypeConfig {
   name: string

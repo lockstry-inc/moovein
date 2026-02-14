@@ -4,11 +4,16 @@ import { FEATURE_ICONS, FEATURE_LABELS } from '../../data/features'
 import type { UnitType } from '../../types/facility'
 
 const FILTER_OPTIONS: { key: UnitType; label: string; dims: string; price: string }[] = [
-  { key: 'xs', label: 'Locker', dims: "3'\u00d74'", price: '$39' },
-  { key: 'sm', label: 'Compact', dims: "5'\u00d75'", price: '$69' },
-  { key: 'md', label: 'Standard', dims: "5'\u00d710'", price: '$109' },
-  { key: 'lg', label: 'Large', dims: "10'\u00d710'", price: '$149' },
-  { key: 'xl', label: 'Extra Large', dims: "10'\u00d720'", price: '$229' },
+  { key: '5x5',    label: 'Compact',     dims: "5'\u00d75'",              price: '$49' },
+  { key: '5x10',   label: 'Small',       dims: "5'\u00d710'",             price: '$79' },
+  { key: '5x15',   label: 'Small+',      dims: "5'\u00d715'",             price: '$109' },
+  { key: '7.6x10', label: 'Mid-Size',    dims: "7\u20326\u2033\u00d710'", price: '$119' },
+  { key: '10x10',  label: 'Standard',    dims: "10'\u00d710'",            price: '$149' },
+  { key: '10x15',  label: 'Large',       dims: "10'\u00d715'",            price: '$189' },
+  { key: '10x20',  label: 'Extra Large', dims: "10'\u00d720'",            price: '$229' },
+  { key: '10x25',  label: 'Oversized',   dims: "10'\u00d725'",            price: '$269' },
+  { key: '10x30',  label: 'Warehouse',   dims: "10'\u00d730'",            price: '$309' },
+  { key: '10x40',  label: 'Garage',      dims: "10'\u00d740'",            price: '$399' },
 ]
 
 const LEGEND_FEATURES = ['climate', 'driveup', 'ext', 'smartlock', 'power', 'alarm'] as const
